@@ -13,11 +13,11 @@ import setupMenus from "./menu";
 import "./menu/application";
 import * as dotenv from "dotenv";
 
-const envPath = path.resolve(__dirname, "../../.env.development")
+const envPath = path.resolve(__dirname, "../../.env.development");
 dotenv.config({
-  path: envPath
+  path: envPath,
 });
- 
+
 // 定义变量
 let mainWindow: BrowserWindow | null = null;
 const isDev = !app.isPackaged; // 是否是development
@@ -36,13 +36,13 @@ async function createWindow() {
       preload: path.join(__dirname, "./preload.js"),
       nodeIntegration: false, // 不允许在渲染进程中使用nodejs Api
       contextIsolation: true, // 开启上下文隔离，通过preload进行通信
-    }, 
+    },
     show: false,
-    frame: true, 
+    frame: true,
     minWidth: 1000,
     minHeight: 600,
-  });       
- 
+  });
+  console.log("isDev", isDev);
   if (isDev) {
     const PORT = process.env.VITE_PORT || 5173;
     const URL = `http://localhost:${PORT}`;
@@ -52,7 +52,10 @@ async function createWindow() {
     mainWindow.webContents.openDevTools();
   } else {
     const staticPath = path.join(__dirname, "../renderer/index.html");
+    console.log("staticPath", staticPath);
     mainWindow.loadFile(staticPath);
+    // 打开开发者工具
+    mainWindow.webContents.openDevTools();
   }
 
   mainWindow.on("ready-to-show", () => {

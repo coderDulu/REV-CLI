@@ -11,9 +11,11 @@ dotenv.config({
 // 加载环境变量
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: './',
   root: "./src/renderer",
   plugins: [react()],
   build: {
+    
     outDir: path.join(__dirname, "dist/renderer"),
     terserOptions: {
       compress: {
