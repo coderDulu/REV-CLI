@@ -1,0 +1,37 @@
+{
+  "name": "main",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/main/index.js",
+  "scripts": {
+    "dev": "run-p dev:renderer dev:main",
+    "dev:main": "nodemon",
+    "dev:renderer": "vite",
+    "run:main": "electron ./dist/main/index.js",
+    "build:renderer": "vite build",
+    "build:main": "tsc -p src/main/tsconfig.json",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.14.12",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@typescript-eslint/eslint-plugin": "^7.15.0",
+    "@typescript-eslint/parser": "^7.15.0",
+    "@vitejs/plugin-react-swc": "^3.5.0",
+    "dotenv": "^16.4.5",
+    "electron": "^31.3.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "eslint-plugin-react-refresh": "^0.4.7",
+    "npm-run-all2": "^6.2.2",
+    "typescript": "^5.5.4",
+    "vite": "^5.3.4"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
+}
