@@ -33,7 +33,7 @@ async function createWindow() {
     width: 1600,
     height: 850,
     webPreferences: {
-      preload: path.join(__dirname, "./preload.js"),
+      preload: path.join(__dirname, "./preload.cjs"),
       nodeIntegration: false, // 不允许在渲染进程中使用nodejs Api
       contextIsolation: true, // 开启上下文隔离，通过preload进行通信
     },

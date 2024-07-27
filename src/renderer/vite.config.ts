@@ -1,22 +1,19 @@
 import { defineConfig } from "vite";
-import dotenv from 'dotenv'
+import dotenv from "dotenv";
 import react from "@vitejs/plugin-react-swc";
 import path from "node:path";
 
 dotenv.config({
-  path: path.resolve(__dirname, ".env.development")
+  path: path.resolve(__dirname, "../../.env.development"),
 });
-
-
 // 加载环境变量
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: './',
-  root: "./src/renderer",
+  base: "./",
+  root: "./",
   plugins: [react()],
   build: {
-    
-    outDir: path.join(__dirname, "dist/renderer"),
+    outDir: path.join(__dirname, "../../dist/renderer"),
     terserOptions: {
       compress: {
         drop_console: true,
@@ -25,5 +22,5 @@ export default defineConfig({
   },
   server: {
     port: Number(process.env.VITE_PORT ?? 5173),
-  }
+  },
 });

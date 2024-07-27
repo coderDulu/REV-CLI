@@ -6,16 +6,18 @@ directories:
 files:
   - '!**/.vscode/*'
   - '!src/*'
-  - '!electron.vite.config.{js,ts,mjs,cjs}'
   - '!{.eslintignore,.eslintrc.cjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}'
   - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
   - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
   - '!src/renderer/*'
   - '!src/main/*'
-asar: true
+  - "!nodemon.json"
+  - "!rollup.config.js"
+  - "!.rollup.cache"
+asar: false
 asarUnpack:
   - resources/*
-afterSign: build/notarize.js
+# afterSign: build/notarize.js
 win:
   icon: ./build/favicon.ico
   executableName: react-electron-demo # 更改此处避免多个重复
