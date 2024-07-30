@@ -1,5 +1,6 @@
 import { useState } from "react";
 import clsx from "clsx";
+import { useNavigate } from 'react-router-dom'
 
 const list = [
   {
@@ -17,15 +18,22 @@ const list = [
 ];
 
 function HeaderTabs() {
+  const navigate = useNavigate();
   const [choose, setChoose] = useState("manage");
-  console.log(choose);
+
+  const handleClick = (value: string) => {
+    navigate('/' + value)
+    setChoose(value)
+  }
+
+  // console.log(2333);
   return (
     <ul className="w-80 h-10 flex items-center  gap-1 mx-10 justify-center rounded-3xl bg-[#EDEDED]">
       {list.map((item) => (
         <li
           className={clsx("flex flex-1 h-full rounded-3xl border-none items-center justify-center cursor-pointer", { "bg-[#0d8383] text-white": choose === item.value })}
           key={item.value}
-          onClick={() => setChoose(item.value)}>
+          onClick={() => handleClick(item.value)}>
           {item.name}
         </li>
       ))}
