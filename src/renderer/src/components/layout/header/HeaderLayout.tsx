@@ -10,7 +10,7 @@ function HeaderLayout() {
         <Image preview={false} width={53} src="/icons/menu/首页图标.png" />
       </div>
       <HeaderTabs />
-      {/* <Divider type="vertical" /> */}
+      <Divider type="vertical" className="h-full"  />
       {/* connect */}
       <Connect />
       {/* window-control */}

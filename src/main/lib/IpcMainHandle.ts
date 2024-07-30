@@ -9,7 +9,7 @@ type IpcMainHandle<T = any> = {
 };
 
 const EVENT_POOL: IpcMainHandle[] = [
-  {
+  { // 窗口控制
     name: "window-control",
     callback: (event, type) => {
       console.log("window-control", type);
@@ -17,7 +17,7 @@ const EVENT_POOL: IpcMainHandle[] = [
       windowControl(type);
     },
   },
-  {
+  { // 获取窗口状态
     name: "window-status",
     callback: () => {
       const win = BrowserWindow.getFocusedWindow();
