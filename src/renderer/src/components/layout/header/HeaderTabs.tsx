@@ -1,32 +1,40 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import clsx from "clsx";
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 
 const list = [
   {
     name: "管理端",
-    value: "manage",
+    value: "/manage",
   },
   {
     name: "中心端",
-    value: "center",
+    value: "/center",
   },
   {
     name: "用户端",
-    value: "user",
+    value: "/user",
   },
 ];
 
 function HeaderTabs() {
   const navigate = useNavigate();
+  const location = useLocation();
+
   const [choose, setChoose] = useState("manage");
 
   const handleClick = (value: string) => {
-    navigate('/' + value)
+    navigate(value)
     setChoose(value)
   }
 
-  // console.log(2333);
+  useEffect(() => {
+    const findIndex = list.findIndex((item) => location.pathname.includes(item.value));
+    if (findIndex !== -1) {
+      setChoose(list[findIndex].value)
+    }
+  }, [])
+
   return (
     <ul className="w-80 h-10 flex items-center  gap-1 mx-10 justify-center rounded-3xl bg-[#EDEDED]">
       {list.map((item) => (

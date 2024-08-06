@@ -1,5 +1,8 @@
+import { Outlet } from 'react-router-dom'
 function CenterView() {
-  return <div>center view</div>;
+  return <>
+    <Outlet />
+  </>;
 }
 
 export default CenterView;

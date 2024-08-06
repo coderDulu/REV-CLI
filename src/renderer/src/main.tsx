@@ -7,5 +7,5 @@ import config from './router/index'
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <RouterProvider router={config} />
-  </React.StrictMode>,
+  </React.StrictMode>
 )

@@ -1,5 +1,6 @@
+import { Outlet } from 'react-router-dom'
 function UserView() {
-  return <div>user view</div>;
+  return <Outlet />;
 }
 
 export default UserView;

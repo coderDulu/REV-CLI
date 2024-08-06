@@ -1,5 +1,8 @@
+import { Outlet } from 'react-router-dom'
 function ManageView() {
-  return <div>manage view</div>
+  return <>
+    <Outlet />
+  </>
 }
 
 export default ManageView;

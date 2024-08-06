@@ -14,7 +14,8 @@ files:
   - "!nodemon.json"
   - "!rollup.config.js"
   - "!.rollup.cache"
-asar: false
+asar: true
+
 asarUnpack:
   - resources/*
 # afterSign: build/notarize.js
