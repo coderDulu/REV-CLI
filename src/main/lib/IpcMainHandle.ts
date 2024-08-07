@@ -2,6 +2,7 @@ import { ipcMain, BrowserWindow } from "electron";
 import windowControl from "../utils/windowControl";
 
 export type Names = "window-control" | "window-status";
+export type events = ""
 
 type IpcMainHandle<T = any> = {
   name: Names;

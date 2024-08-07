@@ -1,5 +1,6 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createHashRouter, Navigate } from "react-router-dom";
-import { lazy, LazyExoticComponent, type ReactNode, Suspense } from 'react'
+import { lazy, type ReactNode, Suspense } from 'react'
 
 import App from "../App";
 // import Manage from "@/views/ManageView";
@@ -11,6 +12,8 @@ const CenterView = lazy(() => import("@/views/CenterView"));
 const UserView = lazy(() => import("@/views/UserView"));
 
 const Network = lazy(() => import("@/components/manage/Network"))
+const Spectrum = lazy(() => import("@/components/manage/Spectrum"))
+
 
 function addLazy(children: ReactNode) {
   return (
@@ -20,6 +23,32 @@ function addLazy(children: ReactNode) {
   )
 
 }
+
+export const menus = [
+  {
+    name: 'manage',
+    children: [
+      { name: "全网态势", path: '/manage/network', },
+      { name: "频谱状态", path: '/manage/status', },
+      { name: "用频规划", path: '/manage/plan', },
+    ]
+  },
+  {
+    name: 'center',
+    children: [
+      { name: "网络状态", path: '/center/net-status', },
+      { name: "自主选频", path: '/center/freq', },
+      { name: "业务传输", path: '/center/txrx', },
+    ]
+  },
+  {
+    name: 'user',
+    children: [
+      { name: "节点状态", path: '/user/node-status', },
+      { name: "业务传输", path: '/user/txrx', },
+    ]
+  }
+]
 
 const config = createHashRouter([
   {
@@ -36,7 +65,11 @@ const config = createHashRouter([
           { index: true, element: <Navigate to="/manage/network" replace /> },
           {
             path: "/manage/network",
-            element: addLazy(<Network/>),
+            element: addLazy(<Network />),
+          },
+          {
+            path: "/manage/status",
+            element: addLazy(<Spectrum />)
           },
           {
             path: '*',

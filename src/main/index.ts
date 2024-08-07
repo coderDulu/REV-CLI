@@ -31,7 +31,7 @@ process.on("uncaughtException", (error) => {
 // 新建窗口
 async function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 1600,
+    width: 1920,
     height: 850,
     webPreferences: {
       preload: path.join(__dirname, "./preload.cjs"),
@@ -40,7 +40,7 @@ async function createWindow() {
     },
     show: false,
     frame: false,
-    minWidth: 1000,
+    minWidth: 768,
     minHeight: 600,
   });
   console.log("isDev", isDev);

@@ -1,5 +1,7 @@
 import { Divider } from "antd";
 import useECharts from "@/hooks/useEcharts";
+import useWebsocket from "@/hooks/useWebsocket";
+import { useEffect } from "react";
 
 const configure = {
   "manage": {
@@ -10,7 +12,6 @@ const configure = {
 }
 
 function Network() {
-
   const { domRef } = useECharts({
     "title": {
       "text": "网络拓扑",
@@ -72,6 +73,9 @@ function Network() {
     ],
     "animation": false
   });
+
+  const { sendMessage, receiveMessage, isConnected } = useWebsocket("ws://127.0.0.1:8080");
+
   return (<div className="flex w-full h-full">
     <div className="flex flex-col gap-6 w-96 p-10 m-4">
       <h1 className="font-bold text-2xl">网络列表</h1>

@@ -1,31 +1,6 @@
 import clsx from "clsx";
 import { useLocation, useNavigate } from "react-router-dom";
-
-const menus = [
-  {
-    name: 'manage',
-    children: [
-      { name: "全网态势", path: '/manage/network', },
-      { name: "频谱状态", path: '/manage/status', },
-      { name: "用频规划", path: '/manage/plan', },
-    ]
-  },
-  {
-    name: 'center',
-    children: [
-      { name: "网络状态", path: '/center/net-status', },
-      { name: "自主选频", path: '/center/freq', },
-      { name: "业务传输", path: '/center/txrx', },
-    ]
-  },
-  {
-    name: 'user',
-    children: [
-      { name: "节点状态", path: '/user/node-status', },
-      { name: "业务传输", path: '/user/txrx', },
-    ]
-  }
-]
+import { menus } from "@/router";
 
 function SiderLayout() {
   const location = useLocation()

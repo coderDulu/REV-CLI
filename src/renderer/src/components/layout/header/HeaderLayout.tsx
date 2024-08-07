@@ -10,7 +10,7 @@ function HeaderLayout() {
       <div className="bg-[#356365] w-36 h-full flex items-center justify-center">
         <Image preview={false} width={53} src="/icons/menu/首页图标.png" />
       </div>
-      <div className="w-96">
+      <div className="md:w-96">
         <HeaderTabs />
       </div>
       <Divider type="vertical" className="h-full" />
