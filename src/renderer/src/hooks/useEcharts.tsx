@@ -27,7 +27,7 @@ const useECharts = (options: echarts.EChartsCoreOption) => {
     return isEqual(newVal, oldVal);
   }, []);
 
-  const update = (newOptions: echarts.EChartsCoreOption) => {
+  const update = useCallback((newOptions: echarts.EChartsCoreOption) => {
     if (myChart.current && !isSame(newOptions, myChart.current.getOption())) {
       try {
         myChart.current.setOption(newOptions);
@@ -35,7 +35,7 @@ const useECharts = (options: echarts.EChartsCoreOption) => {
         console.error("ECharts update error:", error);
       }
     }
-  };
+  }, [isSame])
 
   return {
     domRef,

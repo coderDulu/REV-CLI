@@ -32,7 +32,7 @@ process.on("uncaughtException", (error) => {
 async function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1920,
-    height: 850,
+    height: 1000,
     webPreferences: {
       preload: path.join(__dirname, "./preload.cjs"),
       nodeIntegration: false, // 不允许在渲染进程中使用nodejs Api

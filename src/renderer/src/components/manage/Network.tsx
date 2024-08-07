@@ -12,7 +12,7 @@ const configure = {
 }
 
 function Network() {
-  const { domRef } = useECharts({
+  const { domRef, update } = useECharts({
     "title": {
       "text": "网络拓扑",
       "textStyle": {
@@ -39,10 +39,11 @@ function Network() {
         "type": "graph",
         "layout": "force",
         "draggable": true,
-        "symbolSize": 50,
+        "symbolSize": 60,
         "roam": true,
         "label": {
-          "show": true
+          "show": true,
+          fontSize: 16
         },
         "edgeSymbol": [
           "circle",
@@ -52,21 +53,14 @@ function Network() {
           4,
           10
         ],
-        "data": [{
-          name: "1",
-          category: 0,
-        },
-        {
-          name: "2",
-          category: 1,
-        },
-        { name: "3", category: 2 }
-        ],
-
-
+        "data": [],
         "links": [],
         force: {
-          repulsion: 500
+          repulsion: 500,
+          layoutAnimation: true
+        },
+        lineStyle: {
+          width: 3
         },
         "animation": false,
       }
@@ -74,7 +68,33 @@ function Network() {
     "animation": false
   });
 
-  const { sendMessage, receiveMessage, isConnected } = useWebsocket("ws://127.0.0.1:8080");
+  const { sendMessage, receiveMessage, isConnected } = useWebsocket("ws://127.0.0.1:8080/topology");
+
+  useEffect(() => {
+    if (receiveMessage) {
+      const parseMsg = JSON.parse(receiveMessage)
+      const { nodes: { manage, center, user }, links } = parseMsg.data
+      const nodeArr: any[] = []
+      manage.forEach((item: string) => nodeArr.push({ name: item, category: 0, x:  0, y: 0 }))
+      center.forEach((item: string) => nodeArr.push({ name: item, category: 1 }))
+      user.forEach((item: string) => nodeArr.push({ name: item, category: 2 }))
+
+      const linkArr: { source: string; target: string }[] = []
+      links.forEach((item: string) => linkArr.push({ source: item[0], target: item[1] }))
+      const series = {
+        data: nodeArr,
+        links: linkArr,
+        force: {
+          repulsion: 500,
+          edgeLength: 100,
+          gravity: 0.05,
+          
+        }
+      }
+
+      update({ series })
+    }
+  }, [receiveMessage, update])
 
   return (<div className="flex w-full h-full">
     <div className="flex flex-col gap-6 w-96 p-10 m-4">
