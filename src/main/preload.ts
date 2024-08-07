@@ -2,14 +2,11 @@ import { contextBridge, ipcRenderer } from "electron";
 import type { Names } from './lib/IpcMainHandle'
 
 const preloadList = {
-  send: (channel: string, data: any) => {
-    ipcRenderer.send(channel, data);
+  invoke: (channel: Names, ...args: any) => {
+    return ipcRenderer.invoke(channel, ...args);
   },
-  receive: (channel: string, func: any) => {
-    ipcRenderer.on(channel, (event, ...args) => func(...args));
-  },
-  invoke: (channel: Names, data: any) => {
-    return ipcRenderer.invoke(channel, data);
+  on: (channel: string, func: any) => {
+    ipcRenderer.on(channel, (...args) => func(...args));
   },
 };
 

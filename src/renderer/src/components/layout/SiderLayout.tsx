@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import clsx from "clsx";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -29,25 +28,16 @@ const menus = [
 ]
 
 function SiderLayout() {
-  const [current, setCurrent] = useState(0);
-  const location = useLocation();
-  const [listMap, setListMap] = useState([])
+  const location = useLocation()
   const navigate = useNavigate()
 
-  const handleClick = (item, index) => {
+  const listMap = menus.find(item => location.pathname.includes(item.name))?.children || []
+  const current = listMap.findIndex(item => item.path === location.pathname)
+
+  const handleClick = (item: { name?: string; path: string; }) => {
     navigate(item.path)
-    setCurrent(index);
   };
 
-  useEffect(() => {
-    const list = menus.find(item => location.pathname.includes(item.name))
-    if (list) {
-      setListMap(list.children)
-
-      const findIndex = list.children.findIndex(item => item.path === location.pathname)
-      setCurrent(findIndex)
-    }
-  }, [location.pathname])
 
   return (
     <ul className="w-36 h-full bg-[#023c3f] flex flex-col items-center gap-12 p-12">
@@ -57,7 +47,7 @@ function SiderLayout() {
             {
               "opacity-20": current !== index,
             }
-          )} onClick={() => handleClick(item, index)}>
+          )} onClick={() => handleClick(item)}>
             <img
               src={`/icons/menu/${item.name}.png`}
               className={clsx("w-10 h-10")}

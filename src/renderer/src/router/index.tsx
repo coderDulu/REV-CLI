@@ -1,9 +1,25 @@
 import { createHashRouter, Navigate } from "react-router-dom";
+import { lazy, LazyExoticComponent, type ReactNode, Suspense } from 'react'
 
 import App from "../App";
-import Manage from "@/views/ManageView";
-import CenterView from "@/views/CenterView";
-import UserView from "@/views/UserView";
+// import Manage from "@/views/ManageView";
+// import CenterView from "@/views/CenterView";
+// import UserView from "@/views/UserView";
+
+const Manage = lazy(() => import("@/views/ManageView"));
+const CenterView = lazy(() => import("@/views/CenterView"));
+const UserView = lazy(() => import("@/views/UserView"));
+
+const Network = lazy(() => import("@/components/manage/Network"))
+
+function addLazy(children: ReactNode) {
+  return (
+    <Suspense fallback={<h2>加载中....</h2>}>
+      {children}
+    </Suspense>
+  )
+
+}
 
 const config = createHashRouter([
   {
@@ -14,13 +30,13 @@ const config = createHashRouter([
       {
         path: "/manage",
         id: "manage",
-        element: <Manage />,
+        element: addLazy(<Manage />),
 
         children: [
           { index: true, element: <Navigate to="/manage/network" replace /> },
           {
             path: "/manage/network",
-            element: <div>全网态势</div>,
+            element: addLazy(<Network/>),
           },
           {
             path: '*',
@@ -31,7 +47,7 @@ const config = createHashRouter([
       {
         path: "/center",
         id: "center",
-        element: <CenterView />,
+        element: addLazy(<CenterView />),
         children: [
           {
             index: true,
@@ -57,7 +73,7 @@ const config = createHashRouter([
       },
       {
         path: "/user",
-        element: <UserView />,
+        element: addLazy(<UserView />),
         id: "user",
         children: [
           {

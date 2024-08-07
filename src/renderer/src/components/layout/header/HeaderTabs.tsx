@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import clsx from "clsx";
 import { useNavigate, useLocation } from 'react-router-dom'
 
@@ -21,22 +20,14 @@ function HeaderTabs() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [choose, setChoose] = useState("manage");
+  const choose =  list.find((item) => location.pathname.includes(item.value))?.value || "manage";
 
   const handleClick = (value: string) => {
     navigate(value)
-    setChoose(value)
   }
 
-  useEffect(() => {
-    const findIndex = list.findIndex((item) => location.pathname.includes(item.value));
-    if (findIndex !== -1) {
-      setChoose(list[findIndex].value)
-    }
-  }, [])
-
   return (
-    <ul className="w-80 h-10 flex items-center  gap-1 mx-10 justify-center rounded-3xl bg-[#EDEDED]">
+    <ul className="w-80 h-10  m-auto flex items-center gap-1 justify-center rounded-3xl bg-[#EDEDED]">
       {list.map((item) => (
         <li
           className={clsx("flex flex-1 h-full rounded-3xl border-none items-center justify-center cursor-pointer", { "bg-[#0d8383] text-white": choose === item.value })}
