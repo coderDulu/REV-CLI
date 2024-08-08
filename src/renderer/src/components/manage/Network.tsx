@@ -1,15 +1,12 @@
 import { Divider } from "antd";
 import useECharts from "@/hooks/useEcharts";
 import useWebsocket from "@/hooks/useWebsocket";
-import { useEffect } from "react";
+import { useEffect, useCallback, useMemo } from "react";
 
 const configure = {
-  "manage": {
-
-  },
+  "manage": {},
   "center": {},
-
-}
+};
 
 function Network() {
   const { domRef, update } = useECharts({
@@ -68,47 +65,61 @@ function Network() {
     "animation": false
   });
 
-  const { sendMessage, receiveMessage, isConnected } = useWebsocket("ws://127.0.0.1:8080/topology");
+  const { receiveMessage, connect, close } = useWebsocket("ws://127.0.0.1:8080/topology");
+
+  useEffect(() => {
+    const socket = connect();
+
+    return () => {
+      socket.close();
+    };
+  }, [connect, close]);
+
+  const parseMessage = useCallback((message) => {
+    const parseMsg = JSON.parse(message);
+    const { nodes: { manage, center, user }, links } = parseMsg.data;
+    const nodeArr = [
+      ...manage.map(item => ({ name: item, category: 0, x: 0, y: 0 })),
+      ...center.map(item => ({ name: item, category: 1 })),
+      ...user.map(item => ({ name: item, category: 2 })),
+    ];
+
+    const linkArr = links.map(item => ({ source: item[0], target: item[1] }));
+    
+    return { data: nodeArr, links: linkArr };
+  }, []);
 
   useEffect(() => {
     if (receiveMessage) {
-      const parseMsg = JSON.parse(receiveMessage)
-      const { nodes: { manage, center, user }, links } = parseMsg.data
-      const nodeArr: any[] = []
-      manage.forEach((item: string) => nodeArr.push({ name: item, category: 0, x:  0, y: 0 }))
-      center.forEach((item: string) => nodeArr.push({ name: item, category: 1 }))
-      user.forEach((item: string) => nodeArr.push({ name: item, category: 2 }))
-
-      const linkArr: { source: string; target: string }[] = []
-      links.forEach((item: string) => linkArr.push({ source: item[0], target: item[1] }))
+      const { data, links } = parseMessage(receiveMessage);
       const series = {
-        data: nodeArr,
-        links: linkArr,
+        data,
+        links,
         force: {
           repulsion: 500,
           edgeLength: 100,
           gravity: 0.05,
-          
         }
-      }
-
-      update({ series })
+      };
+      update({ series });
     }
-  }, [receiveMessage, update])
+  }, [receiveMessage, update, parseMessage]);
 
-  return (<div className="flex w-full h-full">
-    <div className="flex flex-col gap-6 w-96 p-10 m-4">
-      <h1 className="font-bold text-2xl">网络列表</h1>
-      <ul className="flex flex-col gap-6">
-        <li>网络节点数目： 未选择</li>
-        <li>当前工作频段： -10MHz-150MHz</li>
-      </ul>
+  return (
+    <div className="flex w-full h-full">
+      <div className="flex flex-col gap-6 w-96 p-10 m-4">
+        <h1 className="font-bold text-2xl">网络列表</h1>
+        <ul className="flex flex-col gap-6">
+          <li>网络节点数目： 未选择</li>
+          <li>当前工作频段： -10MHz-150MHz</li>
+        </ul>
+      </div>
+      <Divider type="vertical" className="h-full" />
+      <div className="flex-1 p-2">
+        <div className="w-full h-full" ref={domRef}></div>
+      </div>
     </div>
-    <Divider type="vertical" className="h-full" />
-    <div className="flex-1 p-2">
-      <div className="w-full h-full" ref={domRef}></div>
-    </div>
-  </div>);
+  );
 }
 
 export default Network;

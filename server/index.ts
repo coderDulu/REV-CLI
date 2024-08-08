@@ -26,7 +26,9 @@ server.on("connection", (ws, req) => {
           ],
         },
       };
-      ws.send(JSON.stringify(data));
+      setInterval(() => {
+        ws.send(JSON.stringify(data));
+      }, 1000);
     }
   }
 

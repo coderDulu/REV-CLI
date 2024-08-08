@@ -38,13 +38,12 @@ const useWebsocket = (url: string) => {
     return socket;
   }, [url]);
 
-  useEffect(() => {
-    const socket = connect();
 
+  useEffect(() => {
     return () => {
-      socket.close();
+      socketRef.current?.close();
     };
-  }, [connect]);
+  }, []);
 
   const sendMessage = useCallback((msg: string) => {
     if (socketRef.current && isConnected) {
@@ -55,6 +54,8 @@ const useWebsocket = (url: string) => {
   }, [isConnected]);
 
   const close = useCallback(() => {
+    console.log(socketRef.current, "close");
+
     socketRef.current?.close();
   }, []);
 
@@ -63,6 +64,7 @@ const useWebsocket = (url: string) => {
     close,
     receiveMessage,
     isConnected,
+    connect
   };
 };
 

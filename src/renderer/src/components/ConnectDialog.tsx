@@ -1,7 +1,8 @@
 
-import { Modal, Button, Checkbox, Form, Input, Space } from 'antd';
+import { Modal, Button, Form, Input, Space, InputNumber } from 'antd';
 import type { FormProps } from 'antd';
 import IpInput from './IpInput';
+import 
 
 interface Props {
   showModel: boolean
@@ -9,23 +10,23 @@ interface Props {
 }
 
 function ConnectDialog({ showModel, onHide }: Props) {
-
-
   return (
     <>
       <Modal title="设备连接" footer={null} centered maskClosable={false} open={showModel} onCancel={onHide}>
-        <ConnectForm />
+        <ConnectForm onHide={onHide}/>
       </Modal>
     </>
   );
 }
 
 
-function ConnectForm() {
+function ConnectForm({onHide}) {
   type FieldType = {
     address?: string;
     port?: string;
   };
+
+  const 
 
   const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
     console.log('Success:', values);
@@ -60,18 +61,17 @@ function ConnectForm() {
         name="port"
         rules={[{ required: true, message: '请输入' }]}
       >
-        <Input />
+        <InputNumber min={0} max={65535} />
       </Form.Item>
 
       <Form.Item wrapperCol={{ offset: 16, span: 16 }}>
         <Space>
-          <Button type="default">
+          <Button type="default" onClick={onHide}>
             取消
           </Button>
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" color='#0d8383' htmlType="submit">
             连接
           </Button>
-
         </Space>
       </Form.Item>
     </Form>
