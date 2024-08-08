@@ -3,7 +3,7 @@ import { InputNumber, InputNumberProps, Space } from 'antd';
 
 interface Props {
   address: string
-  onChange: (ip: string) => void
+  onChange?: (ip: string) => void
 }
 
 const IpInput = ({ address = "0.0.0.0", onChange }: Props) => {
@@ -32,7 +32,7 @@ const IpInput = ({ address = "0.0.0.0", onChange }: Props) => {
       setIp(ip)
 
       const newIpStr = ip.join('.')
-      onChange(newIpStr)
+      onChange && onChange(newIpStr)
     }
   }
 

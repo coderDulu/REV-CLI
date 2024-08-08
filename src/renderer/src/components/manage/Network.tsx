@@ -1,12 +1,10 @@
 import { Divider } from "antd";
 import useECharts from "@/hooks/useEcharts";
-import useWebsocket from "@/hooks/useWebsocket";
-import { useEffect, useCallback, useMemo } from "react";
+import { useEffect, useCallback } from "react";
 
-const configure = {
-  "manage": {},
-  "center": {},
-};
+import useWebsocket from "@/hooks/useWebsocket";
+import useConnect from "@/hooks/useConnect";
+
 
 function Network() {
   const { domRef, update } = useECharts({
@@ -65,18 +63,20 @@ function Network() {
     "animation": false
   });
 
-  const { receiveMessage, connect, close } = useWebsocket("ws://127.0.0.1:8080/topology");
+  const { message, connect } = useWebsocket();
+  const connectInfo = useConnect()
+
 
   useEffect(() => {
-    const socket = connect();
+    const { isConnect, address, port } = connectInfo
+    if (isConnect) {
+      const url = `ws://${address}:${port}/topology`
+      connect(url);
+    }
+  }, [connect, connectInfo]);
 
-    return () => {
-      socket.close();
-    };
-  }, [connect, close]);
-
-  const parseMessage = useCallback((message) => {
-    const parseMsg = JSON.parse(message);
+  const parseMessage = useCallback((message: string) => {
+    const parseMsg: TopologyData = JSON.parse(message);
     const { nodes: { manage, center, user }, links } = parseMsg.data;
     const nodeArr = [
       ...manage.map(item => ({ name: item, category: 0, x: 0, y: 0 })),
@@ -85,13 +85,13 @@ function Network() {
     ];
 
     const linkArr = links.map(item => ({ source: item[0], target: item[1] }));
-    
+
     return { data: nodeArr, links: linkArr };
   }, []);
 
   useEffect(() => {
-    if (receiveMessage) {
-      const { data, links } = parseMessage(receiveMessage);
+    if (message) {
+      const { data, links } = parseMessage(message);
       const series = {
         data,
         links,
@@ -103,7 +103,7 @@ function Network() {
       };
       update({ series });
     }
-  }, [receiveMessage, update, parseMessage]);
+  }, [message, update, parseMessage]);
 
   return (
     <div className="flex w-full h-full">
@@ -112,6 +112,7 @@ function Network() {
         <ul className="flex flex-col gap-6">
           <li>网络节点数目： 未选择</li>
           <li>当前工作频段： -10MHz-150MHz</li>
+          <li>{connectInfo.isConnect ? "true" : "false"}</li>
         </ul>
       </div>
       <Divider type="vertical" className="h-full" />

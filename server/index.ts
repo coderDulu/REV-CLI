@@ -7,6 +7,13 @@ server.on("connection", (ws, req) => {
   console.log("Client connected", req.url);
 
   switch (req.url) {
+    case "/connect": {
+      const data = {
+        type: "connect",
+        data: "success",
+      };
+      ws.send(JSON.stringify(data));
+    }
     case "/topology": {
       const data = {
         type: "topology",

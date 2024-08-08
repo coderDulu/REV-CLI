@@ -1,71 +1,61 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from 'react';
 
-const useWebsocket = (url: string) => {
-  const socketRef = useRef<WebSocket | null>(null);
-  const [receiveMessage, setReceiveMessage] = useState("");
-  const [isConnected, setIsConnected] = useState(false);
-  const messageQueue = useRef<string[]>([]);
+function useWebSocket() {
+  const [message, setMessage] = useState(null);
+  const [readyState, setReadyState] = useState<number>(WebSocket.CLOSED);
+  const websocketRef = useRef<WebSocket | null>(null);
 
-  const connect = useCallback(() => {
-    const socket = new WebSocket(url);
+  const connect = useCallback((url: string, callback?: (err: Event | null, socket: WebSocket | null) => void) => {
+    if (websocketRef.current) {
+      websocketRef.current.close();
+    }
 
-    socket.onopen = () => {
-      setIsConnected(true);
-      socketRef.current = socket;
+    const ws = new WebSocket(url);
+    websocketRef.current = ws;
+    setReadyState(WebSocket.CONNECTING);
 
-      // Send queued messages
-      while (messageQueue.current.length > 0) {
-        const message = messageQueue.current.shift();
-        if (message) {
-          socket.send(message);
-        }
-      }
+    ws.onopen = () => {
+      setReadyState(WebSocket.OPEN);
+      callback && callback(null, ws)
     };
 
-    socket.onmessage = (event) => {
-      setReceiveMessage(event.data);
+    ws.onmessage = (event) => {
+      setMessage(event.data);
     };
 
-    socket.onclose = () => {
-      setIsConnected(false);
-      socketRef.current = null;
+    ws.onerror = (error) => {
+      console.error('WebSocket error: ', error);
+      // callback && callback(error, null)
     };
 
-    socket.onerror = (error) => {
-      console.error("WebSocket error:", error);
+    ws.onclose = (event) => {
+      setReadyState(WebSocket.CLOSED);
+      callback && callback(event, null)
     };
-
-    return socket;
-  }, [url]);
-
+  }, []);
 
   useEffect(() => {
+    // Return a cleanup function to close the WebSocket when the component unmounts
     return () => {
-      socketRef.current?.close();
+      if (websocketRef.current) {
+        websocketRef.current.close();
+      }
     };
   }, []);
 
-  const sendMessage = useCallback((msg: string) => {
-    if (socketRef.current && isConnected) {
-      socketRef.current.send(msg);
-    } else {
-      messageQueue.current.push(msg);
-    }
-  }, [isConnected]);
-
   const close = useCallback(() => {
-    console.log(socketRef.current, "close");
+    if (websocketRef.current) {
+      websocketRef.current.close();
+    }
+  }, [])
 
-    socketRef.current?.close();
+  const sendMessage = useCallback((msg: string | ArrayBufferLike | Blob | ArrayBufferView) => {
+    if (websocketRef.current && websocketRef.current.readyState === WebSocket.OPEN) {
+      websocketRef.current.send(msg);
+    }
   }, []);
 
-  return {
-    sendMessage,
-    close,
-    receiveMessage,
-    isConnected,
-    connect
-  };
-};
+  return { message, sendMessage, connect, readyState, close };
+}
 
-export default useWebsocket;
+export default useWebSocket;
