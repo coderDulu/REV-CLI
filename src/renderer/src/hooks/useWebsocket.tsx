@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 
 function useWebSocket() {
-  const [message, setMessage] = useState(null);
+  const [message, setMessage] = useState<string | null>(null);
   const [readyState, setReadyState] = useState<number>(WebSocket.CLOSED);
   const websocketRef = useRef<WebSocket | null>(null);
 
@@ -30,6 +30,7 @@ function useWebSocket() {
 
     ws.onclose = (event) => {
       setReadyState(WebSocket.CLOSED);
+      setMessage("")
       callback && callback(event, null)
     };
   }, []);
@@ -46,6 +47,7 @@ function useWebSocket() {
   const close = useCallback(() => {
     if (websocketRef.current) {
       websocketRef.current.close();
+      setMessage("")
     }
   }, [])
 

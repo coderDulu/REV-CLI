@@ -13,6 +13,7 @@ server.on("connection", (ws, req) => {
         data: "success",
       };
       ws.send(JSON.stringify(data));
+      break
     }
     case "/topology": {
       const data = {
@@ -36,6 +37,7 @@ server.on("connection", (ws, req) => {
       setInterval(() => {
         ws.send(JSON.stringify(data));
       }, 1000);
+      break
     }
   }
 

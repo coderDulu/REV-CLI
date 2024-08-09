@@ -11,3 +11,11 @@ body {
   height: 100%;
   overflow: hidden;
 }
+
+.app-drag {
+  -webkit-app-region: drag;
+}
+
+.app-noDrag {
+  -webkit-app-region: no-drag;
+}

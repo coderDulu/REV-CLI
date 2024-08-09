@@ -6,6 +6,8 @@ import useWebsocket from "@/hooks/useWebsocket";
 import useConnect from "@/hooks/useConnect";
 
 
+
+
 function Network() {
   const { domRef, update } = useECharts({
     "title": {
@@ -63,8 +65,9 @@ function Network() {
     "animation": false
   });
 
-  const { message, connect } = useWebsocket();
+  const { message, connect, close: wsClose } = useWebsocket();
   const connectInfo = useConnect()
+
 
 
   useEffect(() => {
@@ -72,8 +75,10 @@ function Network() {
     if (isConnect) {
       const url = `ws://${address}:${port}/topology`
       connect(url);
+    } else {
+      wsClose()
     }
-  }, [connect, connectInfo]);
+  }, [connect, connectInfo, wsClose]);
 
   const parseMessage = useCallback((message: string) => {
     const parseMsg: TopologyData = JSON.parse(message);
@@ -112,7 +117,6 @@ function Network() {
         <ul className="flex flex-col gap-6">
           <li>网络节点数目： 未选择</li>
           <li>当前工作频段： -10MHz-150MHz</li>
-          <li>{connectInfo.isConnect ? "true" : "false"}</li>
         </ul>
       </div>
       <Divider type="vertical" className="h-full" />

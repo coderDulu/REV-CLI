@@ -33,7 +33,7 @@ function WindowControl() {
   }
 
 
-  return <div className="cursor-pointer flex gap-4 flex-1 justify-end mr-6">
+  return <div className="cursor-pointer flex gap-4 flex-1 justify-end mr-6 app-noDrag">
     <img src="/icons/header/最小化.png" onClick={minimize} className="w-5 h-5" />
     {
       isMaximized ? <img src="/icons/header/还原.png" onClick={maximize} className="w-5 h-5" /> : <img src="/icons/header/最大化.png" onClick={maximize} className="w-5 h-5" />

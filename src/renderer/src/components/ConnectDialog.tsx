@@ -3,9 +3,9 @@ import { Modal, Button, Form, Space, InputNumber } from 'antd';
 import type { FormProps } from 'antd';
 import IpInput from './IpInput';
 
-import useWebsocket from '@/hooks/useWebsocket';
 import { useConnect, useConnectDispatch } from '@/hooks/useConnect';
-
+import { useListenWsClosed } from '@/hooks/useMainEvent';
+import { useCallback, useEffect } from 'react';
 type FieldType = {
   address: string;
   port: number;
@@ -14,30 +14,67 @@ type FieldType = {
 interface Props {
   showModel: boolean
   onHide: () => void
-  onFinish: (args: FieldType) => void
 }
 
-function ConnectForm({ showModel, onHide, onFinish }: Props) {
-  const socket = useWebsocket()
+
+function ConnectForm({ showModel, onHide }: Props) {
   const connect = useConnect()
   const connectDispatch = useConnectDispatch()
 
+  const subscribe = useCallback((e, isClosed: boolean) => {
+    console.log(isClosed);
+    if(isClosed) {
+      connectDispatch({
+        type: "update",
+        isConnect: false
+      })
+    }
+  }, [])
+
+  useListenWsClosed(subscribe)
+
+
   const onFinished: FormProps<FieldType>['onFinish'] = async (values) => {
-    onFinish(values)
+    try {
+      await window.electron.invoke('ws-connect', { address: values.address, port: values.port })
+
+      connectDispatch({
+        type: "update",
+        address: values.address,
+        port: values.port,
+        isConnect: true
+      })
+      onHide()
+      window.$message.success("连接成功")
+    } catch (error) {
+      handleWsClose()
+    }
   };
+
+  function handleWsClose() {
+    window.$message.error("连接错误")
+    connectDispatch({
+      type: "update",
+      isConnect: false
+    })
+  }
 
   const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
     console.log('Failed:', errorInfo);
   };
 
-  function handleDisconnect() {
-    socket.close()
+  async function handleDisconnect() {
+    try {
+      await window.electron.invoke('ws-disconnect')
 
-    connectDispatch({
-      type: "update",
-      isConnect: false
-    })
-    window.$message.success("断开连接成功")
+      connectDispatch({
+        type: "update",
+        isConnect: false
+      })
+      window.$message.success("断开连接成功")
+    } catch (error) {
+      console.log('disconnect', error);
+    }
   }
 
   return <Modal title="设备连接" footer={null} centered maskClosable={false} open={showModel} onCancel={onHide}>
