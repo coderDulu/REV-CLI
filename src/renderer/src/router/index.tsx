@@ -14,10 +14,13 @@ const UserView = lazy(() => import("@/views/UserView"));
 const Network = lazy(() => import("@/components/manage/Network"))
 const Spectrum = lazy(() => import("@/components/manage/Spectrum"))
 
+const FreqPlan = lazy(() => import("@/components/manage/FreqPlan"))
+
+
 
 function addLazy(children: ReactNode) {
   return (
-    <Suspense fallback={<h2>加载中....</h2>}>
+    <Suspense fallback={<></>}>
       {children}
     </Suspense>
   )
@@ -70,6 +73,10 @@ const config = createHashRouter([
           {
             path: "/manage/status",
             element: addLazy(<Spectrum />)
+          },
+          {
+            path: "/manage/plan",
+            element: addLazy(<FreqPlan />)
           },
           {
             path: '*',

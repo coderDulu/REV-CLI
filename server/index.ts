@@ -39,6 +39,10 @@ server.on("connection", (ws, req) => {
       }, 1000);
       break
     }
+    case "/freqPlanSet": {
+      console.log('23', "freqPlanSet");
+      break
+    }
   }
 
   ws.on("message", (message) => {
