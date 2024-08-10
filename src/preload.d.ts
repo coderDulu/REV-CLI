@@ -6,3 +6,7 @@ declare global {
     electron: PreloadType;
   }
 }
+
+export type getTypeOfPreload<T = keyof PreloadType> = Parameters<PreloadType[T]>[0];
+
+export type ChannelReturnType = ChannelType<'on'>;

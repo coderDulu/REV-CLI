@@ -4,8 +4,8 @@ import type { FormProps } from 'antd';
 import IpInput from './IpInput';
 
 import { useConnect, useConnectDispatch } from '@/hooks/useConnect';
-import { useListenWsClosed } from '@/hooks/useMainEvent';
-import { useCallback, useEffect } from 'react';
+import { useListenMainEvent } from '@/hooks/useMainEvent';
+import { useCallback } from 'react';
 type FieldType = {
   address: string;
   port: number;
@@ -22,8 +22,7 @@ function ConnectForm({ showModel, onHide }: Props) {
   const connectDispatch = useConnectDispatch()
 
   const subscribe = useCallback((e, isClosed: boolean) => {
-    console.log(isClosed);
-    if(isClosed) {
+    if (isClosed) {
       connectDispatch({
         type: "update",
         isConnect: false
@@ -31,7 +30,7 @@ function ConnectForm({ showModel, onHide }: Props) {
     }
   }, [])
 
-  useListenWsClosed(subscribe)
+  useListenMainEvent('ws-closed', subscribe)
 
 
   const onFinished: FormProps<FieldType>['onFinish'] = async (values) => {

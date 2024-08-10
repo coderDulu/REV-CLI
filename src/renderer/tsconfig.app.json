@@ -24,7 +24,8 @@
     "noFallthroughCasesInSwitch": true,
     "paths": {
       "@/*": ["./src/*"],
-    }
+    },
+    "noImplicitAny": false
   },
   "include": ["src", "../preload.d.ts", "./src/vite-env.d.ts", "./global.d.ts"],
   

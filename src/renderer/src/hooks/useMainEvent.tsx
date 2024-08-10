@@ -1,13 +1,12 @@
 // 监听主进程事件
 import { useEffect } from "react"
+import { getTypeOfPreload } from '../../../preload'
 
-
-export function useListenWsClosed(subscribe: (e: Electron.IpcRendererEvent, isClosed: boolean) => void) {
+export function useListenMainEvent(event: getTypeOfPreload<'on'>, subscribe: (e: Electron.IpcRendererEvent, ...args: never[]) => void) {
   useEffect(() => {
-    console.log('23333');
-    window.electron.on('ws-closed', subscribe)
+    window.electron.on(event, subscribe)
     return () => {
-      window.electron.removeListener('ws-closed', subscribe)
+      window.electron.removeListener(event, subscribe)
     }
-  }, [subscribe])
+  }, [subscribe, event])
 }
