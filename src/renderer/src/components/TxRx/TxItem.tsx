@@ -37,7 +37,7 @@ function FormSet() {
   const sendDataTimer = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    connectToWebsocket()
+    connectToWebsocket();
     return () => {
       sendDataTimer.current && clearInterval(sendDataTimer.current);
     };
@@ -52,6 +52,13 @@ function FormSet() {
       const { interval, isAuto, data: sendData } = values;
 
       if (isAuto) {
+        setIsSending((sending) => {
+          if (!sending) {
+            window.$message.success("发送成功");
+            return true;
+          }
+          return sending;
+        });
         sendDataTimer.current = setInterval(() => {
           send(sendData)
             .catch(() => {
@@ -73,14 +80,6 @@ function FormSet() {
   async function send(sendData: string) {
     try {
       await sendMessage(sendData);
-
-      setIsSending((sending) => {
-        if (!sending) {
-          window.$message.success("发送成功");
-          return true;
-        }
-        return sending;
-      });
     } catch (err) {
       window.$message.error("发送失败");
       setIsSending(false);
