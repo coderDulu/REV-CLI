@@ -1,8 +1,6 @@
-// import useConnect from "@/hooks/useConnect";
-// import useWebsocket from "@/hooks/useWebsocket";
 import { Radio, Space, Form, Select, Button, Table, TableProps, TimePicker, Modal, FormProps, InputNumber, Flex } from "antd";
 import { TableRowSelection } from "antd/es/table/interface";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useImmerReducer } from "use-immer";
 import dayjs from "dayjs";
 import { nanoid } from "nanoid";
@@ -18,7 +16,7 @@ interface DataType {
   spectrum: number;
 }
 
-const initFormData = Array(3)
+const initFormData = Array(1000)
   .fill(0)
   .map((_: number, index: number) => {
     const key = nanoid();
@@ -34,11 +32,29 @@ const initFormData = Array(3)
     };
   });
 
+function getInitData() {
+  const lastData = sessionStorage.getItem("table-data");
+  if (lastData) {
+    const parseData = JSON.parse(lastData);
+    return parseData.data;
+  }
+  return initFormData;
+}
+
 function FreqPlan() {
   const [network, setNetwork] = useState(1);
   const [interval, setInterVal] = useState(1000);
-  const [dataSource, dispatch] = useImmerReducer<DataType[], any>(reducer, initFormData);
+
+  const [dataSource, dispatch] = useImmerReducer<DataType[], any>(reducer, getInitData());
   const [selectRow, setSelectRow] = useState<number>(0);
+
+  useEffect(() => {
+    const saveData = {
+      network: network,
+      data: dataSource,
+    };
+    sessionStorage.setItem("table-data", JSON.stringify(saveData));
+  }, [dataSource, network]);
 
   const selectData: DataType | undefined = dataSource.find((item) => item.key === selectRow);
   // 添加
@@ -99,6 +115,7 @@ function FreqPlan() {
       <Space>
         <AddTablePlan text="编辑" title="编辑规划" onConfirm={handleEdit} initData={selectData} />
         <AddTablePlan text="新增" title="新增规划" onConfirm={handleConfirmAdd}></AddTablePlan>
+
         {/* <Button>导出</Button>
         <Button>导入</Button> */}
         <Button danger onClick={handleDelete}>
@@ -123,7 +140,7 @@ interface AddTablePlanProps {
 
 function AddTablePlan({ onConfirm, text, title, initData }: AddTablePlanProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -147,8 +164,6 @@ function AddTablePlan({ onConfirm, text, title, initData }: AddTablePlanProps) {
     });
     setIsModalOpen(false);
   };
-
-  // const onFinishFailed: FormProps<DataType>["onFinishFailed"] = (errorInfo) => {};
 
   return (
     <>
@@ -249,7 +264,6 @@ function NumberInput(props) {
 // 表格组件
 function TablePlan({ dataSource, onSelect }: { dataSource: DataType[]; onSelect: (data: React.Key[]) => void }) {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     onSelect(newSelectedRowKeys);
     setSelectedRowKeys(newSelectedRowKeys);
@@ -320,6 +334,10 @@ function reducer(draft: DataType[], action: any) {
       const key = action.payload.key;
       const updateIndex = draft.findIndex((item) => item.key === key);
       draft[updateIndex] = action.payload;
+      return draft;
+    }
+    case "replace": {
+      draft = action.payload;
       return draft;
     }
   }
