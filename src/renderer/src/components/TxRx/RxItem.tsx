@@ -1,12 +1,12 @@
 import { Form, Input, Space } from "antd";
 import TxRxContainer from "./TxRxContainer";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import CButton from "../common/CButton";
 import useWebsocketConnect from "@/hooks/useWebsocketConnect";
 
 function TxItem() {
   return (
-    <TxRxContainer title="接收数据" borderColor="#F0B376" bgColor="#FFF7EF">
+    <TxRxContainer title="接收数据" borderColor="#F0B376" bgColor="#fff7ef">
       <FormSet />
     </TxRxContainer>
   );
