@@ -6,6 +6,7 @@ import config from "./router/index";
 import { ConfigProvider } from "antd";
 import zhCN from "antd/locale/zh_CN";
 
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ConfigProvider
@@ -26,7 +27,8 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             colorPrimaryHover: "#0d8383",
           },
         },
-      }}>
+      }}
+    >
       <RouterProvider router={config} />
     </ConfigProvider>
   </React.StrictMode>

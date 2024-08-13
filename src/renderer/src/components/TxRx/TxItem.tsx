@@ -71,6 +71,10 @@ function FormSet() {
       } else {
         send(sendData);
         setSendDataLen(sendDataLen + sendData.length);
+        window.$message.success({
+          content: "发送成功",
+          duration: 1
+        });
       }
     } catch (error) {
       window.$message.error("发送失败");

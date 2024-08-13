@@ -26,10 +26,6 @@ function Index() {
   return (
     <div className="w-full h-full">
       <Tabs options={options} />
-      {/* <Flex className="w-full h-full p-6"> */}
-      {/* <TxItem /> */}
-      {/* <RxItem /> */}
-      {/* </Flex> */}
     </div>
   );
 }
