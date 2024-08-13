@@ -22,7 +22,7 @@ function useWebSocket() {
         };
 
         ws.onmessage = (event) => {
-          console.log("Received message:", event.data);
+          // console.log("Received message:", event.data);
           setMessage(() => event.data);
         };
 

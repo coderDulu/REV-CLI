@@ -1,8 +1,12 @@
 import { Flex } from "antd";
 import RxItem from "./RxItem";
 import TxItem from "./TxItem";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import clsx from "clsx";
+import FileTxItem from "./FileTxItem";
+import FileRxItem from "./FileRxItem";
+import VideoTxItem from "./VideoTxItem";
+import VideoRxItem from "./VideoRxItem";
 
 const options: TabsProp[] = [
   {
@@ -15,10 +19,22 @@ const options: TabsProp[] = [
     ),
   },
   {
-    name: "视频业务",
+    name: "文件业务",
+    children: (
+      <Flex>
+        <FileTxItem />
+        <FileRxItem />
+      </Flex>
+    ),
   },
   {
-    name: "文件业务",
+    name: "视频业务",
+    children: (
+      <Flex>
+        <VideoTxItem />
+        <VideoRxItem />
+      </Flex>
+    )
   },
 ];
 
@@ -53,7 +69,7 @@ function Tabs({ options }: { options: TabsProp[] }) {
         ))}
       </ul>
       {options.map((item, index) => {
-        return <div key={index}>{index === activeKey ? item.children : null}</div>;
+        return <Fragment key={item.name}>{index === activeKey ? item.children : null}</Fragment>;
       })}
     </div>
   );

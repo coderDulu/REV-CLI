@@ -1,4 +1,5 @@
 import WebSocket from "ws";
+import fs from "fs";
 
 const port = 8080;
 const server = new WebSocket.Server({ port });
@@ -66,7 +67,17 @@ server.on("connection", (ws, req) => {
       case "/text": {
         console.log("Received data", message.toString());
         // ws.send(message); // 也可以在此处回显给发送方
-        sendMessageToAllClients(message.toString(), req.url)
+        sendMessageToAllClients(message.toString(), req.url);
+        break;
+      }
+      case "/file": {
+        console.log("Received file", message);
+        sendMessageToAllClients(message, req.url);
+        break;
+      }
+      case "/video": {
+        console.log("Received video", message);
+        sendMessageToAllClients(message, req.url, ws);
         break;
       }
     }
@@ -79,12 +90,9 @@ server.on("connection", (ws, req) => {
       clients[req.url!].delete(ws);
     }
   });
-
-
 });
-function sendMessageToAllClients(message: any, path: string) {
+function sendMessageToAllClients(message: any, path: string, ws?: WebSocket) {
   for (const client of clients[path]) {
-    console.log('me', message);
     client.send(message);
   }
 }

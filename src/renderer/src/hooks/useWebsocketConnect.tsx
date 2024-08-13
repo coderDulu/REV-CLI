@@ -1,7 +1,6 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback } from "react";
 import useWebSocket from "./useWebsocket";
 import useConnect from "./useConnect";
-import useWebWorker from "./useWebWorkder";
 
 export type Callback = (event: any) => void;
 

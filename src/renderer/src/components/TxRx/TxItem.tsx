@@ -41,7 +41,7 @@ function FormSet() {
     return () => {
       sendDataTimer.current && clearInterval(sendDataTimer.current);
     };
-  }, []);
+  }, [connectToWebsocket]);
 
   const onFinish: FormProps<FormDataType>["onFinish"] = (values) => {
     sendInterval(values);
@@ -54,7 +54,7 @@ function FormSet() {
       if (isAuto) {
         setIsSending((sending) => {
           if (!sending) {
-            window.$message.success("发送成功");
+            window.$message.success("开启定时发送");
             return true;
           }
           return sending;

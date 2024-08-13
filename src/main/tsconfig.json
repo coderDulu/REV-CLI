@@ -2,12 +2,12 @@
   "compilerOptions": {
     "rootDir": ".",
     "composite": true,
-    "target": "esnext",
+    "target": "ESNext",
     /* Visit https://aka.ms/tsconfig to read more about this file */
     /* Language and Environment */
     // "target": "es2016", /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
     /* Modules */
-    "module": "ESNext", /* Specify what module code is generated. */
+    "module": "CommonJS", /* Specify what module code is generated. */
     /* Allow multiple folders to be treated as one when resolving modules. */
     // "typeRoots": [],                                  /* Specify multiple folders that act like './node_modules/@types'. */
     "types": [], /* Specify type package names to be included without being referenced in a source file. */

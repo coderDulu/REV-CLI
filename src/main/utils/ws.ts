@@ -39,7 +39,7 @@ class WebSocketClient {
         });
 
         this.ws.on('message', (data: WebSocket.Data) => {
-            console.log('Received:', data);
+            // console.log('Received:', data);
             if (this.options.onMessage) {
                 this.options.onMessage(data);
             }

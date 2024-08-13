@@ -1,8 +1,9 @@
 import { ipcMain, BrowserWindow } from "electron";
 import windowControl from "../utils/windowControl";
 import WebSocketClient from "../utils/ws";
+import { transVideo } from "../utils/ffmpeg";
 
-export type Names = "window-control" | "window-status" | "ws-connect" | "ws-disconnect";
+export type Names = "window-control" | "window-status" | "ws-connect" | "ws-disconnect" | "send-video";
 export type Channel = "ws-closed";
 
 type IpcMainHandle = {
@@ -11,6 +12,10 @@ type IpcMainHandle = {
 };
 
 let ws: WebSocketClient | null = null;
+let deviceInfo = {
+  address: "",
+  port: 0,
+};
 
 function sendToRenderer(e: Electron.IpcMainInvokeEvent, channel: Channel, ...args: any) {
   if (e.sender) {
@@ -44,6 +49,7 @@ const EVENT_POOL: IpcMainHandle[] = [
     callback: (e, connectInfo) => {
       return new Promise<void>((resolve, reject) => {
         console.log("ws-connect", connectInfo);
+        deviceInfo = connectInfo;
         ws = new WebSocketClient(`ws://${connectInfo.address}:${connectInfo.port}/connect`, {
           onOpen: () => {
             console.log("ws-connect open");
@@ -67,6 +73,25 @@ const EVENT_POOL: IpcMainHandle[] = [
       } catch (error) {
         return Promise.reject(error);
       }
+    },
+  },
+  {
+    name: "send-video",
+    callback: async (e, path: string) => {
+      try {
+        if (deviceInfo.address && deviceInfo.port) {
+          const videoWs = new WebSocketClient(`ws://${deviceInfo.address}:${deviceInfo.port}/video`);
+          console.log("path", path);
+          transVideo(path, [], (data) => {
+            // console.log("chunk", data);
+            videoWs.send(data);
+          });
+        }
+
+        return Promise.reject("ws-connect close");
+
+        // videoWs
+      } catch (error) {}
     },
   },
 ];
