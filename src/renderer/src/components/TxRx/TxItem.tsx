@@ -127,7 +127,7 @@ function FormSet() {
       </Form.Item>
 
       <Form.Item {...tailLayout}>
-        <ActionButtons isSending={isSending} onStop={onStop} onClear={onClear} />
+        <ActionButtons isSending={isSending} onStop={onStop} onReset={onClear} />
       </Form.Item>
     </Form>
   );

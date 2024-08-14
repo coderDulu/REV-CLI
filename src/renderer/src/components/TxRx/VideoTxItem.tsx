@@ -1,10 +1,8 @@
 import { Form, InputNumber, Upload, UploadFile, UploadProps } from "antd";
 import TxRxContainer from "./TxRxContainer";
-import CButton from "../common/CButton";
 import { InboxOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
-import useWebsocketConnect from "@/hooks/useWebsocketConnect";
-import { readFileInChunks } from "@/utils/blob";
+import ActionButton from "@/components/common/ActionButtons";
 
 function FileTxItem() {
   return (
@@ -28,37 +26,22 @@ const rules = [{ required: true, message: "请输入内容" }];
 function FileForm() {
   const [form] = Form.useForm();
   const [file, setFile] = useState<UploadFile>();
-  const { connectToWebsocket, sendMessage } = useWebsocketConnect("file");
+  // const { connectToWebsocket, sendMessage } = useWebsocketConnect("file");
+  const [isSending, setIsSending] = useState(false);
 
   useEffect(() => {
-    connectToWebsocket();
-  }, [connectToWebsocket]);
+    return () => {
+      onStop();
+    };
+  }, []);
 
   const onFinish = async () => {
     if (file) {
-      const { name, size, type, path } = file;
-      await sendMessage(
-        JSON.stringify({
-          name,
-          size,
-          type,
-        })
-      );
-
+      const { path } = file;
       window.electron.invoke("send-video", path);
-      // console.log(file);
-      // readFileInChunks(
-      //   file,
-      //   1024 * 1024,
-      //   (chunk) => {
-      //     // console.log(chunk);
-      //     sendMessage(chunk);
-      //   },
-      //   (err) => {
-      //     console.log("err", err);
-      //   }
-      // );
-      // sendMessage(fileList[0] as any);
+      setIsSending(true);
+    } else {
+      window.$message.warning("请选择文件");
     }
   };
 
@@ -68,6 +51,14 @@ function FileForm() {
       return false;
     },
   };
+
+  const onStop = () => {
+    window.electron.invoke("stop-send-video");
+
+    setIsSending(false);
+  };
+
+  const onClear = () => {};
 
   return (
     <Form form={form} {...layout} name="control-hooks" onFinish={onFinish} style={{ maxWidth: 600 }}>
@@ -84,9 +75,10 @@ function FileForm() {
       </Form.Item>
       <Form.Item>{/* < */}</Form.Item>
       <Form.Item {...tailLayout}>
-        <CButton buttonType="primary" type="submit">
+        {/* <CButton buttonType="primary" type="submit">
           发送
-        </CButton>
+        </CButton> */}
+        <ActionButton isSending={isSending} onStop={onStop} onReset={onClear} />
       </Form.Item>
     </Form>
   );

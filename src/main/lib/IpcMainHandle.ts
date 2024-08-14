@@ -1,10 +1,11 @@
 import { ipcMain, BrowserWindow } from "electron";
 import windowControl from "../utils/windowControl";
 import WebSocketClient from "../utils/ws";
-import { transVideo } from "../utils/ffmpeg";
+import { startSendVideo, stopSendVideo } from "../middleware/sendVideo";
 
-export type Names = "window-control" | "window-status" | "ws-connect" | "ws-disconnect" | "send-video";
-export type Channel = "ws-closed";
+export type Names = "window-control" | "window-status" | "ws-connect" | "ws-disconnect" | "send-video" | "stop-send-video";
+export type Channel = "ws-closed" | "video-stopped";
+
 
 type IpcMainHandle = {
   name: Names;
@@ -77,22 +78,11 @@ const EVENT_POOL: IpcMainHandle[] = [
   },
   {
     name: "send-video",
-    callback: async (e, path: string) => {
-      try {
-        if (deviceInfo.address && deviceInfo.port) {
-          const videoWs = new WebSocketClient(`ws://${deviceInfo.address}:${deviceInfo.port}/video`);
-          console.log("path", path);
-          transVideo(path, [], (data) => {
-            // console.log("chunk", data);
-            videoWs.send(data);
-          });
-        }
-
-        return Promise.reject("ws-connect close");
-
-        // videoWs
-      } catch (error) {}
-    },
+    callback: (e, path) => startSendVideo(e, path, deviceInfo),
+  },
+  {
+    name: "stop-send-video",
+    callback: stopSendVideo
   },
 ];
 
