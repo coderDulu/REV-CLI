@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import "video.js/dist/video-js.css";
 import mpegts from "mpegts.js";
 import { Empty } from "antd";
 import clsx from "clsx";
