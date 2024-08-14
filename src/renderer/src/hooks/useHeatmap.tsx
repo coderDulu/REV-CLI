@@ -1,8 +1,8 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import useEcharts from "./useEcharts";
 
 const colors = ["#efbe8d", "#71b4b9", "#e9a3a3"];
-const intXAxis = new Array(24).fill(24).map((count, index) => index + 1);
+const intXAxis = new Array(24).fill(24).map((_: any, index) => index + 1);
 
 function initOption(name?: number) {
   return {
@@ -36,8 +36,8 @@ function initOption(name?: number) {
       type: "piecewise",
       calculable: true,
       orient: "horizontal",
-      left: 'center',
-      bottom: "4%"
+      left: "center",
+      bottom: "4%",
     },
     series: [
       {
@@ -79,7 +79,6 @@ const updateData = (freqStatus: any[], startFreq: number, networkArr: number[][]
   if (networkArr.length >= intXAxis.length) {
     networkArr.shift();
   }
-
   networkArr.push(freqStatus);
 
   const varData: any = [];
@@ -123,7 +122,6 @@ const updateData = (freqStatus: any[], startFreq: number, networkArr: number[][]
 
 export function useHeatmap(name?: number) {
   const heatmapEcharts = useEcharts(initOption(name));
-
   const optionSelected = {
     0: true,
     1: true,
@@ -138,15 +136,14 @@ export function useHeatmap(name?: number) {
   }, []);
 
   // 更新图表
-  const update = (freqStatus: any[], startFreq: number) => {
-    const updateOption = updateData(freqStatus, startFreq, networkArr);
-
-    heatmapEcharts.update(updateOption);
+  const update = useCallback((freqStatus: any[], startFreq: number) => {
+    const newData = updateData(freqStatus, startFreq, networkArr);
+    heatmapEcharts.myChart.current?.setOption(newData);
     heatmapEcharts.myChart.current?.dispatchAction({
       type: "selectDataRange",
       selected: optionSelected,
     });
-  };
+  }, []);
 
   return {
     update,

@@ -60,6 +60,24 @@ server.on("connection", (ws, req) => {
       console.log("23", "freqPlanSet");
       break;
     }
+    case "/freq-status": {
+      setInterval(() => {
+        const data = [
+          //域频段状态信息
+          {
+            field_num: 1, //域地址
+            start_freq: 250, //域起始频点 -10
+            freq_status: generateFreqStatus(),
+          },
+          {
+            field_num: 2, //域地址
+            start_freq: 350, //域起始频点 -10
+            freq_status: generateFreqStatus(),
+          },
+        ];
+        ws.send(JSON.stringify(data));
+      }, 1000);
+    }
   }
 
   ws.on("message", (message) => {
@@ -99,3 +117,18 @@ function sendMessageToAllClients(message: any, path: string, ws?: WebSocket) {
 }
 
 console.log(`WebSocket server is running on ws://localhost:${port}`);
+
+function generateFreqStatus() {
+  const arr = [];
+  for (var i = 0; i < 10; i++) {
+    var randomNum = Math.floor(Math.random() * 10);
+    if (randomNum < 2) {
+      // 约20%的概率生成'-'
+      arr.push("-");
+    } else {
+      // 约80%的概率生成1-8的随机数
+      arr.push(Math.floor(Math.random() * 8) + 1);
+    }
+  }
+  return arr;
+}

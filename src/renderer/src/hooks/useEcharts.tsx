@@ -21,7 +21,7 @@ const useECharts = (options: echarts.EChartsCoreOption) => {
       myChart.current?.dispose();
       window.removeEventListener('resize', handleResize)
     };
-  }, [options, handleResize]);
+  }, []);
 
   const isSame = useCallback((newVal: object, oldVal: object) => {
     return isEqual(newVal, oldVal);
