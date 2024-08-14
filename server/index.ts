@@ -10,6 +10,7 @@ const clients: Record<string, Set<WebSocket>> = {
   "/topology": new Set(),
   "/freqPlanSet": new Set(),
   "/text": new Set(),
+  "/freq-list": new Set(),
 };
 
 server.on("connection", (ws, req) => {

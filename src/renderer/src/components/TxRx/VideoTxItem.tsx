@@ -1,4 +1,4 @@
-import { Alert, Form, InputNumber, Upload, UploadFile, UploadProps } from "antd";
+import { Alert, Form, InputNumber, Upload, UploadProps } from "antd";
 import TxRxContainer from "./TxRxContainer";
 import { InboxOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
@@ -25,7 +25,7 @@ const rules = [{ required: true, message: "请输入内容" }];
 
 function FileForm() {
   const [form] = Form.useForm();
-  const [file, setFile] = useState<UploadFile>();
+  const [file, setFile] = useState<any>();
   // const { connectToWebsocket, sendMessage } = useWebsocketConnect("file");
   const [isSending, setIsSending] = useState(false);
 
