@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import { useLocation, useNavigate } from "react-router-dom";
 import { menus } from "@/router";
+import { getImageUrl } from "@/utils/getImageUrl";
 
 function SiderLayout() {
   const location = useLocation()
@@ -24,7 +25,7 @@ function SiderLayout() {
             }
           )} onClick={() => handleClick(item)}>
             <img
-              src={`/icons/menu/${item.name}.png`}
+              src={getImageUrl(`${item.name}.png`, "menu")}
               className={clsx("w-10 h-10")}
             />
             <span
