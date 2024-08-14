@@ -16,7 +16,7 @@ interface DataType {
   spectrum: number;
 }
 
-const initFormData = Array(1000)
+const initFormData = Array(0)
   .fill(0)
   .map((_: number, index: number) => {
     const key = nanoid();

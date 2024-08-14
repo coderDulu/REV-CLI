@@ -56,7 +56,7 @@ async function createWindow() {
     console.log("staticPath", staticPath);
     mainWindow.loadFile(staticPath);
     // 打开开发者工具
-    mainWindow.webContents.openDevTools();
+    // mainWindow.webContents.openDevTools();
   }
 
   mainWindow.on("ready-to-show", () => {

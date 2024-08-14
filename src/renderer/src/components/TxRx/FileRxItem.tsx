@@ -6,13 +6,13 @@ import { downloadFile } from "@/utils/blob";
 import CButton from "../common/CButton";
 import { useImmer } from "use-immer";
 import useConnect from "@/hooks/useConnect";
-
-const url = new URL("@/workers/receiveFileWorker.ts", import.meta.url);
+import Workers from '@/workers/receiveFileWorker?worker'
+// const url = new URL("@/workers/receiveFileWorker.ts", import.meta.url);
 
 function FileRxItem() {
   const [progress, setProgress] = useState(0);
   const [fileInfo, setFileInfo] = useImmer({ name: "", size: 0, type: "", data: null });
-  const { postMessage, onmessage } = useWebWorker(url);
+  const { postMessage, onmessage } = useWebWorker(Workers);
   const { address, port } = useConnect()
 
   useEffect(() => {
