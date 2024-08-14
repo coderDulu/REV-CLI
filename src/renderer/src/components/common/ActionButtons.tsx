@@ -9,14 +9,15 @@ interface ActionButtonsProps {
   submitText?: string;
   stopText?: string;
   clearText?: string;
+  sendingText?: string;
   [key: string]: any;
 }
 
-const ActionButtons: React.FC<ActionButtonsProps> = ({ isSending, onStart, onStop, onReset, submitText, stopText, clearText, ...args }) => {
+const ActionButtons: React.FC<ActionButtonsProps> = ({ isSending, sendingText = "正在发送", onStart, onStop, onReset, submitText = "发送", stopText, clearText, ...args }) => {
   return (
     <Space {...args}>
       <CButton disabled={isSending} type="submit" buttonType="primary" onClick={onStart}>
-        {submitText ? submitText : "发送"}
+        {isSending ? sendingText : submitText}
       </CButton>
       <CButton disabled={!isSending} type="button" onClick={onStop}>
         {stopText ? stopText : "停止"}

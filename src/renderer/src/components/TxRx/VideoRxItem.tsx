@@ -74,13 +74,13 @@ const WebSocketVideoPlayer = () => {
   };
 
   return (
-    <div className="flex flex-col gap-10">
+    <div className="flex flex-col gap-10 p-5 w-full h-full">
       <div className={clsx("h-60 flex items-center justify-center", isSending ? "hidden" : "block")}>
         <Empty description="请先发送视频，然后点击接收按钮接收" />
       </div>
       <video ref={videoRef} className={clsx("border-2", isSending ? "block" : "hidden")} id="video-player"></video>
-      <div className="self-center">
-        <ActionButton submitText="接收" isSending={isSending} onStart={onReceiveStart} onStop={onStop} />
+      <div className="self-center mt-auto">
+        <ActionButton submitText="接收" sendingText="正在接收" isSending={isSending} onStart={onReceiveStart} onStop={onStop} />
       </div>
     </div>
   );

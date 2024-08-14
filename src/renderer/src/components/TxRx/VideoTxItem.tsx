@@ -1,4 +1,4 @@
-import { Form, InputNumber, Upload, UploadFile, UploadProps } from "antd";
+import { Alert, Form, InputNumber, Upload, UploadFile, UploadProps } from "antd";
 import TxRxContainer from "./TxRxContainer";
 import { InboxOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
@@ -31,7 +31,7 @@ function FileForm() {
 
   useEffect(() => {
     return () => {
-      onStop();
+      window.electron.invoke("stop-send-video");
     };
   }, []);
 
@@ -50,15 +50,14 @@ function FileForm() {
       setFile(file);
       return false;
     },
+    accept: "video/*",
   };
 
   const onStop = () => {
     window.electron.invoke("stop-send-video");
-
     setIsSending(false);
+    window.$message.success("已停止");
   };
-
-  const onClear = () => {};
 
   return (
     <Form form={form} {...layout} name="control-hooks" onFinish={onFinish} style={{ maxWidth: 600 }}>
@@ -75,11 +74,9 @@ function FileForm() {
       </Form.Item>
       <Form.Item>{/* < */}</Form.Item>
       <Form.Item {...tailLayout}>
-        {/* <CButton buttonType="primary" type="submit">
-          发送
-        </CButton> */}
-        <ActionButton isSending={isSending} onStop={onStop} onReset={onClear} />
+        <ActionButton isSending={isSending} onStop={onStop} />
       </Form.Item>
+      {isSending && <Alert showIcon message="点击发送按钮后，跳转到其他页面或刷新都将停止发送" type="warning" />}
     </Form>
   );
 }

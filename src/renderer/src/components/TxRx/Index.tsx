@@ -12,7 +12,7 @@ const options: TabsProp[] = [
   {
     name: "数据业务",
     children: (
-      <Flex>
+      <Flex className="pl-10 pr-10">
         <TxItem />
         <RxItem />
       </Flex>
@@ -21,7 +21,7 @@ const options: TabsProp[] = [
   {
     name: "文件业务",
     children: (
-      <Flex>
+      <Flex className="pl-10 pr-10">
         <FileTxItem />
         <FileRxItem />
       </Flex>
@@ -30,11 +30,11 @@ const options: TabsProp[] = [
   {
     name: "视频业务",
     children: (
-      <Flex>
+      <Flex className="pl-10 pr-10">
         <VideoTxItem />
         <VideoRxItem />
       </Flex>
-    )
+    ),
   },
 ];
 
