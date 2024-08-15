@@ -414,8 +414,8 @@ function reducer(draft: DataType[], action: any) {
       return draft;
     }
     case "delete": {
-      const delArr: string[] = action.payload;
-      const newArr = draft.filter((item) => !delArr.includes(item.key));
+      const delArr: React.Key[] = action.payload;
+      const newArr = draft.filter((item) => !delArr.includes(item.key ?? ""));
 
       return newArr;
     }

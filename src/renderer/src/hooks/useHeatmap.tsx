@@ -138,7 +138,7 @@ export function useHeatmap(name?: number) {
   // 更新图表
   const update = useCallback((freqStatus: any[], startFreq: number) => {
     const newData = updateData(freqStatus, startFreq, networkArr);
-    heatmapEcharts.myChart.current?.setOption(newData);
+    heatmapEcharts.update(newData);
     heatmapEcharts.myChart.current?.dispatchAction({
       type: "selectDataRange",
       selected: optionSelected,

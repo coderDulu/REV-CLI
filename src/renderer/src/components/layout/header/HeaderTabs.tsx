@@ -30,7 +30,7 @@ function HeaderTabs() {
     <ul className="w-11/12 h-10 app-noDrag  m-auto flex items-center gap-1 justify-center rounded-3xl bg-[#EDEDED]">
       {list.map((item) => (
         <li
-          className={clsx("flex flex-1 h-full rounded-3xl border-none items-center justify-center cursor-pointer", { "bg-[#0d8383] text-white": choose === item.value })}
+          className={clsx("flex flex-1 h-full rounded-3xl border-none items-center justify-center cursor-pointer hover:opacity-50", { "bg-[#0d8383] text-white": choose === item.value })}
           key={item.value}
           onClick={() => handleClick(item.value)}>
           {item.name}
