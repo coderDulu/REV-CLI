@@ -40,7 +40,7 @@ async function createWindow() {
     },
     show: false,
     frame: false,
-    minWidth: 768,
+    minWidth: 900,
     minHeight: 600,
   });
   console.log("isDev", isDev);
