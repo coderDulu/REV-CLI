@@ -178,7 +178,7 @@ function Topology({ onNodeClick, tips, exclude }: Props) {
   return (
     <div className="w-full h-full relative">
       <div className="w-full h-full " ref={(dom) => (domRef.current = dom)}></div>
-      <div className="absolute left-[14%] top-[8%]">{tips && <Alert className="h-7 text-xs" type="warning" message={tips} showIcon />}</div>
+      <div className="absolute left-40 top-10">{tips && <Alert className="h-7 text-xs" type="warning" message={tips} showIcon />}</div>
     </div>
   );
 }
