@@ -7,11 +7,11 @@ function NetworkStatus() {
   const [chooseNode, setChooseNode] = useState("");
 
   return (
-    <Flex vertical className="w-full h-full">
-      <div className="flex-1">
+    <Flex vertical className="w-full h-full ">
+      <div className="flex-1 min-h-0">
         <Topology exclude={[0]} tips="点击节点显示其频谱能量分布" onNodeClick={(choose) => setChooseNode(choose)} />
       </div>
-      <div className="flex-1">
+      <div className="flex-1 min-h-0">
         <NodeBar node={chooseNode} />
       </div>
     </Flex>

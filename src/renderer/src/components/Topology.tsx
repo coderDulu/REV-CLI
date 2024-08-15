@@ -61,8 +61,8 @@ function Topology({ onNodeClick, tips, exclude }: Props) {
 
         type: "graph",
         layout: "none",
-        draggable: true,
-        symbolSize: 50,
+        draggable: false,
+        symbolSize: 60,
         roam: true,
         label: {
           show: true,
@@ -76,6 +76,7 @@ function Topology({ onNodeClick, tips, exclude }: Props) {
           repulsion: 500,
           layoutAnimation: true,
         },
+        zoom: 0.8,
         lineStyle: {
           width: 3,
         },

@@ -17,7 +17,7 @@ function Spectrum() {
             const { freq_status, start_freq, field_num } = element;
             if (field_num === 1) {
               update1(freq_status, start_freq);
-            } else {
+            } else if(field_num === 2) {
               update2(freq_status, start_freq);
             }
           });
