@@ -80,10 +80,10 @@ function Topology({ onNodeClick, tips, exclude }: Props) {
         lineStyle: {
           width: 3,
         },
-        animation: false,
+        animation: true,
       },
     ],
-    animation: false,
+    animation: true,
   });
 
   useEffect(() => {
