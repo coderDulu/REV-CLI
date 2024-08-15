@@ -3,6 +3,7 @@ import { createHashRouter, Navigate } from "react-router-dom";
 import { lazy, type ReactNode, Suspense } from "react";
 
 import App from "../App";
+import SuspenseLoading from "@/views/SuspenseLoading";
 // import Manage from "@/views/ManageView";
 // import CenterView from "@/views/CenterView";
 // import UserView from "@/views/UserView";
@@ -10,15 +11,17 @@ import App from "../App";
 const Manage = lazy(() => import("@/views/ManageView"));
 const CenterView = lazy(() => import("@/views/CenterView"));
 const UserView = lazy(() => import("@/views/UserView"));
-
+// manage
 const Network = lazy(() => import("@/components/manage/Network"));
 const Spectrum = lazy(() => import("@/components/manage/Spectrum"));
-
 const FreqPlan = lazy(() => import("@/components/manage/FreqPlan"));
+
+// center
 const TxRx = lazy(() => import("@/components/TxRx/Index"));
+const NetworkStatus = lazy(() => import("@/components/center/NetworkStatus"));
 
 function addLazy(children: ReactNode) {
-  return <Suspense fallback={<></>}>{children}</Suspense>;
+  return <Suspense fallback={<SuspenseLoading/>}>{children}</Suspense>;
 }
 
 export const menus = [
@@ -89,7 +92,7 @@ const config = createHashRouter([
           },
           {
             path: "/center/net-status",
-            element: <div>网络状态</div>,
+            element: addLazy(<NetworkStatus />),
           },
           {
             path: "/center/freq",

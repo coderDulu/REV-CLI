@@ -11,6 +11,7 @@ const clients: Record<string, Set<WebSocket>> = {
   "/freq-plan": new Set(),
   "/text": new Set(),
   "/freq-list": new Set(),
+  "node-bar": new Set(),
 };
 
 server.on("connection", (ws, req) => {
@@ -37,10 +38,11 @@ server.on("connection", (ws, req) => {
         type: "topology",
         data: {
           nodes: {
-            manage: ["4", "7"],
-            center: ["1", "2"],
-            user: ["5", "6", "8", "9"],
+            manage: ["4",],
+            center: ["1",],
+            user: ["5", "6",],
           },
+
           links: [
             ["4", "1"],
             ["1", "5"],
@@ -48,6 +50,8 @@ server.on("connection", (ws, req) => {
             ["7", "2"],
             ["2", "8"],
             ["2", "9"],
+            ["1", "7"],
+            ["1", "8"],
           ],
         },
       };
@@ -56,7 +60,6 @@ server.on("connection", (ws, req) => {
       }, 1000);
       break;
     }
-
     case "/freq-status": {
       setInterval(() => {
         const data = [
@@ -74,6 +77,25 @@ server.on("connection", (ws, req) => {
         ];
         ws.send(JSON.stringify(data));
       }, 1000);
+    }
+    case "/node-bar": {
+      setInterval(() => {
+        const data = [
+          {
+            start_freq: 250, // 起始频点
+            node_mac: 5, // 节点编号
+            tunnel: [32, 25, 27, 33, 36, 41, 43, 47], // 信道数据
+          },
+          {
+            start_freq: 250, // 起始频点
+            node_mac: 6, // 节点编号
+            tunnel: [22, 21, 24, 25, 28, 31, 35, 47], // 信道数据
+          },
+        ];
+        ws.send(JSON.stringify(data));
+      }, 1000);
+
+      break;
     }
   }
 
