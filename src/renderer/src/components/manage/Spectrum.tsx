@@ -1,23 +1,7 @@
 import { useHeatmap } from "@/hooks/useHeatmap";
-import { Flex, Input } from "antd";
+import { Flex } from "antd";
 import { useEffect } from "react";
 import useWebSocketConnect from "@/hooks/useWebsocketConnect";
-import useEcharts from "@/hooks/useEcharts";
-
-function generateFreqStatus() {
-  const arr = [];
-  for (var i = 0; i < 10; i++) {
-    var randomNum = Math.floor(Math.random() * 10);
-    if (randomNum < 2) {
-      // 约20%的概率生成'-'
-      arr.push("-");
-    } else {
-      // 约80%的概率生成1-8的随机数
-      arr.push(Math.floor(Math.random() * 8) + 1);
-    }
-  }
-  return arr;
-}
 
 function Spectrum() {
   const { update: update1, heatmapEcharts } = useHeatmap(1);
@@ -49,8 +33,8 @@ function Spectrum() {
 
   return (
     <Flex vertical gap={10} className="w-full h-full">
-      <div className="flex-1" ref={heatmapEcharts.domRef}></div>
-      <div className="flex-1" ref={heatmapEcharts2.domRef}>2</div>
+      <div className="flex-1" ref={(dom) => (heatmapEcharts.domRef.current = dom)}></div>
+      <div className="flex-1" ref={(dom) => (heatmapEcharts2.domRef.current = dom)}></div>
     </Flex>
   );
 }

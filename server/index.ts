@@ -8,7 +8,7 @@ const server = new WebSocket.Server({ port });
 const clients: Record<string, Set<WebSocket>> = {
   "/connect": new Set(),
   "/topology": new Set(),
-  "/freqPlanSet": new Set(),
+  "/freq-plan": new Set(),
   "/text": new Set(),
   "/freq-list": new Set(),
 };
@@ -56,10 +56,7 @@ server.on("connection", (ws, req) => {
       }, 1000);
       break;
     }
-    case "/freqPlanSet": {
-      console.log("23", "freqPlanSet");
-      break;
-    }
+
     case "/freq-status": {
       setInterval(() => {
         const data = [
@@ -97,6 +94,11 @@ server.on("connection", (ws, req) => {
       case "/video": {
         console.log("Received video", message);
         sendMessageToAllClients(message, req.url, ws);
+        break;
+      }
+      case "/freq-plan": {
+        console.log("freq-plan", message.toString());
+        sendMessageToAllClients(message.toString(), req.url, ws);
         break;
       }
     }
