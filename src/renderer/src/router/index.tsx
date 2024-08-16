@@ -3,10 +3,7 @@ import { createHashRouter, Navigate } from "react-router-dom";
 import { lazy, type ReactNode, Suspense } from "react";
 
 import App from "../App";
-import SuspenseLoading from "@/views/SuspenseLoading";
-// import Manage from "@/views/ManageView";
-// import CenterView from "@/views/CenterView";
-// import UserView from "@/views/UserView";
+// import SuspenseLoading from "@/views/SuspenseLoading";
 
 const Manage = lazy(() => import("@/views/ManageView"));
 const CenterView = lazy(() => import("@/views/CenterView"));
@@ -19,9 +16,11 @@ const FreqPlan = lazy(() => import("@/components/manage/FreqPlan"));
 // center
 const TxRx = lazy(() => import("@/components/TxRx/Index"));
 const NetworkStatus = lazy(() => import("@/components/center/NetworkStatus"));
+const NetworkConfig = lazy(() => import("@/components/center/NetworkConfig"));
+
 
 function addLazy(children: ReactNode) {
-  return <Suspense fallback={<SuspenseLoading/>}>{children}</Suspense>;
+  return <Suspense fallback={<></>}>{children}</Suspense>;
 }
 
 export const menus = [
@@ -37,6 +36,7 @@ export const menus = [
     name: "center",
     children: [
       { name: "网络状态", path: "/center/net-status" },
+      { name: "网络配置", path: "/center/net-config"},
       { name: "自主选频", path: "/center/freq" },
       { name: "业务传输", path: "/center/txrx" },
     ],
@@ -93,6 +93,10 @@ const config = createHashRouter([
           {
             path: "/center/net-status",
             element: addLazy(<NetworkStatus />),
+          },
+          {
+            path: "/center/net-config",
+            element: addLazy(<NetworkConfig />),
           },
           {
             path: "/center/freq",

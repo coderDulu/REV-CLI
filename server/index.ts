@@ -6,12 +6,16 @@ const server = new WebSocket.Server({ port });
 
 // 用于跟踪每"个 URL 对应的客户端
 const clients: Record<string, Set<WebSocket>> = {
-  "/connect": new Set(),
-  "/topology": new Set(),
-  "/freq-plan": new Set(),
-  "/text": new Set(),
-  "/freq-list": new Set(),
-  "node-bar": new Set(),
+  "/connect": new Set(), // 设备连接
+  "/topology": new Set(), // 网络拓扑
+  "/freq-plan": new Set(), // 用频规划
+  "/text": new Set(), // 文本传输
+  "/video": new Set(), // 视频传输
+  "/file": new Set(), // 文件传输
+  "/freq-list": new Set(), // 频谱状态
+  "/node-bar": new Set(), // 频段能量分布柱状图
+  "/net-config": new Set(), // 网络配置参数设置
+  "/spectrum-status": new Set(), // 频段状态
 };
 
 server.on("connection", (ws, req) => {
@@ -38,9 +42,9 @@ server.on("connection", (ws, req) => {
         type: "topology",
         data: {
           nodes: {
-            manage: ["4",],
-            center: ["1",],
-            user: ["5", "6",],
+            manage: ["4"],
+            center: ["1"],
+            user: ["5", "6"],
           },
 
           links: [
@@ -97,6 +101,16 @@ server.on("connection", (ws, req) => {
 
       break;
     }
+    case "/spectrum-status": {
+      setInterval(() => {
+        const data = {
+          startFreq: 390,
+          endFreq: 550,
+        };
+        ws.send(JSON.stringify(data));
+      }, 1000);
+      break;
+    }
   }
 
   ws.on("message", (message) => {
@@ -104,7 +118,6 @@ server.on("connection", (ws, req) => {
     switch (req.url) {
       case "/text": {
         console.log("Received data", message.toString());
-        // ws.send(message); // 也可以在此处回显给发送方
         sendMessageToAllClients(message.toString(), req.url);
         break;
       }
@@ -120,6 +133,11 @@ server.on("connection", (ws, req) => {
       }
       case "/freq-plan": {
         console.log("freq-plan", message.toString());
+        sendMessageToAllClients(message.toString(), req.url, ws);
+        break;
+      }
+      case "/net-config": {
+        console.log("net-config", message.toString());
         sendMessageToAllClients(message.toString(), req.url, ws);
         break;
       }
