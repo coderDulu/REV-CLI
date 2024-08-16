@@ -16,6 +16,7 @@ const clients: Record<string, Set<WebSocket>> = {
   "/node-bar": new Set(), // 频段能量分布柱状图
   "/net-config": new Set(), // 网络配置参数设置
   "/spectrum-status": new Set(), // 频段状态
+  "/net-rate": new Set(), // 实时网络速率
 };
 
 server.on("connection", (ws, req) => {
@@ -106,6 +107,15 @@ server.on("connection", (ws, req) => {
         const data = {
           startFreq: 390,
           endFreq: 550,
+        };
+        ws.send(JSON.stringify(data));
+      }, 1000);
+      break;
+    }
+    case "/net-rate": {
+      setInterval(() => {
+        const data = {
+          rate: Math.floor(Math.random() * 100),
         };
         ws.send(JSON.stringify(data));
       }, 1000);

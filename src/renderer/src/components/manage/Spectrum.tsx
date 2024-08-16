@@ -33,8 +33,8 @@ function Spectrum() {
 
   return (
     <Flex vertical gap={10} className="w-full h-full">
-      <div className="flex-1" ref={(dom) => (heatmapEcharts.domRef.current = dom)}></div>
-      <div className="flex-1" ref={(dom) => (heatmapEcharts2.domRef.current = dom)}></div>
+      <div className="flex-1 min-h-0" ref={(dom) => (heatmapEcharts.domRef.current = dom)}></div>
+      <div className="flex-1 min-h-0" ref={(dom) => (heatmapEcharts2.domRef.current = dom)}></div>
     </Flex>
   );
 }

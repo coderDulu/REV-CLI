@@ -1,10 +1,11 @@
-import { Flex, Form, InputNumber, Select, Switch } from "antd";
+import { Form, InputNumber, Select, Switch } from "antd";
 import LineLeftItem from "../common/LineLeftItem";
 import CForm from "../common/CForm";
 import CButton from "../common/CButton";
 import useWebsocketConnect from "@/hooks/useWebsocketConnect";
 import { useEffect } from "react";
 import SpectrumStatus from "../SpectrumStatus";
+import NetworkRate from "./NetWorkRate";
 
 function NetworkConfig() {
   const { connectToWebsocket, sendMessage } = useWebsocketConnect("net-config");
@@ -25,17 +26,19 @@ function NetworkConfig() {
   const onFinishFailed = () => {};
 
   return (
-    <div className="flex w-full h-full">
+    <div className="grid grid-cols-[auto_1fr] w-full h-full">
       <LineLeftItem>
         <h1 className="font-bold text-2xl">业务信道参数</h1>
         <FormConfig onFinish={onFinish} onFinishFailed={onFinishFailed} />
       </LineLeftItem>
-      <Flex vertical className="flex-1">
-        <div className="basis-1/3  min-w-0 min-h-0 p-10">
+      <div className="flex flex-col gap-10 min-w-0">
+        <div className="flex-[1] min-h-0 min-w-0">
           <SpectrumStatus />
         </div>
-        <div className="flex-1 min-w-0 min-h-0">23</div>
-      </Flex>
+        <div className="flex-[2] min-w-0 min-h-0">
+          <NetworkRate />
+        </div>
+      </div>
     </div>
   );
 }
@@ -143,6 +146,5 @@ function FormConfig({ onFinish, onFinishFailed }) {
     </CForm>
   );
 }
-
 
 export default NetworkConfig;

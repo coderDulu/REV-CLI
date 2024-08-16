@@ -1,6 +1,6 @@
 import HeaderLayout from "./header/HeaderLayout";
 import SiderLayout from "./SiderLayout";
-import { Outlet } from 'react-router-dom'
+import { Outlet } from "react-router-dom";
 
 function Layout() {
   return (
@@ -8,7 +8,9 @@ function Layout() {
       <HeaderLayout />
       <div className="flex flex-1">
         <SiderLayout />
-        <Outlet />
+        <div className="overflow-auto flex-1 min-w-[1200px] min-h-[820px]">
+          <Outlet />
+        </div>
       </div>
     </div>
   );

@@ -32,6 +32,7 @@ export default function SpectrumStatus() {
       height: "50%",
       top: "50%",
       containLabel: true,
+      left: "4%"
     },
     xAxis: {
       type: "value",

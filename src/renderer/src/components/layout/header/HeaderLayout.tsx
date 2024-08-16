@@ -6,7 +6,7 @@ import { getImageUrl } from "@/utils/getImageUrl";
 
 function HeaderLayout() {
   return (
-    <div className="h-20 w-full flex gap-4 items-center shadow-md app-drag">
+    <div className="h-20 min-h-20 w-full flex gap-4 items-center shadow-md app-drag">
       <div className="bg-[#356365] w-36 min-w-36 h-full flex items-center justify-center">
         <Image preview={false} width={53} src={getImageUrl("首页图标.png", "menu")} />
       </div>
