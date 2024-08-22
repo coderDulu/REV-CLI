@@ -17,6 +17,7 @@ const clients: Record<string, Set<WebSocket>> = {
   "/net-config": new Set(), // 网络配置参数设置
   "/spectrum-status": new Set(), // 频段状态
   "/net-rate": new Set(), // 实时网络速率
+  "/business": new Set(), // 业务分布
 };
 
 server.on("connection", (ws, req) => {
@@ -79,6 +80,16 @@ server.on("connection", (ws, req) => {
             start_freq: 350, //域起始频点 -10
             freq_status: generateFreqStatus(),
           },
+          {
+            field_num: 5, //域地址
+            start_freq: 320, //域起始频点 -10
+            freq_status: generateFreqStatus(),
+          },
+          {
+            field_num: 6, //域地址
+            start_freq: 120, //域起始频点 -10
+            freq_status: generateFreqStatus(),
+          },
         ];
         ws.send(JSON.stringify(data));
       }, 1000);
@@ -120,6 +131,20 @@ server.on("connection", (ws, req) => {
         ws.send(JSON.stringify(data));
       }, 1000);
       break;
+    }
+    case "/business": {
+      const obj = [
+        [1, 1],
+        [2, 2],
+        [3, 3],
+        [1, 4],
+        [2, 5],
+        [3, 6],
+      ];
+
+      setInterval(() => {
+        ws.send(JSON.stringify(obj));
+      }, 1000);
     }
   }
 

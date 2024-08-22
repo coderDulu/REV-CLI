@@ -14,7 +14,7 @@ const useECharts = (initOption: echarts.EChartsCoreOption) => {
     if (domRef.current) {
       myChart.current = echarts.init(domRef.current as HTMLElement);
       myChart.current.setOption(initOption);
-      myChart.current.showLoading();
+      // myChart.current.showLoading();
       window.addEventListener("resize", handleResize);
     }
     return () => {

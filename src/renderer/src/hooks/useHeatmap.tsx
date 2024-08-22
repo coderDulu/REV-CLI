@@ -4,7 +4,7 @@ import useEcharts from "./useEcharts";
 const colors = ["#efbe8d", "#71b4b9", "#e9a3a3"];
 const intXAxis = new Array(24).fill(24).map((_: any, index) => index + 1);
 
-function initOption(name?: number) {
+function initOption(name?: number | string) {
   return {
     title: {
       text: `子网${name ?? ""}干扰业务分布`,
@@ -17,6 +17,9 @@ function initOption(name?: number) {
     },
     xAxis: {
       data: intXAxis,
+      splitArea: {
+        show: true,
+      },
     },
     yAxis: {
       type: "category",
@@ -64,7 +67,7 @@ function initOption(name?: number) {
  * @param networkArr freqStatus[]
  * @returns option配置对象
  */
-const updateData = (freqStatus: any[], startFreq: number, networkArr: number[][]) => {
+const updateData = (freqStatus: any[], startFreq: number, networkArr: number[][], name?: number | string) => {
   const intAYAxis = [
     startFreq - 10 + "MHz",
     startFreq + 10 + "MHz",
@@ -92,6 +95,9 @@ const updateData = (freqStatus: any[], startFreq: number, networkArr: number[][]
   });
 
   return {
+    title: {
+      text: `子网${name}干扰业务分布`,
+    },
     tooltip: {
       position: "top",
       formatter: function (params: any) {
@@ -120,7 +126,7 @@ const updateData = (freqStatus: any[], startFreq: number, networkArr: number[][]
   };
 };
 
-export function useHeatmap(name?: number) {
+export function useHeatmap(name?: number | string) {
   const heatmapEcharts = useEcharts(initOption(name));
   const optionSelected = {
     0: true,
@@ -136,8 +142,8 @@ export function useHeatmap(name?: number) {
   }, []);
 
   // 更新图表
-  const update = useCallback((freqStatus: any[], startFreq: number) => {
-    const newData = updateData(freqStatus, startFreq, networkArr);
+  const update = useCallback((freqStatus: any[], startFreq: number, cache = networkArr, name: string = "") => {
+    const newData = updateData(freqStatus, startFreq, cache, name);
     heatmapEcharts.update(newData);
     heatmapEcharts.myChart.current?.dispatchAction({
       type: "selectDataRange",

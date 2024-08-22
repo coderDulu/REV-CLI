@@ -8,7 +8,7 @@ function Layout() {
       <HeaderLayout />
       <div className="flex flex-1">
         <SiderLayout />
-        <div className="overflow-auto flex-1 min-w-[1200px] min-h-[820px]">
+        <div className="overflow-hidden flex-1 min-w-[1200px] min-h-[820px]">
           <Outlet />
         </div>
       </div>

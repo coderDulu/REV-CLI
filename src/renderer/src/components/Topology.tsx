@@ -5,7 +5,7 @@ import { Alert } from "antd";
 
 interface Props {
   tips?: string;
-  exclude?: number[];
+  exclude?: number[]; // 不显示节点 0, 1, 2 / 管理端、中心端、节点段
   onNodeClick?: (chooseNode: string) => void;
 }
 function Topology({ onNodeClick, tips, exclude }: Props) {
@@ -23,8 +23,8 @@ function Topology({ onNodeClick, tips, exclude }: Props) {
     legend: [
       {
         orient: "vertical",
-        top: 0,
-        right: 0,
+        top: 10,
+        right: 10,
       },
     ],
     series: [
@@ -176,7 +176,7 @@ function Topology({ onNodeClick, tips, exclude }: Props) {
     return result;
   }
   return (
-    <div className="w-full h-full relative">
+    <div className="w-full h-full relative min-h-0 min-w-0">
       <div className="w-full h-full " ref={(dom) => (domRef.current = dom)}></div>
       <div className="absolute left-40 top-10">{tips && <Alert className="h-7 text-xs" type="warning" message={tips} showIcon />}</div>
     </div>

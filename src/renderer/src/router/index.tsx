@@ -17,7 +17,7 @@ const FreqPlan = lazy(() => import("@/components/manage/FreqPlan"));
 const TxRx = lazy(() => import("@/components/TxRx/Index"));
 const NetworkStatus = lazy(() => import("@/components/center/NetworkStatus"));
 const NetworkConfig = lazy(() => import("@/components/center/NetworkConfig"));
-
+const AutoFreq = lazy(() => import("@/components/center/AutoFreq"));
 
 function addLazy(children: ReactNode) {
   return <Suspense fallback={<></>}>{children}</Suspense>;
@@ -36,7 +36,7 @@ export const menus = [
     name: "center",
     children: [
       { name: "网络状态", path: "/center/net-status" },
-      { name: "网络配置", path: "/center/net-config"},
+      { name: "网络配置", path: "/center/net-config" },
       { name: "自主选频", path: "/center/freq" },
       { name: "业务传输", path: "/center/txrx" },
     ],
@@ -100,7 +100,7 @@ const config = createHashRouter([
           },
           {
             path: "/center/freq",
-            element: <div>自主选频</div>,
+            element: addLazy(<AutoFreq />),
           },
           {
             path: "/center/txrx",
