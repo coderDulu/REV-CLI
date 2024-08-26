@@ -134,16 +134,41 @@ server.on("connection", (ws, req) => {
     }
     case "/business": {
       const obj = [
-        [1, 1],
+        [1, 1], // [状态, 信道]
         [2, 2],
         [3, 3],
         [1, 4],
         [2, 5],
         [3, 6],
       ];
+      const obj2 = [
+        [1, 1], // [状态, 信道]
+        [2, 2],
+        [3, 3],
+        [3, 4],
+        [2, 5],
+        [1, 6],
+      ];
+      let exchanged = false;
 
       setInterval(() => {
-        ws.send(JSON.stringify(obj));
+        if (exchanged) {
+          ws.send(
+            JSON.stringify({
+              field_num: 5,
+              data: obj,
+            })
+          );
+          exchanged = false;
+        } else {
+          ws.send(
+            JSON.stringify({
+              field_num: 6,
+              data: obj2,
+            })
+          );
+          exchanged = true;
+        }
       }, 1000);
     }
   }

@@ -9,10 +9,19 @@ const xAxisData = Array(8).fill(0).map((i, index) => index);
 // prettier-ignore
 const yAxisData = Array(4).fill(0).map((i, index) => index);
 // prettier-ignore
-const data: number[][] = []
+const seriesData: number[][] = []
+const dataMap = new Map();
 xAxisData.forEach((item) => {
   yAxisData.forEach((item2) => {
-    data.push([item, item2, 1]);
+    const saveItem = [item, item2, 1];
+    seriesData.push(saveItem);
+
+    const x = item;
+    const y = item2;
+    const initNumber = yAxisData.length - 1;
+    const number = (initNumber - y) * xAxisData.length + 1 + x;
+    dataMap.set([item, item2].join("-"), number);
+    dataMap.set(number, saveItem);
   });
 });
 
@@ -87,16 +96,13 @@ const initOption = {
     {
       name: "子信道使用分布",
       type: "heatmap",
-      data: data,
+      data: seriesData,
       label: {
         show: true,
         formatter: (params: any) => {
-          // console.log('params', params.data);
-          const x = params.data[0] as number;
+          const x = params.data[0];
           const y = params.data[1];
-          const initNumber = yAxisData.length - 1;
-          const number = (initNumber - y) * xAxisData.length + 1 + x;
-
+          const number = dataMap.get([x, y].join("-"));
           return number;
         },
         fontSize: 15,
@@ -113,26 +119,45 @@ const initOption = {
 };
 
 function ChannelUse({ chooseNode }: { chooseNode: string }) {
-  const { domRef, update } = useECharts(initOption);
+  const { domRef, update, isSame, myChart } = useECharts(initOption);
   const { connectToWebsocket, websocketRef } = useWebsocketConnect("business");
 
   useEffect(() => {
     connectToWebsocket();
-  }, []);
+  }, [connectToWebsocket]);
 
   useEffect(() => {
-    console.log('data', data);
+    console.log("choose", chooseNode);
+    let lastData: number[][] = [];
+    update({
+      series: [{ data: seriesData }],
+    });
+    
     function parseData(ev) {
       try {
-        const data: any[] = JSON.parse(ev.data);
-        console.log(data);
-        data.map(item => {
-          const type = item[0]
-          const index = item[1]
-          
-        })
+        const parseData = JSON.parse(ev.data);
+
+        const data: number[][] = parseData.data;
+        const cacheData = JSON.parse(JSON.stringify(seriesData));
+
+        data.map((item) => {
+          const type = item[0];
+          const index = item[1];
+          const findValue = dataMap.get(index);
+          if (findValue) {
+            const updateIndex = cacheData.findIndex((item) => item[0] === findValue[0] && item[1] === findValue[1]);
+            if (updateIndex !== -1) {
+              cacheData[updateIndex][2] = type;
+            }
+          }
+        });
+
+        if (!isSame(data, lastData) && Number(chooseNode) === parseData.field_num) {
+          update({ series: [{ data: cacheData }] });
+          lastData = data;
+        }
       } catch (error) {
-        console.log('error', error);
+        console.log("error", error);
       }
     }
 

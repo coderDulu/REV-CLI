@@ -3,6 +3,7 @@ import { createHashRouter, Navigate } from "react-router-dom";
 import { lazy, type ReactNode, Suspense } from "react";
 
 import App from "../App";
+import NodeStatus from "@/components/user/NodeStatus";
 // import SuspenseLoading from "@/views/SuspenseLoading";
 
 const Manage = lazy(() => import("@/views/ManageView"));
@@ -123,11 +124,13 @@ const config = createHashRouter([
           },
           {
             path: "/user/node-status",
-            element: <div>节点状态</div>,
+            element: <NodeStatus />,
+
           },
           {
             path: "/user/txrx",
-            element: <div>业务传输</div>,
+            element: <TxRx />,
+
           },
           {
             path: "*",
