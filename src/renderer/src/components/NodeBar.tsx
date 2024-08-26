@@ -51,7 +51,7 @@ function NodeBar({ node }: { node: string }) {
     (ev) => {
       try {
         const message = JSON.parse(ev.data);
-        const showData = message.find((item) => item.node_mac === Number(node)) ?? message.at(-1);
+        const showData = message.find((item) => item.node_mac === Number(node));
         if (showData) {
           const { tunnel, node_mac } = showData;
           update({

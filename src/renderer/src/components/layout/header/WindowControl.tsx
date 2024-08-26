@@ -34,8 +34,8 @@ function WindowControl() {
   };
 
   return (
-    <div className="cursor-pointer flex gap-4 flex-1 justify-end mr-6 app-noDrag">
-      <img src={MinIcon} onClick={minimize} className="w-5 h-5" />
+    <div className="cursor-pointer flex gap-4 justify-end mr-6  app-noDrag ml-auto">
+      <img src={MinIcon} onClick={minimize} className="w-5 h-5 " />
       {isMaximized ? <img src={RestoreIcon} onClick={maximize} className="w-5 h-5" /> : <img src={MaxIcon} onClick={maximize} className="w-5 h-5" />}
 
       <img src={CloseIcon} onClick={close} className="w-5 h-5" />

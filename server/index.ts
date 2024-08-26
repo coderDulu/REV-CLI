@@ -1,5 +1,6 @@
 import WebSocket from "ws";
 import fs from "fs";
+import * as url from "url";
 
 const port = 8080;
 const server = new WebSocket.Server({ port });
@@ -22,15 +23,17 @@ const clients: Record<string, Set<WebSocket>> = {
 
 server.on("connection", (ws, req) => {
   console.log("Client connected", req.url);
-
+  const { pathname, query } = url.parse(req.url ?? "", true);
+  // console.log('pathname', pathname);
+  // console.log('query', query);
   // 将客户端添加到对应 URL 的集合中
   if (clients[req.url!]) {
-    clients[req.url!].add(ws);
+    clients[pathname!].add(ws);
   } else {
-    clients[req.url!] = new Set([ws]);
+    clients[pathname!] = new Set([ws]);
   }
 
-  switch (req.url) {
+  switch (pathname) {
     case "/connect": {
       const data = {
         type: "connect",
@@ -170,6 +173,17 @@ server.on("connection", (ws, req) => {
           exchanged = true;
         }
       }, 1000);
+    }
+    case "/user": {
+      console.log(query.ip);
+      sendMessageToAllClients(
+        JSON.stringify({
+          type: "user",
+          data: 6,
+        }),
+        pathname,
+        ws
+      );
     }
   }
 

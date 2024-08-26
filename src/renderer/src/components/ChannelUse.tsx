@@ -38,12 +38,13 @@ const initOption = {
   tooltip: {
     position: "top",
     formatter: function (params) {
-      switch (params.dataIndex) {
-        case 0:
-          return "未使用";
+      const dataIndex = params.data[2];
+      switch (dataIndex) {
         case 1:
-          return "已用未激活";
+          return "未使用";
         case 2:
+          return "已用未激活";
+        case 3:
           return "已用已激活";
       }
     },
@@ -119,7 +120,7 @@ const initOption = {
 };
 
 function ChannelUse({ chooseNode }: { chooseNode: string }) {
-  const { domRef, update, isSame, myChart } = useECharts(initOption);
+  const { domRef, update, isSame } = useECharts(initOption);
   const { connectToWebsocket, websocketRef } = useWebsocketConnect("business");
 
   useEffect(() => {
@@ -127,15 +128,17 @@ function ChannelUse({ chooseNode }: { chooseNode: string }) {
   }, [connectToWebsocket]);
 
   useEffect(() => {
-    console.log("choose", chooseNode);
     let lastData: number[][] = [];
     update({
       series: [{ data: seriesData }],
     });
-    
+
     function parseData(ev) {
       try {
         const parseData = JSON.parse(ev.data);
+        if (Number(chooseNode) !== parseData.field_num) {
+          return;
+        }
 
         const data: number[][] = parseData.data;
         const cacheData = JSON.parse(JSON.stringify(seriesData));
@@ -152,12 +155,12 @@ function ChannelUse({ chooseNode }: { chooseNode: string }) {
           }
         });
 
-        if (!isSame(data, lastData) && Number(chooseNode) === parseData.field_num) {
+        if (!isSame(data, lastData)) {
           update({ series: [{ data: cacheData }] });
           lastData = data;
         }
       } catch (error) {
-        console.log("error", error);
+        console.log("ChannelUse error => ", error);
       }
     }
 
