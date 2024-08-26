@@ -1,6 +1,6 @@
-# React + Electron + Vite
+# 可配置用频设备新界面
 
-## Use
+## 使用
 
 ```sh
 # install
@@ -11,6 +11,9 @@
 
 # build
 3. npm run build
+
+# test server
+4. npm run dev:server
 
 ```
 
@@ -25,3 +28,4 @@
 | 主进程编译 |      rollup      |
 | 打包       | electron-builder |
 | css        |   TailwindCss    |
+
