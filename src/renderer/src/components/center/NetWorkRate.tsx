@@ -1,70 +1,70 @@
-import useECharts from "@/hooks/useEcharts";
-import useWebsocketConnect from "@/hooks/useWebsocketConnect";
-import { useEffect } from "react";
+import useECharts from '@/hooks/useEcharts'
+import useWebsocketConnect from '@/hooks/useWebsocketConnect'
+import { useEffect } from 'react'
 
 // 频谱管控状态
 export default function SpectrumStatus() {
-  const { connectToWebsocket } = useWebsocketConnect("net-rate");
+  const { connectToWebsocket } = useWebsocketConnect('net-rate')
   const { domRef, update } = useECharts({
     grid: {
-      bottom: "8%",
-      left: "5%",
-      height: "70%",
+      bottom: '8%',
+      left: '5%',
+      height: '70%',
     },
     tooltip: {
       show: true,
-      trigger: "axis",
+      trigger: 'axis',
       axisPointer: {
-        axis: "x",
+        axis: 'x',
       },
     },
     toolbox: {
       show: true,
     },
     xAxis: {
-      name: "时间",
-      type: "time",
+      name: '时间',
+      type: 'time',
     },
     legend: {},
     yAxis: {
-      type: "value",
+      type: 'value',
     },
     series: [
       {
-        type: "line",
+        type: 'line',
         data: [],
         smooth: false,
         showSymbol: false,
-        sampling: "lttb",
+        sampling: 'lttb',
         large: true,
         largeThreshold: 1000,
         itemStyle: {
-          color: "#0d8383"
-        }
+          color: '#0d8383',
+        },
       },
     ],
     animation: false,
     title: {
-      text: "实时网络传输速率",
+      text: '实时网络传输速率',
       top: 10,
       left: 20,
       textStyle: {
         fontSize: 24,
-        color: "#000",
+        color: '#000',
       },
     },
-  });
+  })
 
   useEffect(() => {
     connectToWebsocket().then((socket) => {
-      const lastData: number[][] = [];
-      socket?.addEventListener("message", (ev) => {
+      const lastData: number[][] = []
+      socket?.addEventListener('message', (ev) => {
         try {
-          const { rate } = JSON.parse(ev.data);
-          lastData.push([Date.now(), rate]);
+          const { rate } = JSON.parse(ev.data)
+          lastData.push([Date.now(), rate])
 
           if (lastData.length > 60) {
-            lastData.shift();
+            lastData.shift()
           }
           const option = {
             series: [
@@ -72,14 +72,16 @@ export default function SpectrumStatus() {
                 data: lastData,
               },
             ],
-          };
-          update(option);
+          }
+          update(option)
         } catch (error) {
-          console.log("SpectrumStatus", error);
+          console.log('SpectrumStatus', error)
         }
-      });
-    });
-  }, [connectToWebsocket]);
+      })
+    })
+  }, [connectToWebsocket])
 
-  return <div className="w-full h-full" ref={(dom) => (domRef.current = dom)}></div>;
+  return (
+    <div className="w-full h-full" ref={(dom) => (domRef.current = dom)}></div>
+  )
 }
