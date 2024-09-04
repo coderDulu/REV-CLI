@@ -83,7 +83,12 @@ function FormSet() {
 
   async function send(sendData: string) {
     try {
-      await sendMessage(sendData);
+      const data ={
+        network: form.getFieldValue("network"),
+        data: sendData
+      };
+
+      await sendMessage(JSON.stringify(data));
     } catch (err) {
       window.$message.error("发送失败");
       setIsSending(false);

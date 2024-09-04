@@ -6,7 +6,7 @@ import ActionButton from "@/components/common/ActionButtons";
 
 function FileTxItem() {
   return (
-    <TxRxContainer title="发送文件" borderColor="#0D8383" bgColor="#f3fbfc">
+    <TxRxContainer title="发送视频" borderColor="#0D8383" bgColor="#f3fbfc">
       <FileForm />
     </TxRxContainer>
   );
@@ -77,6 +77,8 @@ function FileForm() {
         <ActionButton isSending={isSending} onStop={onStop} />
       </Form.Item>
       {isSending && <Alert showIcon message="点击发送按钮后，跳转到其他页面或刷新都将停止发送" type="warning" />}
+
+      
     </Form>
   );
 }
