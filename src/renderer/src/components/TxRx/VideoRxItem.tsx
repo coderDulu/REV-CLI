@@ -52,6 +52,8 @@ const WebSocketVideoPlayer = () => {
         setIsSending((sending) => {
           if (speed === 0 && decodedFrames !== 0 && sending) {
             flvPlayerRef.current?.unload()
+            flvPlayerRef.current?.detachMediaElement()
+            flvPlayerRef.current?.attachMediaElement(videoRef.current)
             flvPlayerRef.current?.load()
             return false
           } else if (speed !== 0) {
@@ -61,6 +63,10 @@ const WebSocketVideoPlayer = () => {
 
           return sending
         })
+      })
+
+      flvPlayerRef.current?.on(mpegts.Events.MEDIA_INFO, (info) => {
+        console.log("info", info)
       })
     }
     return () => {
@@ -80,7 +86,7 @@ const WebSocketVideoPlayer = () => {
       </div>
       <video
         ref={videoRef}
-        className={clsx("border-2", isSending ? "block" : "hidden")}
+        className={clsx("h-full", isSending ? "block" : "hidden")}
         id="video-player"
       ></video>
       {/* <iframe
