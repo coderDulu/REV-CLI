@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import mpegts from "mpegts.js"
 import { Empty } from "antd"
 import clsx from "clsx"
@@ -18,7 +18,7 @@ function startReceiveVideo(element: HTMLMediaElement) {
   if (mpegts.getFeatureList().mseLivePlayback) {
     const flvPlayer = mpegts.createPlayer(
       {
-        type: "flv",
+        type: "mse",
         url: "ws://localhost:8080/video",
         isLive: true,
       },
@@ -46,63 +46,50 @@ const WebSocketVideoPlayer = () => {
   useEffect(() => {
     if (videoRef.current) {
       flvPlayerRef.current = startReceiveVideo(videoRef.current)
+
+      flvPlayerRef.current?.on(mpegts.Events.STATISTICS_INFO, (info) => {
+        const { speed, decodedFrames } = info
+        setIsSending((sending) => {
+          if (speed === 0 && decodedFrames !== 0 && sending) {
+            flvPlayerRef.current?.unload()
+            flvPlayerRef.current?.load()
+            return false
+          } else if (speed !== 0) {
+            flvPlayerRef.current?.play()
+            return true
+          }
+
+          return sending
+        })
+      })
     }
     return () => {
       flvPlayerRef.current?.destroy()
     }
   }, [])
 
-  useEffect(() => {
-    window.electron.on("video-stopped", () => {
-      onStop()
-    })
-  }, [])
-
-  const onReceiveStart = () => {
-    flvPlayerRef.current?.play()
-    setIsSending(true)
-  }
-
-  const onStop = () => {
-    if (flvPlayerRef.current) {
-      flvPlayerRef.current.unload()
-
-      setIsSending(false)
-      flvPlayerRef.current.load()
-    }
-  }
-
   return (
     <div className="flex flex-col gap-10 p-5 w-full h-full">
-      {/* <div
+      <div
         className={clsx(
           "h-60 flex items-center justify-center",
           isSending ? "hidden" : "block"
         )}
       >
-        <Empty description="请先发送视频，然后点击接收按钮接收" />
-      </div> */}
-      {/* <video
+        <Empty description="暂无数据，请先发送视频，然后点击接收按钮接收" />
+      </div>
+      <video
         ref={videoRef}
         className={clsx("border-2", isSending ? "block" : "hidden")}
         id="video-player"
-      ></video> */}
-      <iframe
+      ></video>
+      {/* <iframe
       className="w-full h-[500px]"
         src="https://www.youtube.com/embed/UmVec9VHtpE?list=PLnTPdMjBRmAYehJkVbAXqxO-0cc9ALC6V"
         title="YouTube video player"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowFullScreen
-      ></iframe>
-      <div className="self-center mt-auto">
-        <ActionButton
-          submitText="接收"
-          sendingText="正在接收"
-          isSending={isSending}
-          onStart={onReceiveStart}
-          onStop={onStop}
-        />
-      </div>
+      ></iframe> */}
     </div>
   )
 }

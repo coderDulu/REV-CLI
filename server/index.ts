@@ -215,6 +215,11 @@ server.on("connection", (ws, req) => {
         sendMessageToAllClients(message.toString(), req.url, ws);
         break;
       }
+      case "/address": {
+        console.log("address", message.toString());
+        // sendMessageToAllClients(message.toString(), req.url, ws);
+        break;
+      }
     }
   });
 

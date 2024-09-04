@@ -33,8 +33,13 @@ function FormSet() {
   const [form] = Form.useForm();
   const [sendDataLen, setSendDataLen] = useState(0);
   const { sendMessage, connectToWebsocket } = useWebsocketConnect("text");
+  const { sendMessage: sendToNetwork, connectToWebsocket: connectNetwork } = useWebsocketConnect("address");
   const [isSending, setIsSending] = useState(false);
   const sendDataTimer = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    connectNetwork()
+  }, [connectNetwork])
 
   useEffect(() => {
     connectToWebsocket();
@@ -47,10 +52,10 @@ function FormSet() {
     sendInterval(values);
   };
 
-  function sendInterval(values: FormDataType) {
+  async function sendInterval(values: FormDataType) {
     try {
       const { interval, isAuto, data: sendData } = values;
-
+      await sendToNetwork(form.getFieldValue("network"));
       if (isAuto) {
         setIsSending((sending) => {
           if (!sending) {
@@ -83,12 +88,7 @@ function FormSet() {
 
   async function send(sendData: string) {
     try {
-      const data ={
-        network: form.getFieldValue("network"),
-        data: sendData
-      };
-
-      await sendMessage(JSON.stringify(data));
+      await sendMessage(sendData);
     } catch (err) {
       window.$message.error("发送失败");
       setIsSending(false);
@@ -111,7 +111,7 @@ function FormSet() {
   return (
     <Form form={form} {...layout} initialValues={{ interval: 1000, isAuto: true }} name="control-hooks" onFinish={onFinish} style={{ maxWidth: 600 }}>
       <Form.Item name="network" label="通信目的节点" rules={rules}>
-        <InputNumber />
+        <InputNumber min={0}/>
       </Form.Item>
       <Form.Item name="interval" label="数据发送间隔" rules={rules}>
         <Select placeholder="请选择" allowClear>

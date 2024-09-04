@@ -32,9 +32,7 @@ function FormSet() {
     connectToWebsocket().then((ws) => {
       if (ws) {
         ws.onmessage = (e) => {
-          const { data } = JSON.parse(e.data)
-
-          setReceive((preData) => preData + data);
+          setReceive((preData) => preData + e.data);
         };
       }
     });

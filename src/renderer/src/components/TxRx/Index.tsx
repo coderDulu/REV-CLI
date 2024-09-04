@@ -31,8 +31,8 @@ const options: TabsProp[] = [
     name: "视频业务",
     children: (
       <Flex className="pl-10 pr-10">
-        <VideoRxItem />
         <VideoTxItem />
+        <VideoRxItem />
       </Flex>
     ),
   },

@@ -3,6 +3,7 @@ import TxRxContainer from "./TxRxContainer";
 import { InboxOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import ActionButton from "@/components/common/ActionButtons";
+import useWebsocketConnect from "@/hooks/useWebsocketConnect";
 
 function FileTxItem() {
   return (
@@ -26,8 +27,12 @@ const rules = [{ required: true, message: "请输入内容" }];
 function FileForm() {
   const [form] = Form.useForm();
   const [file, setFile] = useState<any>();
-  // const { connectToWebsocket, sendMessage } = useWebsocketConnect("file");
+  const { connectToWebsocket, sendMessage } = useWebsocketConnect("address");
   const [isSending, setIsSending] = useState(false);
+
+  useEffect(() => {
+    connectToWebsocket()
+  }, [connectToWebsocket])
 
   useEffect(() => {
     return () => {
@@ -38,6 +43,8 @@ function FileForm() {
   const onFinish = async () => {
     if (file) {
       const { path } = file;
+      sendMessage(form.getFieldValue("network"))
+
       window.electron.invoke("send-video", path);
       setIsSending(true);
     } else {
@@ -62,7 +69,7 @@ function FileForm() {
   return (
     <Form form={form} {...layout} name="control-hooks" onFinish={onFinish} style={{ maxWidth: 600 }}>
       <Form.Item label="通信目的节点" name="network" rules={rules}>
-        <InputNumber />
+        <InputNumber min={0}/>
       </Form.Item>
       <Form.Item label="选择文件" rules={rules}>
         <Upload.Dragger name="files" {...props} maxCount={1}>
