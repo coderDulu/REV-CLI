@@ -19,6 +19,8 @@ build({
   // outfile: path.resolve(outdir, "main.cjs"),
   external: ["node_modules", "electron", "path", "dotenv", "ws"],
   tsconfig: "./src/main/tsconfig.json",
+}).then(() => {
+  console.log("build success");
 }).catch((err) => {
   console.log("build error", err);
   process.exit(1);
