@@ -7,7 +7,7 @@
  *  event   主进程和渲染进程通信模块
  */
 import { app, BrowserWindow, Menu, session } from "electron"
-import path from "node:path"
+import path from "path"
 
 import setupMenus from "./menu"
 import "./menu/application"

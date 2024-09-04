@@ -1,16 +1,14 @@
-appId: react-electron-demo
-productName: react-electron-demo
+appId: freq-config
+productName: freq-config
 directories:
   buildResources: build
   output: out
 files:
   - '!**/.vscode/*'
-  # - '!src/*'
+  - '!src/*'
   - '!{.eslintignore,.eslintrc.cjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}'
   - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
   - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
-  - '!src/renderer/*'
-  # - '!src/main/*'
   - "!nodemon.json"
   - "!rollup.config.js"
   - "!.rollup.cache"
@@ -22,7 +20,7 @@ asarUnpack:
 # afterSign: build/notarize.js
 win:
   icon: ./build/favicon.ico
-  executableName: react-electron-demo # 更改此处避免多个重复
+  executableName: freq-config # 更改此处避免多个重复
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
