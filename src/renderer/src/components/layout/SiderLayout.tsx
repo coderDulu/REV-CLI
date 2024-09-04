@@ -2,6 +2,7 @@ import clsx from "clsx";
 import { useLocation, useNavigate } from "react-router-dom";
 import { menus } from "@/router";
 import { getImageUrl } from "@/utils/getImageUrl";
+import { version, date } from '../../../../../package.json'
 
 function SiderLayout() {
   const location = useLocation()
@@ -35,6 +36,7 @@ function SiderLayout() {
           </li>
         );
       })}
+      <li className="mt-auto tracking-wide text-[10px] text-white opacity-30">{version}-{date}</li>
     </ul>
   );
 }

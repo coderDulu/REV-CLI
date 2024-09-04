@@ -82,7 +82,7 @@ const WebSocketVideoPlayer = () => {
           isSending ? "hidden" : "block"
         )}
       >
-        <Empty description="暂无数据，请先发送视频，然后点击接收按钮接收" />
+        <Empty description="暂无数据" />
       </div>
       <video
         ref={videoRef}
