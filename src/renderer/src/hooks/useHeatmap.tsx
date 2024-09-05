@@ -5,6 +5,7 @@ const colors = ["#efbe8d", "#71b4b9", "#e9a3a3"];
 const intXAxis = new Array(24).fill(24).map((_: any, index) => index + 1);
 
 function initOption(name?: number | string) {
+
   return {
     title: {
       text: `子网${name ?? ""}干扰业务分布`,
@@ -142,7 +143,7 @@ export function useHeatmap(name?: number | string) {
   }, []);
 
   // 更新图表
-  const update = useCallback((freqStatus: any[], startFreq: number, cache = networkArr, name: string = "") => {
+  const update = useCallback((freqStatus: any[], startFreq: number, cache = networkArr) => {
     const newData = updateData(freqStatus, startFreq, cache, name);
     heatmapEcharts.update(newData);
     heatmapEcharts.myChart.current?.dispatchAction({

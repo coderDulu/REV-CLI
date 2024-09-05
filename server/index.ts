@@ -19,6 +19,7 @@ const clients: Record<string, Set<WebSocket>> = {
   "/spectrum-status": new Set(), // 频段状态
   "/net-rate": new Set(), // 实时网络速率
   "/business": new Set(), // 业务分布
+  "/address": new Set(),  // 设置业务传输目的地址
 };
 
 server.on("connection", (ws, req) => {
@@ -96,6 +97,7 @@ server.on("connection", (ws, req) => {
         ];
         ws.send(JSON.stringify(data));
       }, 1000);
+      break
     }
     case "/node-bar": {
       setInterval(() => {

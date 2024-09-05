@@ -2,13 +2,29 @@
 
 ## websocket 接口 ws://{ip}:{port}/{path}
 
-## 1. 管理端 - 全网态势界面
+- 响应添加了A的为定时1s向前端发送一次数据
+
+##  1. 设备连接
 
 ### 请求
 
-`path: /topology`
+`/connect`
 
 ### 响应
+
+```json
+{
+  type: "connect",
+  data: "success",
+};
+```
+
+## 2. 拓扑
+### 请求
+
+`/topology`
+
+### 响应（A）
 
 ```json
 {
@@ -32,3 +48,5 @@
 ```
 
 `path: /info/{node_id}`
+
+## 3. 

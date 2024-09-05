@@ -6,22 +6,25 @@ export type Callback = (event: any) => void;
 
 function useWebsocketConnect(path: string) {
   const { address, port, isConnect } = useConnect();
-  const { connect, ...args } = useWebSocket();
+  const { connect, close,...args } = useWebSocket();
   const wsUrl = `ws://${address}:${port}/${path}`;
 
   const connectToWebsocket = useCallback(async () => {
     try {
       if (isConnect) {
         const ws = await connect(wsUrl);
-        return ws
+        return ws;
+      } else {
+        close();
       }
-      return null
+      return null;
     } catch (error) {
-      return null
+      console.error('Error connecting to websocket:', error);
+      return null;
     }
-  }, [connect, isConnect, wsUrl]);
+  }, [connect, isConnect, close, wsUrl]);
 
-  return { ...args, connectToWebsocket };
+  return { ...args, close,connectToWebsocket };
 }
 
 export default useWebsocketConnect;

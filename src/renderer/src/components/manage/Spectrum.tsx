@@ -29,7 +29,7 @@ function Spectrum() {
     return () => {
       close();
     };
-  }, []);
+  }, [connectToWebsocket]);
 
   return (
     <Flex vertical gap={10} className="w-full h-full">
