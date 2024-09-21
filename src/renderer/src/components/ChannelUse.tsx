@@ -166,10 +166,9 @@ function ChannelUse({ chooseNode }: { chooseNode: string }) {
 
     const ws = websocketRef.current;
     ws?.addEventListener("message", parseData);
-
     update({
       title: {
-        text: `子网${chooseNode}干扰业务分布`,
+        text: `节点${chooseNode}干扰业务分布`,
       },
     });
     return () => {

@@ -47,6 +47,41 @@
 }
 ```
 
-`path: /info/{node_id}`
+### 3. freq-plan
+### 请求
+`/freq-plan`
+### 响应（A）
 
-## 3. 
+
+
+## 4. 域频段状态信息（A）
+### 请求
+`/freq-status`
+
+### 响应（A）
+```json
+[
+  //域频段状态信息
+  {
+    field_num: 1, //域地址
+    start_freq: 250, //域起始频点 -10
+    freq_status: generateFreqStatus(),
+  },
+  {
+    field_num: 2, //域地址
+    start_freq: 350, //域起始频点 -10
+    freq_status: generateFreqStatus(),
+  },
+  {
+    field_num: 5, //域地址
+    start_freq: 320, //域起始频点 -10
+    freq_status: generateFreqStatus(),
+  },
+  {
+    field_num: 6, //域地址
+    start_freq: 120, //域起始频点 -10
+    freq_status: generateFreqStatus(),
+  },
+]
+```
+

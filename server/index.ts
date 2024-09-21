@@ -1,9 +1,9 @@
-import WebSocket from "ws";
-import fs from "fs";
-import * as url from "url";
+import WebSocket from "ws"
+import fs from "fs"
+import * as url from "url"
 
-const port = 8080;
-const server = new WebSocket.Server({ port });
+const port = 8080
+const server = new WebSocket.Server({ port, host: "0.0.0.0" })
 
 // 用于跟踪每"个 URL 对应的客户端
 const clients: Record<string, Set<WebSocket>> = {
@@ -19,19 +19,20 @@ const clients: Record<string, Set<WebSocket>> = {
   "/spectrum-status": new Set(), // 频段状态
   "/net-rate": new Set(), // 实时网络速率
   "/business": new Set(), // 业务分布
-  "/address": new Set(),  // 设置业务传输目的地址
-};
+  "/address": new Set(), // 设置业务传输目的地址
+  "/network-list": new Set(), // 网络列表
+}
 
 server.on("connection", (ws, req) => {
-  console.log("Client connected", req.url);
-  const { pathname, query } = url.parse(req.url ?? "", true);
+  console.log("Client connected", req.url)
+  const { pathname, query } = url.parse(req.url ?? "", true)
   // console.log('pathname', pathname);
   // console.log('query', query);
   // 将客户端添加到对应 URL 的集合中
   if (clients[req.url!]) {
-    clients[pathname!].add(ws);
+    clients[pathname!].add(ws)
   } else {
-    clients[pathname!] = new Set([ws]);
+    clients[pathname!] = new Set([ws])
   }
 
   switch (pathname) {
@@ -39,9 +40,9 @@ server.on("connection", (ws, req) => {
       const data = {
         type: "connect",
         data: "success",
-      };
-      ws.send(JSON.stringify(data));
-      break;
+      }
+      ws.send(JSON.stringify(data))
+      break
     }
     case "/topology": {
       const data = {
@@ -64,11 +65,11 @@ server.on("connection", (ws, req) => {
             ["1", "8"],
           ],
         },
-      };
+      }
       setInterval(() => {
-        ws.send(JSON.stringify(data));
-      }, 1000);
-      break;
+        ws.send(JSON.stringify(data))
+      }, 1000)
+      break
     }
     case "/freq-status": {
       setInterval(() => {
@@ -94,9 +95,9 @@ server.on("connection", (ws, req) => {
             start_freq: 120, //域起始频点 -10
             freq_status: generateFreqStatus(),
           },
-        ];
-        ws.send(JSON.stringify(data));
-      }, 1000);
+        ]
+        ws.send(JSON.stringify(data))
+      }, 1000)
       break
     }
     case "/node-bar": {
@@ -112,30 +113,30 @@ server.on("connection", (ws, req) => {
             node_mac: 6, // 节点编号
             tunnel: [22, 21, 24, 25, 28, 31, 35, 47], // 信道数据
           },
-        ];
-        ws.send(JSON.stringify(data));
-      }, 1000);
+        ]
+        ws.send(JSON.stringify(data))
+      }, 1000)
 
-      break;
+      break
     }
     case "/spectrum-status": {
       setInterval(() => {
         const data = {
           startFreq: 390,
           endFreq: 550,
-        };
-        ws.send(JSON.stringify(data));
-      }, 1000);
-      break;
+        }
+        ws.send(JSON.stringify(data))
+      }, 1000)
+      break
     }
     case "/net-rate": {
       setInterval(() => {
         const data = {
           rate: Math.floor(Math.random() * 100),
-        };
-        ws.send(JSON.stringify(data));
-      }, 1000);
-      break;
+        }
+        ws.send(JSON.stringify(data))
+      }, 1000)
+      break
     }
     case "/business": {
       const obj = [
@@ -145,7 +146,7 @@ server.on("connection", (ws, req) => {
         [1, 4],
         [2, 5],
         [3, 6],
-      ];
+      ]
       const obj2 = [
         [1, 1], // [状态, 信道]
         [2, 2],
@@ -153,8 +154,8 @@ server.on("connection", (ws, req) => {
         [3, 4],
         [2, 5],
         [1, 6],
-      ];
-      let exchanged = false;
+      ]
+      let exchanged = false
 
       setInterval(() => {
         if (exchanged) {
@@ -163,21 +164,20 @@ server.on("connection", (ws, req) => {
               field_num: 5,
               data: obj,
             })
-          );
-          exchanged = false;
+          )
+          exchanged = false
         } else {
           ws.send(
             JSON.stringify({
               field_num: 6,
               data: obj2,
             })
-          );
-          exchanged = true;
+          )
+          exchanged = true
         }
-      }, 1000);
+      }, 1000)
     }
     case "/user": {
-      console.log(query.ip);
       sendMessageToAllClients(
         JSON.stringify({
           type: "user",
@@ -185,7 +185,24 @@ server.on("connection", (ws, req) => {
         }),
         pathname,
         ws
-      );
+      )
+      break
+    }
+    case "network-list": {
+      sendMessageToAllClients(JSON.stringify({
+        type: "network-list",
+        data: [
+          {
+            ip: "5",  // 节点
+            freqBand: [10, 100], // 频段范围
+          },
+          {
+            ip: "6",
+            freqBand: [-20, 80],
+          },
+        ]
+      }), pathname, ws)
+      break
     }
   }
 
@@ -193,65 +210,65 @@ server.on("connection", (ws, req) => {
     // 转发消息给所有连接到相同 URL 的客户
     switch (req.url) {
       case "/text": {
-        console.log("Received data", message.toString());
-        sendMessageToAllClients(message.toString(), req.url);
-        break;
+        console.log("Received data", message.toString())
+        sendMessageToAllClients(message.toString(), req.url)
+        break
       }
       case "/file": {
-        console.log("Received file", message);
-        sendMessageToAllClients(message, req.url);
-        break;
+        console.log("Received file", message)
+        sendMessageToAllClients(message, req.url)
+        break
       }
       case "/video": {
-        console.log("Received video", message);
-        sendMessageToAllClients(message, req.url, ws);
-        break;
+        console.log("Received video", message)
+        sendMessageToAllClients(message, req.url, ws)
+        break
       }
       case "/freq-plan": {
-        console.log("freq-plan", message.toString());
-        sendMessageToAllClients(message.toString(), req.url, ws);
-        break;
+        console.log("freq-plan", message.toString())
+        sendMessageToAllClients(message.toString(), req.url, ws)
+        break
       }
       case "/net-config": {
-        console.log("net-config", message.toString());
-        sendMessageToAllClients(message.toString(), req.url, ws);
-        break;
+        console.log("net-config", message.toString())
+        sendMessageToAllClients(message.toString(), req.url, ws)
+        break
       }
       case "/address": {
-        console.log("address", message.toString());
+        console.log("address", message.toString())
         // sendMessageToAllClients(message.toString(), req.url, ws);
-        break;
+        break
       }
     }
-  });
+  })
 
   ws.on("close", () => {
-    console.log("Client disconnected");
+    console.log("Client disconnected")
     // 从集合中移除已断开的客户端
     if (clients[req.url!]) {
-      clients[req.url!].delete(ws);
+      clients[req.url!].delete(ws)
     }
-  });
-});
+  })
+})
 function sendMessageToAllClients(message: any, path: string, ws?: WebSocket) {
   for (const client of clients[path]) {
-    client.send(message);
+    client.send(message)
   }
 }
 
-console.log(`WebSocket server is running on ws://localhost:${port}`);
+console.log(`WebSocket server is running on ws://localhost:${port}`)
 
 function generateFreqStatus() {
-  const arr = [];
+  const arr = []
   for (var i = 0; i < 10; i++) {
-    var randomNum = Math.floor(Math.random() * 10);
+    var randomNum = Math.floor(Math.random() * 10)
     if (randomNum < 2) {
       // 约20%的概率生成'-'
-      arr.push("-");
+      arr.push("-")
     } else {
       // 约80%的概率生成1-8的随机数
-      arr.push(Math.floor(Math.random() * 8) + 1);
+      arr.push(Math.floor(Math.random() * 8) + 1)
     }
   }
-  return arr;
+  return arr
 }

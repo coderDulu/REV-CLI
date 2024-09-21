@@ -17,6 +17,7 @@ function NodeStatus() {
     const parseData = (ev) => {
       try {
         const parseData = JSON.parse(ev.data);
+        console.log("parseData", parseData.data)
         setChooseData(parseData.data);
       } catch (error) {
         console.log(";error", error);
