@@ -190,31 +190,37 @@ server.on("connection", (ws, req) => {
       break
     }
     case "network-list": {
-      sendMessageToAllClients(JSON.stringify({
-        type: "network-list",
-        data: [
-          {
-            ip: "5",  // 节点
-            freqBand: [10, 100], // 频段范围
-          },
-          {
-            ip: "6",
-            freqBand: [-20, 80],
-          },
-        ]
-      }), pathname, ws)
+      sendMessageToAllClients(
+        JSON.stringify({
+          type: "network-list",
+          data: [
+            {
+              ip: "5", // 节点
+              freqBand: [10, 100], // 频段范围
+            },
+            {
+              ip: "6",
+              freqBand: [-20, 80],
+            },
+          ],
+        }),
+        pathname,
+        ws
+      )
       break
     }
     case "/net-config-get": {
       console.log("net-config-get")
-      sendMessageToAllClients(JSON.stringify({
-        type: "net-config-get",
-        data: {
-          ip: "5",
-          freqBand: [10, 100],
-        }
-
-      }), pathname, ws)
+      sendMessageToAllClients(
+        JSON.stringify({
+          startFreq: 200,
+          autoChannel: true,
+          fixFreqMode: false,
+          bandSelect: 29,
+        }),
+        pathname,
+        ws
+      )
       break
     }
   }

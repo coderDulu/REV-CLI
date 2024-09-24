@@ -1,30 +1,29 @@
-import { Form, InputNumber, Select, Switch } from "antd";
-import LineLeftItem from "../common/LineLeftItem";
-import CForm from "../common/CForm";
-import CButton from "../common/CButton";
-import useWebsocketConnect from "@/hooks/useWebsocketConnect";
-import { useEffect } from "react";
-import SpectrumStatus from "../SpectrumStatus";
-import NetworkRate from "./NetWorkRate";
+import { Form, InputNumber, Select, Switch } from "antd"
+import LineLeftItem from "../common/LineLeftItem"
+import CForm from "../common/CForm"
+import CButton from "../common/CButton"
+import useWebsocketConnect from "@/hooks/useWebsocketConnect"
+import { useEffect } from "react"
+import SpectrumStatus from "../SpectrumStatus"
+import NetworkRate from "./NetWorkRate"
 
 function NetworkConfig() {
-  const { connectToWebsocket, sendMessage } = useWebsocketConnect("net-config-set");
-
+  const { connectToWebsocket, sendMessage } = useWebsocketConnect("net-config-set")
 
   useEffect(() => {
-    connectToWebsocket();
-  }, [connectToWebsocket]);
+    connectToWebsocket()
+  }, [connectToWebsocket])
 
   const onFinish = async (values: FormValues) => {
     try {
-      sendMessage(JSON.stringify(values));
-      window.$message.success("下发成功");
+      sendMessage(JSON.stringify(values))
+      window.$message.success("下发成功")
     } catch (error) {
-      window.$message.error("下发失败");
+      window.$message.error("下发失败")
     }
-  };
+  }
 
-  const onFinishFailed = () => {};
+  const onFinishFailed = () => {}
 
   return (
     <div className="grid grid-cols-[auto_1fr] w-full h-full">
@@ -41,55 +40,68 @@ function NetworkConfig() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 // 发送功率范围
 const txPowerArr = Array(6)
   .fill("")
-  .map((_, index: number) => (index - 1) * 5);
+  .map((_, index: number) => (index - 1) * 5)
 const txPowerOption = txPowerArr.map((item) => {
   return {
     label: item + " dBm",
     value: item,
-  };
-});
+  }
+})
 
 // 信道选择
-const channelArr = Array(8)
+const channelArr = Array(32)
   .fill("")
-  .map((_, index: number) => index);
+  .map((_, index: number) => index)
 const channelOptions = channelArr.map((item) => ({
   label: item,
   value: item,
-}));
+}))
 
 interface FormValues {
-  startFreq: number;
-  channelBand: number;
-  power: number;
-  jamThread: number;
-  autoChannel: boolean;
-  autoChannelModel: boolean;
-  fixFreqMode: boolean;
-  bandSelect: number;
-  chnSelect: number;
-  freqChannel: number;
+  startFreq: number
+  // channelBand: number;
+  // power: number;
+  jamThread: number
+  autoChannel: boolean
+  // autoChannelModel: boolean;
+  fixFreqMode: boolean
+  bandSelect: number
+  // chnSelect: number;
+  // freqChannel: number;
 }
 
 function FormConfig({ onFinish, onFinishFailed }) {
-  const [form] = Form.useForm();
+  const [form] = Form.useForm()
+  const { connectToWebsocket: getConfig } = useWebsocketConnect("net-config-get")
+
+  useEffect(() => {
+    getConfig().then((res) => {
+      res?.addEventListener("message", (ev) => {
+        const data = JSON.parse(ev.data)
+        form.setFieldsValue({
+          ...data
+        })
+
+      })
+    })
+  }, [getConfig])
 
   const handleSwitchChange = (changedSwitch) => {
-    const switches = form.getFieldsValue(["autoChannel", "autoChannelModel", "fixFreqMode"]);
+    const switches = form.getFieldsValue(["autoChannel", "autoChannelModel", "fixFreqMode"])
     const updatedSwitches = {
       autoChannel: false,
       autoChannelModel: false,
       fixFreqMode: false,
       [changedSwitch]: switches[changedSwitch],
-    };
-    form.setFieldsValue(updatedSwitches);
-  };
+    }
+    form.setFieldsValue(updatedSwitches)
+  }
 
   return (
     <CForm
@@ -107,7 +119,8 @@ function FormConfig({ onFinish, onFinishFailed }) {
         bandSelect: 1,
         chnSelect: 0,
         freqChannel: 1,
-      }}>
+      }}
+    >
       <Form.Item name="startFreq" label="起始频点">
         <InputNumber className="w-40" suffix="MHz" />
         {/* <span className="ml-1">MHz</span> */}
@@ -142,7 +155,7 @@ function FormConfig({ onFinish, onFinishFailed }) {
         </CButton>
       </Form.Item>
     </CForm>
-  );
+  )
 }
 
-export default NetworkConfig;
+export default NetworkConfig

@@ -2,9 +2,9 @@
 
 ## websocket 接口 ws://{ip}:{port}/{path}
 
-- 响应添加了A的为定时1s向前端发送一次数据
+- 响应添加了 A 的为定时 1s 向前端发送一次数据
 
-##  1. 设备连接
+## 1. 设备连接
 
 ### 请求
 
@@ -19,13 +19,15 @@
 };
 ```
 
-## 2. 拓扑
-### 请求
 
+## 中心端
+
+### 拓扑（A）
+
+- 请求：
 `/topology`
 
-### 响应（A）
-
+- 响应（A）：
 ```json
 {
   "type": "topology",
@@ -35,7 +37,8 @@
       "center": ["1", "2"], // 中心节点
       "user": ["5", "6", "8", "9"] // 用户节点
     },
-    "links": [  // 节点间的连线
+    "links": [
+      // 节点间的连线
       ["4", "1"],
       ["1", "5"],
       ["1", "6"],
@@ -47,54 +50,56 @@
 }
 ```
 
-### 3. freq-plan
-### 请求
-`/freq-plan`
-### 响应（A）
+### 网络配置
 
+### 业务信道参数获取
 
+- 请求：
+  `net-config-get`
+- 响应：
 
-## 4. 域频段状态信息（A）
-### 请求
-`/freq-status`
-
-### 响应（A）
 ```json
-[
-  //域频段状态信息
-  {
-    field_num: 1, //域地址
-    start_freq: 250, //域起始频点 -10
-    freq_status: generateFreqStatus(),
-  },
-  {
-    field_num: 2, //域地址
-    start_freq: 350, //域起始频点 -10
-    freq_status: generateFreqStatus(),
-  },
-  {
-    field_num: 5, //域地址
-    start_freq: 320, //域起始频点 -10
-    freq_status: generateFreqStatus(),
-  },
-  {
-    field_num: 6, //域地址
-    start_freq: 120, //域起始频点 -10
-    freq_status: generateFreqStatus(),
-  },
-]
+{
+  "startFreq": 200, // 起始频点
+  "autoChannel": true, // 自适应跳频
+  "fixFreqMode": false, // 频点固定模式
+  "bandSelect": 29 // 通道
+}
 ```
 
-## 中心端
-### 网络配置
-### 实时网络传输速率
-* 请求:
-`/net-rate`
-* 响应
+### 业务信道参数设置
+
+- 请求：
+  `net-config-set`
+- 响应：
+
 ```json
-{ 
-  "rate":65 
+{
+  "startFreq": 200, // 起始频点
+  "autoChannel": true,  // 自适应跳频
+  "fixFreqMode": false, // 频点固定模式
+  "bandSelect": 29,     // 通道
+}
+```
+
+### 频谱管控状态
+- 请求:
+`/spectrum-status`
+- 响应
+```json
+{
+    "startFreq": 390,
+    "endFreq": 550
 }
 ```
 
 
+### 实时网络传输速率
+- 请求:
+`/net-rate`
+- 响应
+```json
+{
+  "rate":65
+}
+```
