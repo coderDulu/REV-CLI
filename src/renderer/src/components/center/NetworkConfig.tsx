@@ -9,7 +9,7 @@ import NetworkRate from "./NetWorkRate";
 
 function NetworkConfig() {
   const { connectToWebsocket, sendMessage } = useWebsocketConnect("net-config-set");
-  
+
 
   useEffect(() => {
     connectToWebsocket();
@@ -112,33 +112,30 @@ function FormConfig({ onFinish, onFinishFailed }) {
         <InputNumber className="w-40" suffix="MHz" />
         {/* <span className="ml-1">MHz</span> */}
       </Form.Item>
-      <Form.Item name="channelBand" label="信道带宽">
+      {/* <Form.Item name="channelBand" label="信道带宽">
         <Select className="!w-40" options={[{ value: 160, label: "160 MHz" }]} />
-      </Form.Item>
-      <Form.Item name="power" label="发射功率">
+      </Form.Item> */}
+      {/* <Form.Item name="power" label="发射功率">
         <Select className="!w-40" options={txPowerOption} />
-      </Form.Item>
-      <Form.Item name="jamThread" label="干扰门限">
+      </Form.Item> */}
+      {/* <Form.Item name="jamThread" label="干扰门限">
         <InputNumber className="w-40" suffix="MHz" />
-      </Form.Item>
-      <Form.Item name="autoChannel" label="自适应调频" valuePropName="checked">
+      </Form.Item> */}
+      <Form.Item name="autoChannel" label="自适应跳频" valuePropName="checked">
         <Switch onChange={() => handleSwitchChange("autoChannel")} />
-      </Form.Item>
-      <Form.Item name="autoChannelModel" label="自适应调频" valuePropName="checked">
-        <Switch onChange={() => handleSwitchChange("autoChannelModel")} />
       </Form.Item>
       <Form.Item name="fixFreqMode" label="频点固定模式" valuePropName="checked">
         <Switch onChange={() => handleSwitchChange("fixFreqMode")} />
       </Form.Item>
-      <Form.Item name="freqChannel" label="通道选择">
+      {/* <Form.Item name="freqChannel" label="通道选择">
         <Select className="!w-40" options={channelOptions} />
-      </Form.Item>
+      </Form.Item> */}
       <Form.Item name="bandSelect" label="通道">
         <Select className="!w-40" options={channelOptions} />
       </Form.Item>
-      <Form.Item name="chnSelect" label="通带">
+      {/* <Form.Item name="chnSelect" label="通带">
         <Select className="!w-40" options={channelOptions} />
-      </Form.Item>
+      </Form.Item> */}
       <Form.Item wrapperCol={{ offset: 8 }}>
         <CButton buttonType="primary" type="submit">
           设置

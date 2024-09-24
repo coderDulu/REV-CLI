@@ -205,6 +205,18 @@ server.on("connection", (ws, req) => {
       }), pathname, ws)
       break
     }
+    case "/net-config-get": {
+      console.log("net-config-get")
+      sendMessageToAllClients(JSON.stringify({
+        type: "net-config-get",
+        data: {
+          ip: "5",
+          freqBand: [10, 100],
+        }
+
+      }), pathname, ws)
+      break
+    }
   }
 
   ws.on("message", (message) => {
@@ -230,8 +242,9 @@ server.on("connection", (ws, req) => {
         sendMessageToAllClients(message.toString(), req.url, ws)
         break
       }
-      case "/net-config": {
-        console.log("net-config", message.toString())
+
+      case "/net-config-set": {
+        console.log("net-config-set", message.toString())
         sendMessageToAllClients(message.toString(), req.url, ws)
         break
       }
