@@ -1,34 +1,69 @@
-import { useEffect, useState } from "react";
-import ChannelUse from "../ChannelUse";
-import NodeBar from "../NodeBar";
-import useWebsocketConnect from "@/hooks/useWebsocketConnect";
-import useConnect from "@/hooks/useConnect";
+import { useCallback, useEffect, useState } from "react"
+import ChannelUse from "../ChannelUse"
+import NodeBar from "../NodeBar"
+import useWebsocketConnect from "@/hooks/useWebsocketConnect"
+import useConnect from "@/hooks/useConnect"
+import { useImmer } from "use-immer"
 function NodeStatus() {
-  const { address } = useConnect();
-  const { connectToWebsocket, websocketRef } = useWebsocketConnect(`user?ip=${address}`);
-  const [chooseNode, setChooseData] = useState("");
+  const { address } = useConnect()
+  const { connectToWebsocket, websocketRef } = useWebsocketConnect(`user?ip=${address}`)
+  const { connectToWebsocket: nodeBarWs } = useWebsocketConnect("node-bar")
+
+  const [chooseNode, setChooseData] = useState("")
+  const [data, setData] = useImmer([])
 
   useEffect(() => {
-    connectToWebsocket();
-  }, [connectToWebsocket]);
+    connectToWebsocket()
+  }, [connectToWebsocket])
 
   useEffect(() => {
-    const ws = websocketRef.current;
+    const ws = websocketRef.current
     const parseData = (ev) => {
       try {
-        const parseData = JSON.parse(ev.data);
-        console.log("parseData", parseData.data)
-        setChooseData(parseData.data);
+        const parseData = JSON.parse(ev.data)
+        setChooseData(parseData.data)
       } catch (error) {
-        console.log(";error", error);
+        console.log(";error", error)
       }
-    };
-    ws?.addEventListener("message", parseData);
+    }
+    ws?.addEventListener("message", parseData)
 
     return () => {
-      ws?.removeEventListener("message", parseData);
-    };
-  }, []);
+      ws?.removeEventListener("message", parseData)
+    }
+  }, [])
+
+  const parseData = useCallback((ev) => {
+    try {
+      const message = JSON.parse(ev.data)
+      const showData = message.find((item) => item.node_mac === Number(chooseNode))
+      if (showData) {
+        const { tunnel } = showData
+        setData(tunnel)
+      }
+    } catch (error) {
+      console.log("error", error)
+    }
+  }, [chooseNode])
+
+  useEffect(() => {
+    nodeBarWs().then((res) => {
+      res?.addEventListener("message", (ev) => {
+        parseData(ev)
+      })
+    })
+  }, [nodeBarWs, parseData])
+
+
+
+  // useEffect(() => {
+  //   const ws = websocketRef.current;
+  //   ws?.addEventListener("message", parseData);
+
+  //   return () => {
+  //     ws?.removeEventListener("message", parseData);
+  //   };
+  // }, [parseData, websocketRef]);
 
   return (
     <div className="w-full h-full">
@@ -36,10 +71,10 @@ function NodeStatus() {
         <ChannelUse chooseNode={chooseNode} />
       </div>
       <div className="w-full h-1/2">
-        <NodeBar node={chooseNode} />
+        <NodeBar data={data} node={chooseNode} />
       </div>
     </div>
-  );
+  )
 }
 
-export default NodeStatus;
+export default NodeStatus

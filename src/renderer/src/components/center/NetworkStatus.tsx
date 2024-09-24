@@ -1,18 +1,29 @@
 import { Flex } from "antd";
 import NodeBar from "../NodeBar";
 import Topology from "../Topology";
-import { useState } from "react";
+import { useImmer } from "use-immer";
+import useWebsocketConnect from "@/hooks/useWebsocketConnect";
+import { useEffect } from "react";
 
 function NetworkStatus() {
-  const [chooseNode, setChooseNode] = useState("");
+  const [data, setData] = useImmer([])
+  const { connectToWebsocket } = useWebsocketConnect("network-bar")
+
+  useEffect(() => {
+    connectToWebsocket().then(res => {
+      res?.addEventListener("message", (ev) => {
+        setData(ev.data)
+      })
+    })
+  }, [connectToWebsocket]);
 
   return (
     <Flex vertical className="w-full h-full pt-5 pr-5">
       <div className="flex-1 min-h-0">
-        <Topology exclude={[0]} tips="点击节点显示其频谱能量分布" onNodeClick={(choose) => setChooseNode(choose)} />
+        <Topology exclude={[0]}  />
       </div>
       <div className="flex-1 min-h-0">
-        <NodeBar node={chooseNode} />
+        <NodeBar data={data}/>
       </div>
     </Flex>
   );

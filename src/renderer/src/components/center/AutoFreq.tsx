@@ -52,7 +52,7 @@ function AutoFreq() {
     <div className="flex flex-col w-full h-full">
       <div className="flex flex-1 min-h-0 min-w-0">
         <div className="flex-1">
-          <Topology tips="点击用户端节点显示不同内容" onNodeClick={(c) => setChooseNode(c)} exclude={[0]} />
+          <Topology onNodeClick={(c) => setChooseNode(c)} exclude={[0]} />
         </div>
         <div className="flex-1" ref={(dom) => (heatmapEcharts.domRef.current = dom)}></div>
       </div>

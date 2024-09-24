@@ -22,6 +22,7 @@ const clients: Record<string, Set<WebSocket>> = {
   "/business": new Set(), // 业务分布
   "/address": new Set(), // 设置业务传输目的地址
   "/network-list": new Set(), // 网络列表
+  "/network-bar": new Set(), // 子网
 }
 
 server.on("connection", (ws, req) => {
@@ -107,12 +108,12 @@ server.on("connection", (ws, req) => {
           {
             start_freq: 250, // 起始频点
             node_mac: 5, // 节点编号
-            tunnel: [32, 25, 27, 33, 36, 41, 43, 47], // 信道数据
+            tunnel: generateData(32), // 信道数据
           },
           {
             start_freq: 250, // 起始频点
             node_mac: 6, // 节点编号
-            tunnel: [22, 21, 24, 25, 28, 31, 35, 47], // 信道数据
+            tunnel: generateData(32), // 信道数据
           },
         ]
         ws.send(JSON.stringify(data))
@@ -120,6 +121,14 @@ server.on("connection", (ws, req) => {
 
       break
     }
+    case "/network-bar": {
+      setInterval(() => {
+        const data = generateData(1024)
+        ws.send(JSON.stringify(data))
+      }, 1000)
+      break
+    }
+
     case "/spectrum-status": {
       setInterval(() => {
         const data = {
@@ -291,4 +300,15 @@ function generateFreqStatus() {
     }
   }
   return arr
+}
+
+
+function generateData(number: number) {
+  const data = []
+  for(let i=0; i < number; i++) {
+    const random = Math.random() * 100
+    data.push(random)
+  }
+
+  return data
 }
