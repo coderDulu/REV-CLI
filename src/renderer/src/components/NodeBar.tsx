@@ -32,39 +32,36 @@ const initOption = {
       data: [],
       type: "bar",
       large: true,
+      // animation: false,
       //  sampling: 'lttb'
     },
   ],
 }
 function NodeBar({ node, data }: { node?: string; data: number[] }) {
-
   const { domRef, update, myChart } = useEcharts(initOption)
 
-  // useEffect(() => {
-  //   if (node) {
-  //     update({
-  //       title: {
-  //         text: `节点${node}频段能量分布`,
-  //       },
-  //       xAxis: {
-  //         data: Array(Number(32))
-  //           .fill(0)
-  //           .map((_, index) => index),
-  //       },
-  //     })
-  //   }
-  // }, [node])
+  useEffect(() => {
+    if (node) {
+      update({
+        title: {
+          text: `节点${node}频段能量分布`,
+        },
+        xAxis: {
+          data: Array(Number(32))
+            .fill(0)
+            .map((_, index) => index),
+        },
+      })
+    }
+  }, [node])
 
   useEffect(() => {
-    // update({
-    //   series: {
-    //     data: data,
-    //   },
-    // })
-    myChart.current?.setOption({
-      series: {
-        data: data,
-      },
+    update({
+      series: [
+        {
+          data: data,
+        },
+      ],
     })
   }, [data])
 
