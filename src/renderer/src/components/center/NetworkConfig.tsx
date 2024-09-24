@@ -8,7 +8,8 @@ import SpectrumStatus from "../SpectrumStatus";
 import NetworkRate from "./NetWorkRate";
 
 function NetworkConfig() {
-  const { connectToWebsocket, sendMessage } = useWebsocketConnect("net-config");
+  const { connectToWebsocket, sendMessage } = useWebsocketConnect("net-config-set");
+  
 
   useEffect(() => {
     connectToWebsocket();

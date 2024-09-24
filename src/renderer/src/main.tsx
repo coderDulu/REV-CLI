@@ -8,7 +8,7 @@ import zhCN from "antd/locale/zh_CN";
 
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <ConfigProvider
       locale={zhCN}
       theme={{
@@ -31,5 +31,5 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     >
       <RouterProvider router={config} />
     </ConfigProvider>
-  </React.StrictMode>
+  // </React.StrictMode>
 );

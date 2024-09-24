@@ -15,7 +15,8 @@ const clients: Record<string, Set<WebSocket>> = {
   "/file": new Set(), // 文件传输
   "/freq-list": new Set(), // 频谱状态
   "/node-bar": new Set(), // 频段能量分布柱状图
-  "/net-config": new Set(), // 网络配置参数设置
+  "/net-config-set": new Set(), // 网络配置参数设置
+  "/net-config-get": new Set(), // 网络配置参数获取
   "/spectrum-status": new Set(), // 频段状态
   "/net-rate": new Set(), // 实时网络速率
   "/business": new Set(), // 业务分布
