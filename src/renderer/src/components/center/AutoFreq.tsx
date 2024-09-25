@@ -1,13 +1,11 @@
 // 自主选频
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Topology from "../Topology";
 import { useHeatmap } from "@/hooks/useHeatmap";
 import useWebSocketConnect from "@/hooks/useWebsocketConnect";
-import ChannelUse from "../ChannelUse";
 
 function AutoFreq() {
-  const [chooseNode, setChooseNode] = useState("");
-  const { heatmapEcharts, update } = useHeatmap(chooseNode);
+  const { heatmapEcharts, update } = useHeatmap();
   const { connectToWebsocket, close, websocketRef } = useWebSocketConnect("freq-status");
 
   useEffect(() => {
@@ -27,13 +25,11 @@ function AutoFreq() {
     function parseData(ev) {
       try {
         const parseData: any[] = JSON.parse(ev.data);
-        parseData.forEach((element: any) => {
-          const { freq_status, start_freq, field_num } = element;
-
-          if (Number(chooseNode) === field_num) {
-            update(freq_status, start_freq, cache, chooseNode);
-          }
-        });
+        console.log('parseData', parseData);
+        // parseData.forEach((element: any) => {
+        //   const { freq_status, start_freq, field_num } = element;
+        //   update(freq_status, start_freq, cache);
+        // });
       } catch (error) {
         console.log(error);
       }
@@ -46,19 +42,19 @@ function AutoFreq() {
     return () => {
       ws?.removeEventListener("message", parseData);
     };
-  }, [chooseNode]);
+  }, []);
 
   return (
     <div className="flex flex-col w-full h-full">
-      <div className="flex flex-1 min-h-0 min-w-0">
+      <div className="flex flex-col flex-1 min-h-0 min-w-0">
         <div className="flex-1">
-          <Topology onNodeClick={(c) => setChooseNode(c)} exclude={[0]} />
+          <Topology exclude={[0]} />
         </div>
         <div className="flex-1" ref={(dom) => (heatmapEcharts.domRef.current = dom)}></div>
       </div>
-      <div className="flex-1">
+      {/* <div className="flex-1">
         <ChannelUse chooseNode={chooseNode}/>
-      </div>
+      </div> */}
     </div>
   );
 }

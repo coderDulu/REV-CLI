@@ -38,7 +38,7 @@ const initOption = {
   ],
 }
 function NodeBar({ node, data }: { node?: string; data: number[] }) {
-  const { domRef, update, myChart } = useEcharts(initOption)
+  const { domRef, update } = useEcharts(initOption)
 
   useEffect(() => {
     if (node) {

@@ -76,6 +76,42 @@ interface FormValues {
   // freqChannel: number;
 }
 
+const startFreqList = {
+  230: ["230", "390"],
+  240: ["240", "400"],
+  250: ["250", "410"],
+  260: ["260", "420"],
+  270: ["270", "430"],
+  280: ["280", "440"],
+  290: ["290", "450"],
+  300: ["300", "460"],
+  310: ["310", "470"],
+  320: ["320", "480"],
+  330: ["330", "490"],
+  340: ["340", "500"],
+  350: ["350", "510"],
+  360: ["360", "520"],
+  370: ["370", "530"],
+  380: ["380", "540"],
+  390: ["380", "550"],
+  400: ["400", "560"],
+  410: ["410", "570"],
+  420: ["420", "580"],
+  430: ["430", "590"],
+  440: ["440", "600"],
+  450: ["450", "610"],
+  460: ["460", "620"],
+  470: ["470", "630"],
+  480: ["480", "640"],
+  490: ["490", "650"],
+  500: ["500", "660"],
+  510: ["510", "670"],
+}
+const startFreqOption = Object.keys(startFreqList).map((item) => ({
+  label: item,
+  value: item,
+}))
+
 function FormConfig({ onFinish, onFinishFailed }) {
   const [form] = Form.useForm()
   const { connectToWebsocket: getConfig } = useWebsocketConnect("net-config-get")
@@ -84,10 +120,10 @@ function FormConfig({ onFinish, onFinishFailed }) {
     getConfig().then((res) => {
       res?.addEventListener("message", (ev) => {
         const data = JSON.parse(ev.data)
+        console.log("data", data.bandSelect)
         form.setFieldsValue({
-          ...data
+          ...data,
         })
-
       })
     })
   }, [getConfig])
@@ -96,7 +132,7 @@ function FormConfig({ onFinish, onFinishFailed }) {
     const switches = form.getFieldsValue(["autoChannel", "autoChannelModel", "fixFreqMode"])
     const updatedSwitches = {
       autoChannel: false,
-      autoChannelModel: false,
+      // autoChannelModel: false,
       fixFreqMode: false,
       [changedSwitch]: switches[changedSwitch],
     }
@@ -122,8 +158,8 @@ function FormConfig({ onFinish, onFinishFailed }) {
       }}
     >
       <Form.Item name="startFreq" label="起始频点">
-        <InputNumber className="w-40" suffix="MHz" />
-        {/* <span className="ml-1">MHz</span> */}
+        <Select className="!w-40" options={startFreqOption} />
+        {/* <InputNumber className="w-40" suffix="MHz" /> */}
       </Form.Item>
       {/* <Form.Item name="channelBand" label="信道带宽">
         <Select className="!w-40" options={[{ value: 160, label: "160 MHz" }]} />
@@ -143,8 +179,19 @@ function FormConfig({ onFinish, onFinishFailed }) {
       {/* <Form.Item name="freqChannel" label="通道选择">
         <Select className="!w-40" options={channelOptions} />
       </Form.Item> */}
-      <Form.Item name="bandSelect" label="通道">
-        <Select className="!w-40" options={channelOptions} />
+      <Form.Item shouldUpdate noStyle>
+        {({ getFieldValue }) => {
+          return (
+            <Form.Item label="通道" name="bandSelect">
+              <Select
+                className="!w-40"
+                disabled={getFieldValue("autoChannel")}
+                options={channelOptions}
+              />
+            </Form.Item>
+          )
+        }}
+        {/* <Select className="!w-40" options={channelOptions} /> */}
       </Form.Item>
       {/* <Form.Item name="chnSelect" label="通带">
         <Select className="!w-40" options={channelOptions} />

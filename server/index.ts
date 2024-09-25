@@ -22,7 +22,8 @@ const clients: Record<string, Set<WebSocket>> = {
   "/business": new Set(), // 业务分布
   "/address": new Set(), // 设置业务传输目的地址
   "/network-list": new Set(), // 网络列表
-  "/network-bar": new Set(), // 子网
+  "/network-bar": new Set(), // 中心端-网络状态-频段能量分布
+  "/network-freq": new Set(), // 中心端-自主选频-子网干扰业务分布
 }
 
 server.on("connection", (ws, req) => {
@@ -87,16 +88,16 @@ server.on("connection", (ws, req) => {
             start_freq: 350, //域起始频点 -10
             freq_status: generateFreqStatus(),
           },
-          {
-            field_num: 5, //域地址
-            start_freq: 320, //域起始频点 -10
-            freq_status: generateFreqStatus(),
-          },
-          {
-            field_num: 6, //域地址
-            start_freq: 120, //域起始频点 -10
-            freq_status: generateFreqStatus(),
-          },
+          // {
+          //   field_num: 5, //域地址
+          //   start_freq: 320, //域起始频点 -10
+          //   freq_status: generateFreqStatus(),
+          // },
+          // {
+          //   field_num: 6, //域地址
+          //   start_freq: 120, //域起始频点 -10
+          //   freq_status: generateFreqStatus(),
+          // },
         ]
         ws.send(JSON.stringify(data))
       }, 1000)
