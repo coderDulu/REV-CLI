@@ -4,30 +4,22 @@
 
 - 响应添加了 A 的为定时 1s 向前端发送一次数据
 
-## 1. 设备连接
-
-### 请求
-
-`/connect`
-
-### 响应
+## 1. 设备连接  `/connect`
+- 响应
 
 ```json
 {
-  type: "connect",
-  data: "success",
+  "type": "connect",
+  "data": "success",
 };
 ```
 
 
-## 中心端
+## 2. 中心端
 
-### 拓扑（A）
+### 拓扑（A） `/topology`
 
-- 请求：
-`/topology`
-
-- 响应（A）：
+- 响应：
 ```json
 {
   "type": "topology",
@@ -51,13 +43,15 @@
 ```
 
 ### 网络配置
-
-### 业务信道参数获取
-
-- 请求：
-  `net-config-get`
+#### 频段能量分布(A) `/network-bar`
 - 响应：
-
+```json
+{
+  "data": [1, 0, 0 ...] // 1024个数据  
+}
+```
+#### 业务信道参数获取 `/net-config-get` 
+- 响应：
 ```json
 {
   "startFreq": 200, // 起始频点
@@ -67,24 +61,26 @@
 }
 ```
 
-### 业务信道参数设置
-
+### 业务信道参数设置 `/net-config-set`
 - 请求：
-  `net-config-set`
+```json
+ {
+    "startFreq": 200, // 起始频点
+    "autoChannel": true,  // 自适应跳频
+    "fixFreqMode": false, // 频点固定模式
+    "bandSelect": 29,     // 通道
+  }
+```
 - 响应：
 
 ```json
 {
-  "startFreq": 200, // 起始频点
-  "autoChannel": true,  // 自适应跳频
-  "fixFreqMode": false, // 频点固定模式
-  "bandSelect": 29,     // 通道
+  "result": "success", // success 或者 error
+  "message": "ok",    // 对result的描述，主要是error时的描述
 }
 ```
 
-### 频谱管控状态
-- 请求:
-`/spectrum-status`
+### 频谱管控状态 `/spectrum-status` 
 - 响应
 ```json
 {
@@ -94,12 +90,21 @@
 ```
 
 
-### 实时网络传输速率
-- 请求:
-`/net-rate`
+### 实时网络传输速率（A） `/net-rate`
 - 响应
 ```json
 {
   "rate":65
 }
 ```
+
+## 3. 业务传输
+`逻辑就是：先发送目的地址，然后发送数据，收到什么数据就往目的地址发什么数据`
+### 目的地址  "/address"
+- 请求：
+```json
+1 // 该值为目的地址
+```
+### 数据传输 `/text`
+### 视频传输 `/video`
+### 文件传输 `file`
