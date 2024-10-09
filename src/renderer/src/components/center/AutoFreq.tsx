@@ -1,48 +1,45 @@
 // 自主选频
-import { useEffect } from "react";
-import Topology from "../Topology";
-import { useHeatmap } from "@/hooks/useHeatmap";
-import useWebSocketConnect from "@/hooks/useWebsocketConnect";
+import { useEffect } from "react"
+import Topology from "../Topology"
+import { useHeatmap } from "@/hooks/useHeatmap"
+import useWebSocketConnect from "@/hooks/useWebsocketConnect"
 
 function AutoFreq() {
-  const { heatmapEcharts, update } = useHeatmap();
-  const { connectToWebsocket, close, websocketRef } = useWebSocketConnect("freq-status");
+  const { heatmapEcharts, update } = useHeatmap()
+  const { connectToWebsocket, close, websocketRef } = useWebSocketConnect("network-freq-status")
 
   useEffect(() => {
-    connectToWebsocket();
+    connectToWebsocket()
     return () => {
-      close();
-    };
-  }, [close, connectToWebsocket]);
+      close()
+    }
+  }, [close, connectToWebsocket])
 
   useEffect(() => {
-    const cache = [];
+    const cache = []
 
     heatmapEcharts.myChart.current?.setOption({
       series: [{ data: [] }],
-    });
+    })
 
     function parseData(ev) {
       try {
-        const parseData: any[] = JSON.parse(ev.data);
-        console.log('parseData', parseData);
-        // parseData.forEach((element: any) => {
-        //   const { freq_status, start_freq, field_num } = element;
-        //   update(freq_status, start_freq, cache);
-        // });
+        const parseData: any = JSON.parse(ev.data)
+        const { start_freq, freq_status, field_num } = parseData
+        update(freq_status, start_freq, cache, field_num)
       } catch (error) {
-        console.log(error);
+        console.log(error)
       }
     }
 
-    const ws = websocketRef.current;
+    const ws = websocketRef.current
 
-    ws?.addEventListener("message", parseData);
+    ws?.addEventListener("message", parseData)
 
     return () => {
-      ws?.removeEventListener("message", parseData);
-    };
-  }, []);
+      ws?.removeEventListener("message", parseData)
+    }
+  }, [])
 
   return (
     <div className="flex flex-col w-full h-full">
@@ -56,7 +53,7 @@ function AutoFreq() {
         <ChannelUse chooseNode={chooseNode}/>
       </div> */}
     </div>
-  );
+  )
 }
 
-export default AutoFreq;
+export default AutoFreq

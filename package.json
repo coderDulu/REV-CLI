@@ -4,7 +4,7 @@
   "description": "",
   "type": "module",
   "main": "./dist/main/index.cjs",
-  "date": "20240904",
+  "date": "20241009",
   "scripts": {
     "dev": "concurrently \"npm run dev:renderer\" \"npm run dev:main\" --kill-others-on-fail",
     "dev:main": "nodemon",

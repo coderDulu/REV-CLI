@@ -21,9 +21,11 @@ const clients: Record<string, Set<WebSocket>> = {
   "/net-rate": new Set(), // 实时网络速率
   "/business": new Set(), // 业务分布
   "/address": new Set(), // 设置业务传输目的地址
+  // 中心端
   "/network-list": new Set(), // 网络列表
   "/network-bar": new Set(), // 中心端-网络状态-频段能量分布
   "/network-freq": new Set(), // 中心端-自主选频-子网干扰业务分布
+  "/network-freq-status": new Set(),
 }
 
 server.on("connection", (ws, req) => {
@@ -126,7 +128,7 @@ server.on("connection", (ws, req) => {
       setInterval(() => {
         const data = generateData(1024)
         ws.send(JSON.stringify(data))
-      }, 1000)
+      }, 30)
       break
     }
 
@@ -199,7 +201,7 @@ server.on("connection", (ws, req) => {
       )
       break
     }
-    case "network-list": {
+    case "/network-list": {
       sendMessageToAllClients(
         JSON.stringify({
           type: "network-list",
@@ -231,6 +233,18 @@ server.on("connection", (ws, req) => {
         pathname,
         ws
       )
+      break
+    }
+    case "/network-freq-status": {
+      setInterval(() => {
+        const data = {
+          field_num: 1, //域地址
+          start_freq: 250, //域起始频点 -10
+          freq_status: generateFreqStatus(),
+        }
+
+        ws.send(JSON.stringify(data))
+      }, 1000)
       break
     }
   }
@@ -266,7 +280,7 @@ server.on("connection", (ws, req) => {
       }
       case "/address": {
         console.log("address", message.toString())
-        // sendMessageToAllClients(message.toString(), req.url, ws);
+        sendMessageToAllClients(message.toString(), req.url, ws)
         break
       }
     }
@@ -303,10 +317,9 @@ function generateFreqStatus() {
   return arr
 }
 
-
 function generateData(number: number) {
   const data = []
-  for(let i=0; i < number; i++) {
+  for (let i = 0; i < number; i++) {
     const random = Math.random() * 100
     data.push(random)
   }

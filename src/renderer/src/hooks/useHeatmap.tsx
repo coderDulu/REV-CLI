@@ -1,15 +1,14 @@
-import { useCallback, useEffect } from "react";
-import useEcharts from "./useEcharts";
+import { useCallback, useEffect } from "react"
+import useEcharts from "./useEcharts"
 
-const colors = ["#efbe8d", "#71b4b9", "#e9a3a3"];
-const intXAxis = new Array(24).fill(24).map((_: any, index) => index + 1);
+const colors = ["#efbe8d", "#71b4b9", "#e9a3a3"]
+const intXAxis = new Array(24).fill(24).map((_: any, index) => index + 1)
 
 function initOption(name?: number | string) {
-
   return {
     title: {
       text: `子网${name ?? ""}干扰业务分布`,
-      top: "10px",
+      top: "0px",
       left: "4%",
       textStyle: {
         fontSize: 24,
@@ -17,12 +16,20 @@ function initOption(name?: number | string) {
       },
     },
     xAxis: {
+      name: "时间/s",
       data: intXAxis,
       splitArea: {
         show: true,
       },
+      axisTick: {
+        show: false,
+      },
+      axisLabel: {
+        show: false,
+      },
     },
     yAxis: {
+      name: "中心频点",
       type: "category",
       data: [],
       splitArea: {
@@ -58,7 +65,7 @@ function initOption(name?: number | string) {
         },
       },
     ],
-  };
+  }
 }
 
 /**
@@ -68,7 +75,12 @@ function initOption(name?: number | string) {
  * @param networkArr freqStatus[]
  * @returns option配置对象
  */
-const updateData = (freqStatus: any[], startFreq: number, networkArr: number[][], name?: number | string) => {
+const updateData = (
+  freqStatus: any[],
+  startFreq: number,
+  networkArr: number[][],
+  name?: number | string
+) => {
   const intAYAxis = [
     startFreq - 10 + "MHz",
     startFreq + 10 + "MHz",
@@ -78,22 +90,23 @@ const updateData = (freqStatus: any[], startFreq: number, networkArr: number[][]
     startFreq + 90 + "MHz",
     startFreq + 110 + "MHz",
     startFreq + 130 + "MHz",
-  ];
+  ]
 
   if (networkArr.length >= intXAxis.length) {
-    networkArr.shift();
+    networkArr.shift()
   }
-  networkArr.push(freqStatus);
+  networkArr.push(freqStatus)
 
-  const varData: any = [];
-  let startIdx = networkArr.length - 1;
+  const varData: any = []
+  let startIdx = networkArr.length - 1
   networkArr.forEach((element: any) => {
     for (let yIdx = 0; yIdx < 8; yIdx++) {
-      const tmpData = [startIdx, yIdx, element[yIdx]];
-      varData.push(tmpData);
+      const tmpData = [startIdx, yIdx, element[yIdx]]
+      varData.push(tmpData)
     }
-    startIdx = startIdx - 1;
-  });
+    startIdx = startIdx - 1
+  })
+  console.log(varData)
 
   return {
     title: {
@@ -102,17 +115,17 @@ const updateData = (freqStatus: any[], startFreq: number, networkArr: number[][]
     tooltip: {
       position: "top",
       formatter: function (params: any) {
-        const yValue = intAYAxis[params.value[1]];
+        const yValue = intAYAxis[params.value[1]]
         if (params.value[2] == 1) {
-          return `${yValue}: 干扰`;
+          return `${yValue}: 干扰`
         }
         if (params.value[2] == 2) {
-          return `${yValue}: 业务`;
+          return `${yValue}: 业务`
         }
         if (params.value[2] == 3) {
-          return `${yValue}: 冲突`;
+          return `${yValue}: 冲突`
         } else {
-          return "";
+          return ""
         }
       },
     },
@@ -124,36 +137,44 @@ const updateData = (freqStatus: any[], startFreq: number, networkArr: number[][]
         data: varData,
       },
     ],
-  };
-};
+  }
+}
 
 export function useHeatmap(name?: number | string) {
-  const heatmapEcharts = useEcharts(initOption(name));
+  const heatmapEcharts = useEcharts(initOption(name))
   const optionSelected = {
     0: true,
     1: true,
     2: true,
-  };
-  const networkArr = [];
+  }
+  const networkArr = []
 
   useEffect(() => {
     heatmapEcharts.myChart.current?.on("datarangeselected", (params: any) => {
-      Object.assign(optionSelected, params.selected);
-    });
-  }, []);
+      Object.assign(optionSelected, params.selected)
+    })
+  }, [])
 
   // 更新图表
-  const update = useCallback((freqStatus: any[], startFreq: number, cache = networkArr) => {
-    const newData = updateData(freqStatus, startFreq, cache, name);
-    heatmapEcharts.update(newData);
-    heatmapEcharts.myChart.current?.dispatchAction({
-      type: "selectDataRange",
-      selected: optionSelected,
-    });
-  }, []);
+  const update = useCallback(
+    (
+      freqStatus: any[],
+      startFreq: number,
+      cache = networkArr,
+      netwrok?: number | string = name
+    ) => {
+      const newData = updateData(freqStatus, startFreq, cache, netwrok)
+      heatmapEcharts.update(newData)
+      heatmapEcharts.myChart.current?.dispatchAction({
+        type: "selectDataRange",
+        selected: optionSelected,
+      })
+    },
+    []
+  )
 
   return {
     update,
     heatmapEcharts,
-  };
+  }
 }
