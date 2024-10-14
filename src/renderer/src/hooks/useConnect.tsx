@@ -1,47 +1,46 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext } from 'react';
-import { useImmerReducer } from 'use-immer'
+import { createContext, useContext } from "react"
+import { useImmerReducer } from "use-immer"
 
 interface Connect {
   address: string
   port: number
   isConnect: boolean
+  role?: "manage" | "center" | "user"
 }
 
-const storage = sessionStorage.getItem('connect')
-const initialTasks: Connect =  storage ? JSON.parse(storage) : {
-  address: "127.0.0.1",
-  port: 8080,
-  isConnect: false
-}
+const storage = sessionStorage.getItem("connect")
+const initialTasks: Connect = storage
+  ? JSON.parse(storage)
+  : {
+      address: "127.0.0.1",
+      port: 8080,
+      isConnect: false,
+      role: "manage",
+    }
 
-const TasksContext = createContext<Connect>(initialTasks);
+const TasksContext = createContext<Connect>(initialTasks)
 
-const TasksDispatchContext = createContext<any>(null);
+const TasksDispatchContext = createContext<any>(null)
 
 export default useConnect
 
 export function TasksProvider({ children }: { children: React.ReactNode }) {
-  const [tasks, dispatch] = useImmerReducer(
-    tasksReducer,
-    initialTasks
-  );
+  const [tasks, dispatch] = useImmerReducer(tasksReducer, initialTasks)
 
   return (
     <TasksContext.Provider value={tasks}>
-      <TasksDispatchContext.Provider value={dispatch}>
-        {children}
-      </TasksDispatchContext.Provider>
+      <TasksDispatchContext.Provider value={dispatch}>{children}</TasksDispatchContext.Provider>
     </TasksContext.Provider>
-  );
+  )
 }
 
 export function useConnect() {
-  return useContext(TasksContext);
+  return useContext(TasksContext)
 }
 
 export function useConnectDispatch() {
-  return useContext(TasksDispatchContext);
+  return useContext(TasksDispatchContext)
 }
 
 interface ActionType {
@@ -49,26 +48,19 @@ interface ActionType {
   address?: string
   port?: number
   isConnect?: boolean
+  role?: "manage" | "center" | "user"
 }
 function tasksReducer(tasks: Connect, action: ActionType) {
-  switch (action.type) {
-    case 'update': {
-      action.address && (tasks.address = action.address)
-      action.port && (tasks.port = action.port)
-
-      if(action.isConnect !== undefined) {
-        tasks.isConnect = action.isConnect
-      }
-
-      sessionStorage.setItem('connect', JSON.stringify({
-        address: tasks.address,
-        port: tasks.port,
-        isConnect: tasks.isConnect
-      }))
+  const { type, ...data } = action
+  switch (type) {
+    case "update": {
+      Object.assign(tasks, data)
+      // 存储数据到sessionStorage
+      sessionStorage.setItem("connect", JSON.stringify(tasks))
       return tasks
     }
     default: {
-      throw Error('Unknown action: ' + action.type);
+      throw Error("Unknown action: " + type)
     }
   }
 }

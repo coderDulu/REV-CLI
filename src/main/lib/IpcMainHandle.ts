@@ -5,7 +5,11 @@ import { startSendVideo, stopSendVideo } from "../middleware/sendVideo";
 
 export type Names = "window-control" | "window-status" | "ws-connect" | "ws-disconnect" | "send-video" | "stop-send-video";
 export type Channel = "ws-closed" | "video-stopped";
-
+enum DeviceType {
+  manage,
+  center,
+  user,
+}
 
 type IpcMainHandle = {
   name: Names;
@@ -48,13 +52,13 @@ const EVENT_POOL: IpcMainHandle[] = [
   {
     name: "ws-connect",
     callback: (e, connectInfo) => {
-      return new Promise<void>((resolve, reject) => {
+      return new Promise<string>((resolve, reject) => {
         console.log("ws-connect", connectInfo);
         deviceInfo = connectInfo;
         ws = new WebSocketClient(`ws://${connectInfo.address}:${connectInfo.port}/connect`, {
           onOpen: () => {
             console.log("ws-connect open");
-            resolve();
+           
           },
           onClose: () => {
             console.log("ws-connect close");
@@ -63,6 +67,10 @@ const EVENT_POOL: IpcMainHandle[] = [
             reject("ws-connect close");
           },
         });
+        ws.addListener('message', (data) => {
+          const roleId = data.toString();
+          resolve(DeviceType[Number(roleId)]);
+        })
       });
     },
   },

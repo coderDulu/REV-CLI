@@ -35,13 +35,14 @@ function ConnectForm({ showModel, onHide }: Props) {
 
   const onFinished: FormProps<FieldType>['onFinish'] = async (values) => {
     try {
-      await window.electron.invoke('ws-connect', { address: values.address, port: values.port })
+      const role = await window.electron.invoke('ws-connect', { address: values.address, port: values.port })
 
       connectDispatch({
         type: "update",
         address: values.address,
         port: values.port,
-        isConnect: true
+        isConnect: true,
+        role
       })
       onHide()
       window.$message.success("连接成功")

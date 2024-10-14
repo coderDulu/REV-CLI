@@ -1,5 +1,7 @@
-import clsx from "clsx"
-import { useNavigate, useLocation } from "react-router-dom"
+import clsx from "clsx";
+import { useNavigate } from "react-router-dom";
+import useConnect from "@/hooks/useConnect";
+import { useEffect } from "react";
 
 const list = [
   {
@@ -14,36 +16,40 @@ const list = [
     name: "用户端",
     value: "/user",
   },
-]
+];
 
 function HeaderTabs() {
-  const navigate = useNavigate()
-  const location = useLocation()
+  const navigate = useNavigate();
+  const connect = useConnect(); // 解构 role，避免重复访问 connect.role
 
-  const choose =
-    list.find((item) => location.pathname.includes(item.value))?.value ||
-    "manage"
+  useEffect(() => {
+    if (connect.role) {
+      navigate(`/${connect.role}`);
+    }
+  }, [connect.role, navigate]); // 确保 navigate 也在依赖项中
 
-  const handleClick = (value: string) => {
-    navigate(value)
-  }
+  // 辅助函数：判断是否为当前角色
+  const isActiveTab = (itemValue: string) => connect.role === itemValue.replace("/", "");
 
   return (
-    <ul className="w-11/12 h-10   m-auto flex items-center gap-1 justify-center rounded-3xl bg-[#EDEDED]">
+    <ul className="w-11/12 h-10 m-auto flex items-center gap-1 justify-center rounded-3xl bg-[#EDEDED]">
       {list.map((item) => (
         <li
+          key={item.value}
           className={clsx(
             "flex flex-1 h-full app-noDrag rounded-3xl border-none items-center justify-center cursor-pointer hover:opacity-50",
-            { "bg-[#0d8383] text-white": choose === item.value }
+            {
+              "bg-[#0d8383] text-white": isActiveTab(item.value), // 简化条件判断
+              "cursor-no-drop": !isActiveTab(item.value),
+            }
           )}
-          key={item.value}
-          onClick={() => handleClick(item.value)}
+          // onClick={() => !isActiveTab(item.value) && navigate(item.value)} // 添加点击事件，并检查是否为当前角色
         >
           {item.name}
         </li>
       ))}
     </ul>
-  )
+  );
 }
 
-export default HeaderTabs
+export default HeaderTabs;

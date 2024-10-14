@@ -44,11 +44,11 @@ server.on("connection", (ws, req) => {
 
   switch (pathname) {
     case "/connect": {
-      const data = {
-        type: "connect",
-        data: "success",
-      }
-      ws.send(JSON.stringify(data))
+      // const data = {
+      //   type: "connect",
+      //   data: "success",
+      // }
+      ws.send(1)
       break
     }
     case "/topology": {
