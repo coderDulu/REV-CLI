@@ -26,6 +26,8 @@ const clients: Record<string, Set<WebSocket>> = {
   "/network-bar": new Set(), // 中心端-网络状态-频段能量分布
   "/network-freq": new Set(), // 中心端-自主选频-子网干扰业务分布
   "/network-freq-status": new Set(),
+  // 用户端
+  "/user": new Set(), // 用户端-获取用户id
 }
 
 server.on("connection", (ws, req) => {
@@ -107,19 +109,19 @@ server.on("connection", (ws, req) => {
     }
     case "/node-bar": {
       setInterval(() => {
-        const data = [
-          {
-            start_freq: 250, // 起始频点
-            node_mac: 5, // 节点编号
-            tunnel: generateData(32), // 信道数据
-          },
-          {
-            start_freq: 250, // 起始频点
-            node_mac: 6, // 节点编号
-            tunnel: generateData(32), // 信道数据
-          },
-        ]
-        ws.send(JSON.stringify(data))
+        // const data = [
+        //   {
+        //     start_freq: 250, // 起始频点
+        //     node_mac: 5, // 节点编号
+        //     tunnel: generateData(32), // 信道数据
+        //   },
+        //   {
+        //     start_freq: 250, // 起始频点
+        //     node_mac: 6, // 节点编号
+        //     tunnel: generateData(32), // 信道数据
+        //   },
+        // ]
+        ws.send(JSON.stringify(generateData(32)))
       }, 1000)
 
       break
@@ -191,14 +193,22 @@ server.on("connection", (ws, req) => {
       }, 1000)
     }
     case "/user": {
-      sendMessageToAllClients(
-        JSON.stringify({
-          type: "user",
-          data: 6,
-        }),
-        pathname,
-        ws
-      )
+      let id = 5
+      setInterval(() => {
+        // if (id === 5) {
+        //   id = 6
+        // } else {
+        //   id = 5
+        // }
+        sendMessageToAllClients(
+          JSON.stringify({
+            type: "user",
+            data: id,
+          }),
+          pathname,
+          ws
+        )
+      }, 1000)
       break
     }
     case "/network-list": {

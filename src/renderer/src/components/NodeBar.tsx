@@ -5,7 +5,7 @@ import { useImmer } from "use-immer"
 const initOption = {
   title: {
     text: "频段能量分布",
-    top: 10,
+    // top: 10,
     left: 40,
     textStyle: {
       fontSize: 24,
@@ -25,7 +25,9 @@ const initOption = {
     },
   },
   yAxis: {
+    name: "能量(dBm)",
     type: "value",
+    min: 0,
   },
   series: [
     {

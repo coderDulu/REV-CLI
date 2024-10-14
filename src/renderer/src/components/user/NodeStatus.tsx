@@ -2,11 +2,9 @@ import { useCallback, useEffect, useState } from "react"
 import ChannelUse from "../ChannelUse"
 import NodeBar from "../NodeBar"
 import useWebsocketConnect from "@/hooks/useWebsocketConnect"
-import useConnect from "@/hooks/useConnect"
 import { useImmer } from "use-immer"
 function NodeStatus() {
-  const { address } = useConnect()
-  const { connectToWebsocket, websocketRef } = useWebsocketConnect(`user?ip=${address}`)
+  const { connectToWebsocket, websocketRef } = useWebsocketConnect(`user`)
   const { connectToWebsocket: nodeBarWs } = useWebsocketConnect("node-bar")
 
   const [chooseNode, setChooseData] = useState("")
@@ -36,15 +34,16 @@ function NodeStatus() {
   const parseData = useCallback((ev) => {
     try {
       const message = JSON.parse(ev.data)
-      const showData = message.find((item) => item.node_mac === Number(chooseNode))
-      if (showData) {
-        const { tunnel } = showData
-        setData(tunnel)
-      }
+      // const showData = message.find((item) => item.node_mac === Number(chooseNode))
+      // if (showData) {
+      //   const { tunnel } = showData
+      //   setData(tunnel)
+      // }
+      setData(message)
     } catch (error) {
       console.log("error", error)
     }
-  }, [chooseNode])
+  }, [])
 
   useEffect(() => {
     nodeBarWs().then((res) => {
