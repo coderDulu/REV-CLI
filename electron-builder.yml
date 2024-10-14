@@ -1,5 +1,5 @@
 appId: freq-config
-productName: freq-config
+productName: 可配置用频上位机软件
 directories:
   buildResources: build
   output: out/freq-config
@@ -17,17 +17,16 @@ files:
 asar: true
 asarUnpack:
   - resources/*
-# afterSign: build/notarize.js
 win:
   icon: ./build/favicon.ico
-  executableName: freq-config # 更改此处避免多个重复
+  executableName: 可配置用频上位机软件 # 确保安装后的可执行文件名称正确
 nsis:
-  artifactName: ${name}-${version}-setup.${ext}
-  shortcutName: ${productName}
-  uninstallDisplayName: ${productName}
+  artifactName: 可配置用频上位机软件-${version}-setup.${ext}
+  shortcutName: 可配置用频上位机软件
+  uninstallDisplayName: 可配置用频上位机软件
   createDesktopShortcut: always
 dmg:
-  artifactName: ${name}-${version}.${ext}
+  artifactName: 可配置用频上位机软件-${version}.${ext}
 linux:
   target:
     - AppImage
@@ -36,5 +35,5 @@ linux:
   maintainer: electronjs.org
   category: Utility
 appImage:
-  artifactName: ${name}-${version}.${ext}
+  artifactName: ${productName}-${version}.${ext}
 npmRebuild: false
