@@ -2,6 +2,12 @@ import useEcharts from "@/hooks/useEcharts"
 import { useEffect } from "react"
 import { useImmer } from "use-immer"
 
+function generateArray(count: number) {
+  return Array(count)
+    .fill(0)
+    .map((item, index) => index)
+}
+
 const initOption = {
   title: {
     text: "频段能量分布",
@@ -14,9 +20,7 @@ const initOption = {
   },
   xAxis: {
     type: "category",
-    data: Array(1024)
-      .fill(0)
-      .map((item, index) => index),
+    data: [],
   },
   tooltip: {
     trigger: "axis",
@@ -39,19 +43,19 @@ const initOption = {
     },
   ],
 }
-function NodeBar({ node, data }: { node?: string; data: number[] }) {
-  const { domRef, update } = useEcharts(initOption)
+function NodeBar({ node, data, xLength }: { node?: string; data: number[]; xLength?: number }) {
+  const { domRef, update } = useEcharts({
+    ...initOption,
+    xAxis: {
+      data: xLength && generateArray(xLength),
+    },
+  })
 
   useEffect(() => {
     if (node) {
       update({
         title: {
           text: `节点${node}频段能量分布`,
-        },
-        xAxis: {
-          data: Array(Number(32))
-            .fill(0)
-            .map((_, index) => index),
         },
       })
     }

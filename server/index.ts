@@ -14,7 +14,6 @@ const clients: Record<string, Set<WebSocket>> = {
   "/video": new Set(), // 视频传输
   "/file": new Set(), // 文件传输
   "/freq-list": new Set(), // 频谱状态
-  "/node-bar": new Set(), // 频段能量分布柱状图
   "/net-config-set": new Set(), // 网络配置参数设置
   "/net-config-get": new Set(), // 网络配置参数获取
   "/spectrum-status": new Set(), // 频段状态
@@ -28,6 +27,7 @@ const clients: Record<string, Set<WebSocket>> = {
   "/network-freq-status": new Set(),
   // 用户端
   "/user": new Set(), // 用户端-获取用户id
+  "/node-bar": new Set(), // 频段能量分布柱状图
 }
 
 server.on("connection", (ws, req) => {
@@ -48,7 +48,7 @@ server.on("connection", (ws, req) => {
       //   type: "connect",
       //   data: "success",
       // }
-      ws.send(1)
+      ws.send(2)
       break
     }
     case "/topology": {

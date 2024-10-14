@@ -70,7 +70,7 @@ function NodeStatus() {
         <ChannelUse chooseNode={chooseNode} />
       </div>
       <div className="w-full h-1/2">
-        <NodeBar data={data} node={chooseNode} />
+        <NodeBar data={data} node={chooseNode} xLength={32}/>
       </div>
     </div>
   )
