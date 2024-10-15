@@ -1,10 +1,10 @@
 {
   "name": "freq-config",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "",
   "type": "module",
   "main": "./dist/main/index.cjs",
-  "date": "20241014",
+  "date": "20241015",
   "scripts": {
     "dev": "concurrently \"npm run dev:renderer\" \"npm run dev:main\" --kill-others-on-fail",
     "dev:main": "nodemon",

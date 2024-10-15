@@ -8,7 +8,7 @@ export function startSendVideo(e: Electron.IpcMainInvokeEvent, path: string, dev
   try {
     console.log(deviceInfo);
     if (deviceInfo.address && deviceInfo.port) {
-      const ws = new WebSocket(`ws://${deviceInfo.address}:${deviceInfo.port}/video`);
+      const ws = new WebSocket(`ws://${deviceInfo.address}:${deviceInfo.port}/video-tx`);
       ws.onopen = () => {
         console.log("ws", "open");
       };

@@ -19,7 +19,7 @@ function startReceiveVideo(element: HTMLMediaElement) {
     const flvPlayer = mpegts.createPlayer(
       {
         type: "mse",
-        url: "ws://localhost:8080/video",
+        url: "ws://localhost:8080/video-rx",
         isLive: true,
       },
       {

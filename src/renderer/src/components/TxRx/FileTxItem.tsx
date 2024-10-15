@@ -28,7 +28,7 @@ const rules = [{ required: true, message: "请输入内容" }]
 function FileForm() {
   const [form] = Form.useForm()
   const [file, setFile] = useState<any>(null)
-  const { connectToWebsocket, sendMessage } = useWebsocketConnect("file")
+  const { connectToWebsocket, sendMessage } = useWebsocketConnect("file-tx")
   const { connectToWebsocket: connectAddress, sendMessage: sendToAddress } =
     useWebsocketConnect("address")
 

@@ -10,10 +10,11 @@ const clients: Record<string, Set<WebSocket>> = {
   "/connect": new Set(), // 设备连接
   "/topology": new Set(), // 网络拓扑
   "/freq-plan": new Set(), // 用频规划
+  
   "/text-tx": new Set(), // 文本传输-发端
   "/text-rx": new Set(), // 文本传输-收端
-  "/video": new Set(), // 视频传输
-  // "/video": new Set(), // 视频传输
+  "/video-tx": new Set(), // 视频传输-发端
+  "/video-rx": new Set(), // 视频传输-收端
   "/file-tx": new Set(), // 文件传输-发端
   "/file-rx": new Set(), // 文件传输-收端
 
@@ -276,9 +277,9 @@ server.on("connection", (ws, req) => {
         sendMessageToAllClients(message, "/file-rx")
         break
       }
-      case "/video": {
+      case "/video-tx": {
         console.log("Received video", message)
-        sendMessageToAllClients(message, req.url, ws)
+        sendMessageToAllClients(message, "/video-rx", ws)
         break
       }
       case "/freq-plan": {

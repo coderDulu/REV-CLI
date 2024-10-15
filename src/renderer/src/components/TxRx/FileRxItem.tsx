@@ -18,7 +18,7 @@ function FileRxItem() {
   useEffect(() => {
     postMessage({
       type: "connect",
-      url: `ws://${address}:${port}/file`
+      url: `ws://${address}:${port}/file-rx`
     });
   }, [address, port, postMessage]);
 
@@ -45,8 +45,7 @@ function FileRxItem() {
         }
         case "file": {
           const { progress, data } = e.data;
-
-          setProgress(progress);
+          setProgress(progress.toFixed(2));
 
           if (data) {
             setFileInfo((file) => {
