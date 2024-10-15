@@ -10,9 +10,13 @@ const clients: Record<string, Set<WebSocket>> = {
   "/connect": new Set(), // 设备连接
   "/topology": new Set(), // 网络拓扑
   "/freq-plan": new Set(), // 用频规划
-  "/text": new Set(), // 文本传输
+  "/text-tx": new Set(), // 文本传输-发端
+  "/text-rx": new Set(), // 文本传输-收端
   "/video": new Set(), // 视频传输
-  "/file": new Set(), // 文件传输
+  // "/video": new Set(), // 视频传输
+  "/file-tx": new Set(), // 文件传输-发端
+  "/file-rx": new Set(), // 文件传输-收端
+
   "/freq-list": new Set(), // 频谱状态
   "/net-config-set": new Set(), // 网络配置参数设置
   "/net-config-get": new Set(), // 网络配置参数获取
@@ -262,14 +266,14 @@ server.on("connection", (ws, req) => {
   ws.on("message", (message) => {
     // 转发消息给所有连接到相同 URL 的客户
     switch (req.url) {
-      case "/text": {
+      case "/text-tx": {
         console.log("Received data", message.toString())
-        sendMessageToAllClients(message.toString(), req.url)
+        sendMessageToAllClients(message.toString(), "/text-rx")
         break
       }
-      case "/file": {
+      case "/file-tx": {
         console.log("Received file", message)
-        sendMessageToAllClients(message, req.url)
+        sendMessageToAllClients(message, "/file-rx")
         break
       }
       case "/video": {

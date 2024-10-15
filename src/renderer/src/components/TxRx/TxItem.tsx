@@ -32,7 +32,7 @@ interface FormDataType {
 function FormSet() {
   const [form] = Form.useForm();
   const [sendDataLen, setSendDataLen] = useState(0);
-  const { sendMessage, connectToWebsocket } = useWebsocketConnect("text");
+  const { sendMessage, connectToWebsocket } = useWebsocketConnect("text-tx");
   const { sendMessage: sendToNetwork, connectToWebsocket: connectNetwork } = useWebsocketConnect("address");
   const [isSending, setIsSending] = useState(false);
   const sendDataTimer = useRef<NodeJS.Timeout | null>(null);
