@@ -119,10 +119,8 @@ function FreqPlan() {
   }
 
   function handleSend() {
-    console.log("selectRow.length", selectRow.length)
     if (selectRow.length) {
       const sendData = selectRow.map((select) => dataSource.find((item) => select === item.key))
-      console.log("sendData", sendData)
       sendData.forEach((rule) => {
         sendPlan(JSON.stringify(rule))
       })
