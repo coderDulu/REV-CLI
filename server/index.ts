@@ -9,8 +9,8 @@ const server = new WebSocket.Server({ port, host: "0.0.0.0" })
 const clients: Record<string, Set<WebSocket>> = {
   "/connect": new Set(), // 设备连接
   "/topology": new Set(), // 网络拓扑
-  "/freq-plan": new Set(), // 用频规划
-  
+
+
   "/text-tx": new Set(), // 文本传输-发端
   "/text-rx": new Set(), // 文本传输-收端
   "/video-tx": new Set(), // 视频传输-发端
@@ -26,13 +26,15 @@ const clients: Record<string, Set<WebSocket>> = {
   "/business": new Set(), // 业务分布
   "/address": new Set(), // 设置业务传输目的地址
   // 中心端
-  "/network-list": new Set(), // 网络列表
   "/network-bar": new Set(), // 中心端-网络状态-频段能量分布
   "/network-freq": new Set(), // 中心端-自主选频-子网干扰业务分布
   "/network-freq-status": new Set(),
   // 用户端
   "/user": new Set(), // 用户端-获取用户id
   "/node-bar": new Set(), // 频段能量分布柱状图
+  // 管理端
+  "/network-info": new Set(), // 网络列表
+  "/freq-plan": new Set(), // 用频规划
 }
 
 server.on("connection", (ws, req) => {
@@ -53,7 +55,7 @@ server.on("connection", (ws, req) => {
       //   type: "connect",
       //   data: "success",
       // }
-      ws.send(2)
+      ws.send(0)
       break
     }
     case "/topology": {
@@ -216,20 +218,12 @@ server.on("connection", (ws, req) => {
       }, 1000)
       break
     }
-    case "/network-list": {
+    case "/network-info": {
       sendMessageToAllClients(
         JSON.stringify({
-          type: "network-list",
-          data: [
-            {
-              ip: "5", // 节点
-              freqBand: [10, 100], // 频段范围
-            },
-            {
-              ip: "6",
-              freqBand: [-20, 80],
-            },
-          ],
+          freq_bane: "1",
+          freq_mode: "2",
+          channel: "3",
         }),
         pathname,
         ws

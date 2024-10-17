@@ -96,6 +96,7 @@ const updateData = (
     networkArr.shift()
   }
   networkArr.push(freqStatus)
+  console.log('freqStatus', networkArr);
 
   const varData: any = []
   let startIdx = networkArr.length - 1
@@ -106,7 +107,7 @@ const updateData = (
     }
     startIdx = startIdx - 1
   })
-  console.log(varData)
+  // console.log(varData)
 
   return {
     title: {
@@ -161,9 +162,9 @@ export function useHeatmap(name?: number | string) {
       freqStatus: any[],
       startFreq: number,
       cache = networkArr,
-      netwrok?: number | string = name
+      network?: number | string
     ) => {
-      const newData = updateData(freqStatus, startFreq, cache, netwrok)
+      const newData = updateData(freqStatus, startFreq, cache, network)
       heatmapEcharts.update(newData)
       heatmapEcharts.myChart.current?.dispatchAction({
         type: "selectDataRange",

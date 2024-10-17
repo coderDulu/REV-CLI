@@ -112,7 +112,13 @@ const startFreqOption = Object.keys(startFreqList).map((item) => ({
   value: item,
 }))
 
-function FormConfig({ onFinish, onFinishFailed }) {
+export function FormConfig({
+  onFinish,
+  onFinishFailed,
+}: {
+  onFinish: (values: FormValues) => void
+  onFinishFailed?: () => void
+}) {
   const [form] = Form.useForm()
   const { connectToWebsocket: getConfig } = useWebsocketConnect("net-config-get")
 
@@ -159,7 +165,6 @@ function FormConfig({ onFinish, onFinishFailed }) {
     >
       <Form.Item name="startFreq" label="起始频点">
         <Select className="!w-40" options={startFreqOption} />
-        {/* <InputNumber className="w-40" suffix="MHz" /> */}
       </Form.Item>
       {/* <Form.Item name="channelBand" label="信道带宽">
         <Select className="!w-40" options={[{ value: 160, label: "160 MHz" }]} />
@@ -191,11 +196,8 @@ function FormConfig({ onFinish, onFinishFailed }) {
             </Form.Item>
           )
         }}
-        {/* <Select className="!w-40" options={channelOptions} /> */}
       </Form.Item>
-      {/* <Form.Item name="chnSelect" label="通带">
-        <Select className="!w-40" options={channelOptions} />
-      </Form.Item> */}
+    
       <Form.Item wrapperCol={{ offset: 8 }}>
         <CButton buttonType="primary" type="submit">
           设置

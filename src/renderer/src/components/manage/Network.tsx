@@ -1,29 +1,45 @@
-import { useEffect } from "react";
-import Topology from "../Topology";
-import LineLeftItem from "../common/LineLeftItem";
-import useWebsocketConnect from "@/hooks/useWebsocketConnect";
+import { useEffect, useState } from "react"
+import Topology from "../Topology"
+import LineLeftItem from "../common/LineLeftItem"
+import useWebsocketConnect from "@/hooks/useWebsocketConnect"
 
 function Network() {
-  const { connectToWebsocket } = useWebsocketConnect("network-list");
+  const { connectToWebsocket } = useWebsocketConnect("network-info")
+  const [formData, setFormData] = useState({
+    freq_bane: "",
+    freq_mode: "",
+    channel: "",
+  })
 
   useEffect(() => {
-    connectToWebsocket()
+    connectToWebsocket().then(res => {
+      res?.addEventListener("message", (ev) => {
+        console.log(ev.data);
+        try {
+          const parseData: any = JSON.parse(ev.data)
+          setFormData(parseData)
+        } catch (error) {
+          console.log('network-info parse error');
+        }
+      })
+    })
   }, [connectToWebsocket])
 
   return (
     <div className="flex w-full h-full">
       <LineLeftItem>
-        <h1 className="font-bold text-2xl">网络列表</h1>
+        <h1 className="font-bold text-2xl">网络信息</h1>
         <ul className="mt-4 flex flex-col gap-6">
-          <li>网络节点数目： 未选择</li>
-          <li>当前工作频段： -10MHz-150MHz</li>
+          <li>当前工作频段： {formData.freq_bane}</li>
+          <li>工作模式：{formData.freq_mode}</li>
+          <li>通信通道：{formData.channel}</li>
         </ul>
       </LineLeftItem>
       <div className="flex-1 p-2">
         <Topology />
       </div>
     </div>
-  );
+  )
 }
 
-export default Network;
+export default Network
