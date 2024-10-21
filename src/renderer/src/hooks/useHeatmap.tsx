@@ -96,7 +96,7 @@ const updateData = (
     networkArr.shift()
   }
   networkArr.push(freqStatus)
-  console.log('freqStatus', networkArr);
+  // console.log('freqStatus', networkArr);
 
   const varData: any = []
   let startIdx = networkArr.length - 1

@@ -14,7 +14,7 @@ import {
   Alert,
 } from "antd"
 import { TableRowSelection } from "antd/es/table/interface"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useImmerReducer } from "use-immer"
 import dayjs from "dayjs"
 import { nanoid } from "nanoid"
@@ -24,7 +24,7 @@ import { FormConfig } from "../center/NetworkConfig"
 
 interface DataType {
   key?: React.Key
-  startFreq: string
+  startFreq: number
   mode: 0 | 1 // 0 -> 自适应跳频，1 -> 频点固定模式
   bandSelect: number
 
@@ -61,13 +61,12 @@ function getInitData() {
   }
   return initFormData
 }
-
 function FreqPlan() {
   const { connectToWebsocket, close, sendMessage } = useWebsocketConnect("freq-plan")
   const [network, setNetwork] = useState(1)
   const [interval, setInterVal] = useState(1000)
 
-  const [dataSource, dispatch] = useImmerReducer<DataType[], any>(reducer, getInitData())
+  const [dataSource, dispatch] = useImmerReducer<DataType[], any>(reducer, [])
   const [selectRow, setSelectRow] = useState<React.Key[]>([])
   const [isSending, setIsSending] = useState(false)
 
@@ -77,14 +76,6 @@ function FreqPlan() {
       close()
     }
   }, [close, connectToWebsocket])
-
-  useEffect(() => {
-    const saveData = {
-      // network: network,
-      data: dataSource,
-    }
-    sessionStorage.setItem("table-data", JSON.stringify(saveData))
-  }, [dataSource])
 
   const selectData: DataType | undefined = dataSource.find((item) => item.key === selectRow?.at(-1))
   // 添加
@@ -122,14 +113,28 @@ function FreqPlan() {
     if (selectRow.length) {
       const sendData = selectRow.map((select) => dataSource.find((item) => select === item.key))
       sendData.forEach((rule) => {
-        sendPlan(JSON.stringify(rule))
+        const tx = {
+          startFreq: rule?.startFreq,
+          mode: rule?.mode,
+          bandSelect: rule?.bandSelect,
+          network: network,
+        }
+
+        sendPlan(JSON.stringify(tx))
       })
       window.$message.success("下发成功")
     } else {
       setIsSending(true)
       window.$message.warning("开始发送")
-      dataSource.forEach((item, index) => {
-        intervalSendPlan(item.startTime, item.endTime, JSON.stringify(item), index + 1)
+      dataSource.forEach((rule, index) => {
+        const tx = {
+          startFreq: rule?.startFreq,
+          mode: rule?.mode,
+          bandSelect: rule?.bandSelect,
+          network: network,
+        }
+
+        intervalSendPlan(rule.startTime, rule.endTime, JSON.stringify(tx), index + 1)
       })
     }
   }
@@ -159,7 +164,7 @@ function FreqPlan() {
       sendPlan(data)
     } else {
       timer = setInterval(() => {
-        console.log(Date.now() > _startTime)
+        // console.log(Date.now() > _startTime)
         if (Date.now() > _startTime) {
           sendPlan(data)
             ?.then(() => {
@@ -181,7 +186,7 @@ function FreqPlan() {
           }
           return lastStatus
         })
-      }, 1000)
+      }, interval)
     }
   }
 
@@ -190,15 +195,34 @@ function FreqPlan() {
     window.$message.success("暂停发送")
   }
 
+  // 监听数据变化
+  const dataSourceRef = useRef(dataSource)
+  useEffect(() => {
+    dataSourceRef.current = dataSource // 更新 ref 的值
+  }, [dataSource])
+
+  useEffect(() => {
+    const allData = JSON.parse(sessionStorage.getItem("table-data") ?? "{}")
+    dispatch({
+      type: "replace",
+      payload: allData[network] ?? [],
+    })
+
+    return () => {
+      allData[network] = dataSourceRef.current
+      sessionStorage.setItem("table-data", JSON.stringify(allData))
+    }
+  }, [dispatch, network])
+
   return (
     <Flex gap="middle" vertical className="w-full h-full pl-12 pt-12 gap-6 pr-12">
       <h2 className="font-bold text-2xl">用频规划</h2>
 
       <Space align="center">
-        {/* <Radio.Group onChange={(e) => setNetwork(e.target.value)} value={network}> */}
-        {/* <Radio value={1}>子网络1</Radio> */}
-        {/* <Radio value={2}>子网络2</Radio> */}
-        {/* </Radio.Group> */}
+        <Radio.Group onChange={(e) => setNetwork(e.target.value)} value={network}>
+          <Radio value={1}>子网络1</Radio>
+          <Radio value={2}>子网络2</Radio>
+        </Radio.Group>
 
         <div>
           <span className="text-sm">发送间隔：</span>
@@ -329,35 +353,35 @@ const channelOptions = channelArr.map((item) => ({
 }))
 // 频点options
 const startFreqList = {
-  230: ["230", "390"],
-  240: ["240", "400"],
-  250: ["250", "410"],
-  260: ["260", "420"],
-  270: ["270", "430"],
-  280: ["280", "440"],
-  290: ["290", "450"],
-  300: ["300", "460"],
-  310: ["310", "470"],
-  320: ["320", "480"],
-  330: ["330", "490"],
-  340: ["340", "500"],
-  350: ["350", "510"],
-  360: ["360", "520"],
-  370: ["370", "530"],
-  380: ["380", "540"],
-  390: ["380", "550"],
-  400: ["400", "560"],
-  410: ["410", "570"],
-  420: ["420", "580"],
-  430: ["430", "590"],
-  440: ["440", "600"],
-  450: ["450", "610"],
-  460: ["460", "620"],
-  470: ["470", "630"],
-  480: ["480", "640"],
-  490: ["490", "650"],
-  500: ["500", "660"],
-  510: ["510", "670"],
+  230: [230, 390],
+  240: [240, 400],
+  250: [250, 410],
+  260: [260, 420],
+  270: [270, 430],
+  280: [280, 440],
+  290: [290, 450],
+  300: [300, 460],
+  310: [310, 470],
+  320: [320, 480],
+  330: [330, 490],
+  340: [340, 500],
+  350: [350, 510],
+  360: [360, 520],
+  370: [370, 530],
+  380: [380, 540],
+  390: [380, 550],
+  400: [400, 560],
+  410: [410, 570],
+  420: [420, 580],
+  430: [430, 590],
+  440: [440, 600],
+  450: [450, 610],
+  460: [460, 620],
+  470: [470, 630],
+  480: [480, 640],
+  490: [490, 650],
+  500: [500, 660],
+  510: [510, 670],
 }
 const startFreqOption = Object.keys(startFreqList).map((item) => ({
   label: item,
@@ -373,7 +397,7 @@ const bandSelectOption = [
 function TableForm({ onFinish, onFinishFailed, initData }: TableFormProps) {
   const rules = [{ required: true, message: "请输入" }]
   const initFormData: DataType = {
-    startFreq: "230",
+    startFreq: 230,
     mode: 0,
     bandSelect: 1,
     ...initData,
@@ -395,7 +419,7 @@ function TableForm({ onFinish, onFinishFailed, initData }: TableFormProps) {
         className="mt-4"
       >
         <Form.Item<DataType> name="startFreq" label="起始频点">
-          <Select className="!w-40" options={startFreqOption} />
+          <Select  className="!w-40" options={startFreqOption} />
         </Form.Item>
         <Form.Item<DataType> name="mode" label="频段模式">
           <Select className="!w-40" options={bandSelectOption} />
