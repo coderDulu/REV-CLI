@@ -1,4 +1,4 @@
-# 接口 v1.0.1
+# 接口 v1.0.6
 
 ## websocket 接口 ws://{ip}:{port}/{path}
 
@@ -196,12 +196,9 @@
 
 ```json
 {
-  "key": "hOv-iPG88qgCZxrySitjD", // 无需处理
-  "network": [1, 2],    // 子网
+  "network": 1,     // 子网
   "startFreq": 230, // 起始频点
   "mode": 0,        // 0 -> 自适应跳频，1 -> 频点固定模式
   "bandSelect": 1,  // 通道
-  "startTime": "00:00:00", // 无需处理
-  "endTime": "00:00:01"    // 无需处理
 }
 ```

@@ -384,8 +384,8 @@ const startFreqList = {
   510: [510, 670],
 }
 const startFreqOption = Object.keys(startFreqList).map((item) => ({
-  label: item,
-  value: item,
+  label: +item,
+  value: +item,
 }))
 // 频段options
 const bandSelectOption = [

@@ -76,7 +76,7 @@ const WebSocketVideoPlayer = () => {
 
   return (
     <div className="flex flex-col gap-10 p-5 w-full h-full">
-      <div
+      {/* <div
         className={clsx(
           "h-60 flex items-center justify-center",
           isSending ? "hidden" : "block"
@@ -88,14 +88,15 @@ const WebSocketVideoPlayer = () => {
         ref={videoRef}
         className={clsx("h-full", isSending ? "block" : "hidden")}
         id="video-player"
-      ></video>
-      {/* <iframe
-      className="w-full h-[500px]"
-        src="https://www.youtube.com/embed/UmVec9VHtpE?list=PLnTPdMjBRmAYehJkVbAXqxO-0cc9ALC6V"
+      ></video> */}
+      <iframe
+      className="w-full h-[700px]"
+        src="https://www.youtube.com/embed/HBD2EgKD0Zg?list=PLHNmWBpo58LWvImyoVnSftPINuJZMwBKN&start=9"
+        // https://www.youtube.com/watch?v=HBD2EgKD0Zg&list=PLHNmWBpo58LWvImyoVnSftPINuJZMwBKN
         title="YouTube video player"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowFullScreen
-      ></iframe> */}
+      ></iframe>
     </div>
   )
 }
