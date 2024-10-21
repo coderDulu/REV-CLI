@@ -13,6 +13,7 @@ import setupMenus from "./menu"
 import "./menu/application"
 import * as dotenv from "dotenv"
 import "./lib/IpcMainHandle"
+import "./lib/IpcMainOn"
 
 const envPath = path.resolve(__dirname, "../../.env.development")
 dotenv.config({
@@ -20,7 +21,7 @@ dotenv.config({
 })
 
 // 定义变量
-let mainWindow: BrowserWindow | null = null
+export let mainWindow: BrowserWindow | null = null
 const isDev = !app.isPackaged // 是否是development
 
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true" // 关闭警告
