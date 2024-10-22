@@ -5,9 +5,13 @@ import useWebsocketConnect from "@/hooks/useWebsocketConnect"
 
 function Network() {
   const { connectToWebsocket } = useWebsocketConnect("network-info")
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    freq_bane: string
+    freq_mode: number | undefined
+    channel: string
+  }>({
     freq_bane: "",
-    freq_mode: "",
+    freq_mode: undefined,
     channel: "",
   })
 
@@ -31,7 +35,7 @@ function Network() {
         <h1 className="font-bold text-2xl">网络信息</h1>
         <ul className="mt-4 flex flex-col gap-6">
           <li>当前工作频段： {formData.freq_bane}</li>
-          <li>工作模式：{formData.freq_mode}</li>
+          <li>工作模式：{formData.freq_mode === 0 ? "自适应跳频" : "频点固定模式"}</li>
           <li>通信通道：{formData.channel}</li>
         </ul>
       </LineLeftItem>

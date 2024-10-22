@@ -431,7 +431,7 @@ function TableForm({ onFinish, onFinishFailed, initData }: TableFormProps) {
               <Form.Item label="通道" name="bandSelect">
                 <Select
                   className="!w-40"
-                  disabled={getFieldValue("autoChannel")}
+                  disabled={getFieldValue("mode") === 0}
                   options={channelOptions}
                 />
               </Form.Item>

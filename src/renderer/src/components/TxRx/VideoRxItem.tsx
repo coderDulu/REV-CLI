@@ -90,7 +90,7 @@ const WebSocketVideoPlayer = () => {
         id="video-player"
       ></video> */}
       <iframe
-      className="w-full h-[700px]"
+      className="w-[1000px] h-[700px]"
         src="https://www.youtube.com/embed/HBD2EgKD0Zg?list=PLHNmWBpo58LWvImyoVnSftPINuJZMwBKN&start=9"
         // https://www.youtube.com/watch?v=HBD2EgKD0Zg&list=PLHNmWBpo58LWvImyoVnSftPINuJZMwBKN
         title="YouTube video player"
