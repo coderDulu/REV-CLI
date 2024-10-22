@@ -42,9 +42,9 @@ function HeaderTabs() {
             {
               "bg-[#0d8383] text-white": isActiveTab(item.value), // 简化条件判断
               "cursor-not-allowed": !isActiveTab(item.value),
+              "hidden": !isActiveTab(item.value),
             }
           )}
-          // onClick={() => !isActiveTab(item.value) && navigate(item.value)} // 添加点击事件，并检查是否为当前角色
         >
           {item.name}
         </li>
