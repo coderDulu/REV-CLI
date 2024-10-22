@@ -65,15 +65,9 @@ const channelOptions = channelArr.map((item) => ({
 
 interface FormValues {
   startFreq: number
-  // channelBand: number;
-  // power: number;
-  jamThread: number
   autoChannel: boolean
-  // autoChannelModel: boolean;
   fixFreqMode: boolean
   bandSelect: number
-  // chnSelect: number;
-  // freqChannel: number;
 }
 
 const startFreqList = {
@@ -151,39 +145,21 @@ export function FormConfig({
       onFinishFailed={onFinishFailed}
       form={form}
       initialValues={{
-        startFreq: 160,
-        channelBand: 160,
-        power: 0,
-        jamThread: 10,
+        startFreq: 230,
         autoChannel: true,
-        autoChannelModel: false,
         fixFreqMode: false,
         bandSelect: 1,
-        chnSelect: 0,
-        freqChannel: 1,
       }}
     >
       <Form.Item name="startFreq" label="起始频点">
         <Select className="!w-40" options={startFreqOption} />
       </Form.Item>
-      {/* <Form.Item name="channelBand" label="信道带宽">
-        <Select className="!w-40" options={[{ value: 160, label: "160 MHz" }]} />
-      </Form.Item> */}
-      {/* <Form.Item name="power" label="发射功率">
-        <Select className="!w-40" options={txPowerOption} />
-      </Form.Item> */}
-      {/* <Form.Item name="jamThread" label="干扰门限">
-        <InputNumber className="w-40" suffix="MHz" />
-      </Form.Item> */}
       <Form.Item name="autoChannel" label="自适应跳频" valuePropName="checked">
         <Switch onChange={() => handleSwitchChange("autoChannel")} />
       </Form.Item>
       <Form.Item name="fixFreqMode" label="频点固定模式" valuePropName="checked">
         <Switch onChange={() => handleSwitchChange("fixFreqMode")} />
       </Form.Item>
-      {/* <Form.Item name="freqChannel" label="通道选择">
-        <Select className="!w-40" options={channelOptions} />
-      </Form.Item> */}
       <Form.Item shouldUpdate noStyle>
         {({ getFieldValue }) => {
           return (
