@@ -12,7 +12,7 @@ function NetworkStatus() {
   useEffect(() => {
     connectToWebsocket().then(res => {
       res?.addEventListener("message", (ev) => {
-        setData(ev.data)
+        setData(JSON.parse(ev.data))
       })
     })
   }, [connectToWebsocket]);
