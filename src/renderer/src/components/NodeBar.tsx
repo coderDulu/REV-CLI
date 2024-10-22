@@ -37,7 +37,7 @@ const initOption = {
     {
       data: [],
       type: "bar",
-      large: true,
+      // large: true,
       animation: false,
       //  sampling: 'lttb'
     },
@@ -70,7 +70,7 @@ function NodeBar({ node, data, xLength }: { node?: string; data: number[]; xLeng
         },
       ],
     })
-  }, [data])
+  }, [data, update])
 
   return <div className="w-full h-full" ref={(dom) => (domRef.current = dom)}></div>
 }

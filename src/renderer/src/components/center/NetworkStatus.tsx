@@ -7,7 +7,7 @@ import { useEffect } from "react";
 
 function NetworkStatus() {
   const [data, setData] = useImmer([])
-  const { connectToWebsocket } = useWebsocketConnect("network-bar")
+  const { connectToWebsocket, websocketRef } = useWebsocketConnect("network-bar")
 
   useEffect(() => {
     connectToWebsocket().then(res => {
@@ -15,6 +15,10 @@ function NetworkStatus() {
         setData(JSON.parse(ev.data))
       })
     })
+
+    return () => {
+      websocketRef.current?.close()
+    }
   }, [connectToWebsocket]);
 
   return (

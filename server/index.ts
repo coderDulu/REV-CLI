@@ -129,7 +129,7 @@ server.on("connection", (ws, req) => {
         //   },
         // ]
         ws.send(JSON.stringify(generateData(32)))
-      }, 1000)
+      }, 30)
 
       break
     }

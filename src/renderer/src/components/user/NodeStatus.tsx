@@ -39,7 +39,6 @@ function NodeStatus() {
       //   const { tunnel } = showData
       //   setData(tunnel)
       // }
-      console.log('mne', message);
       setData(message)
     } catch (error) {
       console.log("error", error)
