@@ -38,10 +38,11 @@ const initOption = {
       data: [],
       type: "bar",
       large: true,
-      // animation: false,
+      animation: false,
       //  sampling: 'lttb'
     },
   ],
+  animation: false,
 }
 function NodeBar({ node, data, xLength }: { node?: string; data: number[]; xLength?: number }) {
   const { domRef, update } = useEcharts({
