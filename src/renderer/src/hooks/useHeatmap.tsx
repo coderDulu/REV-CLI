@@ -2,7 +2,7 @@ import { useCallback, useEffect } from "react"
 import useEcharts from "./useEcharts"
 
 const colors = ["#efbe8d", "#71b4b9", "#e9a3a3"]
-const intXAxis = new Array(24).fill(24).map((_: any, index) => index + 1)
+const intXAxis = new Array(32).fill(0).map((_: any, index) => index + 1)
 
 function initOption(name?: number | string) {
   return {
@@ -16,6 +16,7 @@ function initOption(name?: number | string) {
       },
     },
     xAxis: {
+      type: "category",
       name: "时间/s",
       data: intXAxis,
       splitArea: {
