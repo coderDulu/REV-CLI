@@ -26,7 +26,6 @@ function HeaderTabs() {
     if (connect.role) {
       navigate(`/${connect.role}`)
     }
-    console.log("c", connect.role)
   }, [connect.role, navigate]) // 确保 navigate 也在依赖项中
 
   // 辅助函数：判断是否为当前角色

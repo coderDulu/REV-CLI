@@ -55,7 +55,7 @@ server.on("connection", (ws, req) => {
       //   type: "connect",
       //   data: "success",
       // }
-      ws.send(1)
+      ws.send(0)
       break
     }
     case "/topology": {

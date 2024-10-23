@@ -8,7 +8,7 @@ function initOption(name?: number | string) {
   return {
     title: {
       text: `子网${name ?? ""}干扰业务分布`,
-      top: "0px",
+      top: "2px",
       left: "4%",
       textStyle: {
         fontSize: 24,
@@ -111,7 +111,7 @@ const updateData = (
 
   return {
     title: {
-      text: `子网${name}干扰业务分布`,
+      text: `子网${name ?? ""}干扰业务分布`,
     },
     tooltip: {
       position: "top",
