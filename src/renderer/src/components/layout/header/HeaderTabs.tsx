@@ -1,53 +1,63 @@
 import clsx from "clsx"
 import { useNavigate } from "react-router-dom"
 import useConnect from "@/hooks/useConnect"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
 const list = [
   {
     name: "管理端",
     value: "/manage",
+    role: ["0"],
   },
   {
     name: "中心端",
     value: "/center",
+    role: ["4", "8"],
   },
   {
     name: "用户端",
     value: "/user",
+    role: ["5", "6", "9", "10"],
   },
 ]
+const ids = {
+  "0": "管理端",
+  "4": "子网1中心端",
+  "5": "子网1用户端A",
+  "6": "子网1用户端B",
+  "8": "子网2中心端",
+  "9": "子网2用户端A",
+  "10": "子网2用户端B",
+}
 
 function HeaderTabs() {
   const navigate = useNavigate()
   const connect = useConnect() // 解构 role，避免重复访问 connect.role
 
+  const [tabName, setName] = useState("")
+
   useEffect(() => {
     if (connect.role) {
-      navigate(`/${connect.role}`)
+      setName(ids[connect.role])
+      const path = list.find((item) => item.role.includes(connect.role ?? ""))?.value
+      if (path) {
+        navigate(path)
+      }
     }
-  }, [connect.role, navigate]) // 确保 navigate 也在依赖项中
-
-  // 辅助函数：判断是否为当前角色
-  const isActiveTab = (itemValue: string) => connect.role === itemValue.replace("/", "")
+  }, [connect, navigate])
 
   return (
     <ul className="w-11/12 h-10 m-auto flex items-center gap-1 justify-center rounded-3xl bg-[#EDEDED]">
-      {list.map((item) => (
-        <li
-          key={item.value}
-          className={clsx(
-            "flex flex-1 h-full app-noDrag rounded-3xl border-none items-center justify-center hover:opacity-50",
-            {
-              "bg-[#0d8383] text-white": isActiveTab(item.value), // 简化条件判断
-              "cursor-not-allowed": !isActiveTab(item.value),
-              "hidden": !isActiveTab(item.value),
-            }
-          )}
-        >
-          {item.name}
-        </li>
-      ))}
+      <li
+        className={clsx(
+          "flex flex-1 h-full app-noDrag rounded-3xl border-none items-center justify-center hover:opacity-50",
+          {
+            "bg-[#0d8383] text-white": true, // 简化条件判断
+          }
+        )}
+      >
+        {tabName}
+      </li>
     </ul>
   )
 }

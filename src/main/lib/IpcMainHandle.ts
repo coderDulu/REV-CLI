@@ -69,7 +69,7 @@ const EVENT_POOL: IpcMainHandle[] = [
         });
         ws.addListener('message', (data) => {
           const roleId = data.toString();
-          resolve(DeviceType[Number(roleId)]);
+          resolve(roleId);
         })
       });
     },
