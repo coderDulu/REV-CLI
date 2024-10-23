@@ -2,6 +2,7 @@ import clsx from "clsx"
 import { useNavigate } from "react-router-dom"
 import useConnect from "@/hooks/useConnect"
 import { useEffect, useState } from "react"
+import { ids } from "@/hooks/useConnect"
 
 const list = [
   {
@@ -20,15 +21,6 @@ const list = [
     role: ["5", "6", "9", "10"],
   },
 ]
-const ids = {
-  "0": "管理端",
-  "4": "子网1中心端",
-  "5": "子网1用户端A",
-  "6": "子网1用户端B",
-  "8": "子网2中心端",
-  "9": "子网2用户端A",
-  "10": "子网2用户端B",
-}
 
 function HeaderTabs() {
   const navigate = useNavigate()

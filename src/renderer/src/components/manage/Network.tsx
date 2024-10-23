@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import Topology from "../Topology"
+import TopologyOfManage from "../Topology"
 import LineLeftItem from "../common/LineLeftItem"
 import useWebsocketConnect from "@/hooks/useWebsocketConnect"
 
@@ -40,7 +40,7 @@ function Network() {
         </ul>
       </LineLeftItem>
       <div className="flex-1 p-2">
-        <Topology />
+        <TopologyOfManage />
       </div>
     </div>
   )

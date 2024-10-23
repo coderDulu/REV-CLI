@@ -8,6 +8,15 @@ interface Connect {
   isConnect: boolean
   role?: "manage" | "center" | "user"
 }
+export const ids = {
+  "0": "管理端",
+  "4": "子网1中心端",
+  "5": "子网1用户端A",
+  "6": "子网1用户端B",
+  "8": "子网2中心端",
+  "9": "子网2用户端A",
+  "10": "子网2用户端B",
+}
 
 const storage = sessionStorage.getItem("connect")
 const initialTasks: Connect = storage

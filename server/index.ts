@@ -10,7 +10,6 @@ const clients: Record<string, Set<WebSocket>> = {
   "/connect": new Set(), // 设备连接
   "/topology": new Set(), // 网络拓扑
 
-
   "/text-tx": new Set(), // 文本传输-发端
   "/text-rx": new Set(), // 文本传输-收端
   "/video-tx": new Set(), // 视频传输-发端
@@ -55,7 +54,7 @@ server.on("connection", (ws, req) => {
       //   type: "connect",
       //   data: "success",
       // }
-      ws.send(4)
+      ws.send(0)
       break
     }
     case "/topology": {
@@ -63,20 +62,18 @@ server.on("connection", (ws, req) => {
         type: "topology",
         data: {
           nodes: {
-            manage: ["4"],
-            center: ["1"],
-            user: ["5", "6"],
+            manage: ["0"],
+            center: ["4", "8"],
+            user: ["5", "6", "9", "10"],
           },
 
           links: [
-            ["4", "1"],
-            ["1", "5"],
-            ["1", "6"],
-            ["7", "2"],
-            ["2", "8"],
-            ["2", "9"],
-            ["1", "7"],
-            ["1", "8"],
+            ["0", "4"],
+            ["0", "8"],
+            ["4", "5"],
+            ["4", "6"],
+            ["8", "9"],
+            ["8", "10"]
           ],
         },
       }
