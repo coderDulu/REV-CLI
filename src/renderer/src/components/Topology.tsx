@@ -45,12 +45,11 @@ function Topology({ onNodeClick, tips, exclude }: Props) {
     series: [
       {
         type: "tree",
-        symbolSize: 80, // 节点的大小
+        symbolSize: 70, // 节点的大小
         label: {
           show: true,
           fontSize: 16,
           formatter: function (params) {
-            console.log(params.name)
             return params.name.replace(/(\d+)/, "$1\n") // 根据需要调整分隔符
           },
           color: "#fff",
@@ -63,6 +62,7 @@ function Topology({ onNodeClick, tips, exclude }: Props) {
           width: 2,
           curveness: 0, // 控制线条的弯曲度
         },
+        expandAndCollapse: false,
       },
     ],
   })
@@ -76,7 +76,6 @@ function Topology({ onNodeClick, tips, exclude }: Props) {
           const { data } = JSON.parse(message)
 
           const treeData = buildTree(data.nodes, data.links)
-          console.log("treeData", treeData)
           if (!isSame(lastData, treeData)) {
             update({ series: [{ data: [treeData] }] })
           }
@@ -144,4 +143,3 @@ function buildTree(nodes, links) {
   // 返回管理端的根节点
   return nodeMap[nodes.manage[0]]
 }
-

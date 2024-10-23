@@ -9,6 +9,8 @@ const server = new WebSocket.Server({ port, host: "0.0.0.0" })
 const clients: Record<string, Set<WebSocket>> = {
   "/connect": new Set(), // 设备连接
   "/topology": new Set(), // 网络拓扑
+  "/freq-config-get": new Set(), // 子网用频配置获取
+  "/freq-config-set": new Set(), // 子网用频配置设置
 
   "/text-tx": new Set(), // 文本传输-发端
   "/text-rx": new Set(), // 文本传输-收端
@@ -73,7 +75,7 @@ server.on("connection", (ws, req) => {
             ["4", "5"],
             ["4", "6"],
             ["8", "9"],
-            ["8", "10"]
+            ["8", "10"],
           ],
         },
       }
@@ -216,15 +218,24 @@ server.on("connection", (ws, req) => {
       break
     }
     case "/network-info": {
-      sendMessageToAllClients(
-        JSON.stringify({
-          freq_bane: "1",
-          freq_mode: "2",
-          channel: "3",
-        }),
-        pathname,
-        ws
-      )
+      const data = [
+        {
+          network: 1, // 子网
+          freqBand: [230, 390], // 频点范围
+          mode: 0, // 0 -> 自适应跳频，1 -> 频点固定模式
+          bandSelect: 1, // 通道
+          freq: 277.5, // 频点
+        },
+        {
+          network: 2, // 子网
+          freqBand: [250, 410], // 频点范围
+          mode: 1, // 0 -> 自适应跳频，1 -> 频点固定模式
+          bandSelect: 9, // 通道
+          freq: 299.5, // 频点
+        },
+      ]
+
+      sendMessageToAllClients(JSON.stringify(data), pathname, ws)
       break
     }
     case "/net-config-get": {
@@ -258,6 +269,32 @@ server.on("connection", (ws, req) => {
   ws.on("message", (message) => {
     // 转发消息给所有连接到相同 URL 的客户
     switch (req.url) {
+      case "/freq-config-get": {
+        const body = JSON.parse(message.toString())
+        const network = +body.network
+        const data = {
+          startFreq: network === 1 ? 240 : 290, // 起始频点
+          mode: network - 1, // 0 -> 自适应跳频，1 -> 频点固定模式
+          bandSelect: network + 20, // 通道
+          network: network, // 子网
+        }
+
+        console.log(req.url, body, "\n")
+        sendMessageToAllClients(JSON.stringify(data), req.url, ws)
+        break
+      }
+      case "/freq-config-set": {
+        console.log(req.url, message.toString(), "\n")
+        sendMessageToAllClients(
+          JSON.stringify({
+            result: "success", // success 或者 error
+            message: "ok", // 对result的描述，主要是error时的描述
+          }),
+          req.url,
+          ws
+        )
+        break
+      }
       case "/text-tx": {
         console.log("Received data", message.toString())
         sendMessageToAllClients(message.toString(), "/text-rx")
@@ -278,7 +315,6 @@ server.on("connection", (ws, req) => {
         sendMessageToAllClients(message.toString(), req.url, ws)
         break
       }
-
       case "/net-config-set": {
         console.log("net-config-set", message.toString())
         sendMessageToAllClients(message.toString(), req.url, ws)

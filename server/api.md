@@ -4,7 +4,9 @@
 
 - 响应添加了 A 的为定时 1s 向前端发送一次数据
 
-## 1. 设备连接 `/connect`
+## 通用
+
+### 1. 设备连接 `/connect`
 
 - 响应
 
@@ -13,6 +15,48 @@
   "type": "connect",
   "data": "success",
 };
+```
+
+### 2. 子网用频配置获取 `/freq-config-get`
+- 请求
+
+```json
+{
+  "network": 1 // 子网 1 | 2，获取对应子网的配置
+}
+```
+
+- 响应：
+
+```json
+{
+  "network": 1,   // 子网 1 | 2
+  "startFreq": 200, // 起始频点
+  "mode": true, // 0 -> 自适应跳频，1 -> 频点固定模式
+  "bandSelect": 29 // 通道
+}
+```
+
+### 3. 子网用频配置设置 `/freq-config-set`
+
+- 请求：
+
+```json
+{
+  "startFreq": 200, // 起始频点
+  "mode": 0, // 0 -> 自适应跳频，1 -> 频点固定模式
+  "bandSelect": 29, // 通道
+  "network": 1 // 子网
+}
+```
+
+- 响应：
+
+```json
+{
+  "result": "success", // success 或者 error
+  "message": "ok" // 对result的描述，主要是error时的描述
+}
 ```
 
 ## 2. 中心端
@@ -50,9 +94,7 @@
 - 响应：
 
 ```json
-{
-  "data": [1, 0, 0 ...] // 1024个数据
-}
+[1, 0, 0 ...] // 1024个数据
 ```
 
 #### 业务信道参数获取(A) `/net-config-get`
@@ -185,20 +227,31 @@
 - 响应：
 
 ```json
-{
-  "freq_bane": "1", // 频段
-  "freq_mode": "2", // 频段模式
-  "channel": "3"    // 信道
-}
+[
+  {
+    "network": 1, // 子网
+    "freqBand": [230, 390], // 频点范围
+    "mode": 0, // 0 -> 自适应跳频，1 -> 频点固定模式
+    "bandSelect": 1, // 通道
+    "freq": 277.5 // 频点
+  },
+  {
+    "network": 2, // 子网
+    "freqBand": [250, 410], // 频点范围
+    "mode": 1, // 0 -> 自适应跳频，1 -> 频点固定模式
+    "bandSelect": 9, // 通道
+    "freq": 299.5 // 频点
+  }
+]
 ```
 
 ### 用频规划 `/freq-plan`
 
 ```json
 {
-  "network": 1,     // 子网
+  "network": 1, // 子网
   "startFreq": 230, // 起始频点
-  "mode": 0,        // 0 -> 自适应跳频，1 -> 频点固定模式
-  "bandSelect": 1,  // 通道
+  "mode": 0, // 0 -> 自适应跳频，1 -> 频点固定模式
+  "bandSelect": 1 // 通道
 }
 ```

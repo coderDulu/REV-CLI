@@ -1,46 +1,24 @@
-import { useEffect, useState } from "react"
 import TopologyOfManage from "../Topology"
 import LineLeftItem from "../common/LineLeftItem"
-import useWebsocketConnect from "@/hooks/useWebsocketConnect"
+import FreqFormConfig from "../FreqFormConfig"
+import NetworkList from "./NetworkList"
+import { useState } from "react"
 
 function Network() {
-  const { connectToWebsocket } = useWebsocketConnect("network-info")
-  const [formData, setFormData] = useState<{
-    freq_bane: string
-    freq_mode: number | undefined
-    channel: string
-  }>({
-    freq_bane: "",
-    freq_mode: undefined,
-    channel: "",
-  })
-
-  useEffect(() => {
-    connectToWebsocket().then(res => {
-      res?.addEventListener("message", (ev) => {
-        console.log(ev.data);
-        try {
-          const parseData: any = JSON.parse(ev.data)
-          setFormData(parseData)
-        } catch (error) {
-          console.log('network-info parse error');
-        }
-      })
-    })
-  }, [connectToWebsocket])
-
+  const [chooseNode, setChooseNode] = useState<string>("")
   return (
     <div className="flex w-full h-full">
       <LineLeftItem>
-        <h1 className="font-bold text-2xl">网络信息</h1>
-        <ul className="mt-4 flex flex-col gap-6">
-          <li>当前工作频段： {formData.freq_bane}</li>
-          <li>工作模式：{formData.freq_mode === 0 ? "自适应跳频" : "频点固定模式"}</li>
-          <li>通信通道：{formData.channel}</li>
-        </ul>
+        <h1 className="font-bold text-xl">{chooseNode}用频配置</h1>
+        <FreqFormConfig node={chooseNode}/>
+        <h1 className="font-bold text-xl">网络信息</h1>
+        <NetworkList />
       </LineLeftItem>
       <div className="flex-1 p-2">
-        <TopologyOfManage />
+        <TopologyOfManage onNodeClick={(node) => {
+          node.includes("子网") && setChooseNode(node.slice(0, 3))
+
+        }} />
       </div>
     </div>
   )
