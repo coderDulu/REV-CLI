@@ -78,6 +78,7 @@ function useWebSocket() {
     connect,
     readyState,
     close,
+    websocketRef,
     addEventListener: websocketRef.current?.addEventListener,
   }
 }
