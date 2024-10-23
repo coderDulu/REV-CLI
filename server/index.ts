@@ -12,6 +12,7 @@ const clients: Record<string, Set<WebSocket>> = {
   "/freq-config-get": new Set(), // 子网用频配置获取
   "/freq-config-set": new Set(), // 子网用频配置设置
 
+
   "/text-tx": new Set(), // 文本传输-发端
   "/text-rx": new Set(), // 文本传输-收端
   "/video-tx": new Set(), // 视频传输-发端
@@ -36,6 +37,7 @@ const clients: Record<string, Set<WebSocket>> = {
   // 管理端
   "/network-info": new Set(), // 网络列表
   "/freq-plan": new Set(), // 用频规划
+  "/freq-status-bar": new Set(), // 频谱使用状态
 }
 
 server.on("connection", (ws, req) => {
@@ -51,6 +53,22 @@ server.on("connection", (ws, req) => {
   }
 
   switch (pathname) {
+    // case "/freq-status-bar": {
+    //   setInterval(() => {
+    //     const data = [
+    //       {
+    //         network: 1,      //子网id
+    //         freq: [230, 390] // 频谱范围
+    //       },
+    //       {
+    //         network: 2,
+    //         freq: [230, 390]
+    //       },
+    //     ]
+    //     ws.send(JSON.stringify(data))
+    //   }, 1000)
+    //   break
+    // }
     case "/connect": {
       // const data = {
       //   type: "connect",
@@ -221,14 +239,14 @@ server.on("connection", (ws, req) => {
       const data = [
         {
           network: 1, // 子网
-          freqBand: [230, 390], // 频点范围
+          freqBand: [290, 450], // 频点范围
           mode: 0, // 0 -> 自适应跳频，1 -> 频点固定模式
           bandSelect: 1, // 通道
           freq: 277.5, // 频点
         },
         {
           network: 2, // 子网
-          freqBand: [250, 410], // 频点范围
+          freqBand: [500, 660], // 频点范围
           mode: 1, // 0 -> 自适应跳频，1 -> 频点固定模式
           bandSelect: 9, // 通道
           freq: 299.5, // 频点
