@@ -12,6 +12,7 @@ import {
   InputNumber,
   Flex,
   Alert,
+  Statistic,
 } from "antd"
 import { TableRowSelection } from "antd/es/table/interface"
 import { useEffect, useRef, useState } from "react"
@@ -21,6 +22,9 @@ import { nanoid } from "nanoid"
 import useWebsocketConnect from "@/hooks/useWebsocketConnect"
 import CButton from "../common/CButton"
 import { FormConfig } from "../center/NetworkConfig"
+import duration from "dayjs/plugin/duration" // 引入 duration 插件
+
+dayjs.extend(duration) // 使用插件
 
 interface DataType {
   key?: React.Key
@@ -33,43 +37,28 @@ interface DataType {
   // bandwidth: number;
   // maxPower: number;
   startTime: any
-  endTime: any
+  status: false
   // freqSelect: number;
   // spectrum: number;
 }
-
-const initFormData = Array(0)
-  .fill(0)
-  .map((_: number, index: number) => {
-    const key = nanoid()
-    return {
-      key: key,
-      centerFreq: index,
-      bandwidth: 30,
-      maxPower: 30,
-      startTime: "00:00:00",
-      endTime: "00:00:01",
-      freqSelect: 1,
-      spectrum: 1,
-    }
-  })
-
-function getInitData() {
-  const lastData = sessionStorage.getItem("table-data")
-  if (lastData) {
-    const parseData = JSON.parse(lastData)
-    return parseData.data
-  }
-  return initFormData
+// 将秒数转换为 HH:mm:ss 格式
+const formatTime = (seconds) => {
+  const duration = dayjs.duration(seconds * 1000) // 将秒转换为毫秒
+  return dayjs().hour(0).minute(0).second(0).add(duration).format("HH:mm:ss")
 }
+
 function FreqPlan() {
   const { connectToWebsocket, close, sendMessage } = useWebsocketConnect("freq-plan")
-  const [network, setNetwork] = useState(1)
-  const [interval, setInterVal] = useState(1000)
 
-  const [dataSource, dispatch] = useImmerReducer<DataType[], any>(reducer, [])
+  const [dataSource, dispatch] = useImmerReducer<DataType[], any>(
+    reducer,
+    JSON.parse(sessionStorage.getItem("table-data") ?? "[]")
+  )
   const [selectRow, setSelectRow] = useState<React.Key[]>([])
   const [isSending, setIsSending] = useState(false)
+
+  // 规划用时
+  const [planTimer, setPlanTimer] = useState("00:00:00")
 
   useEffect(() => {
     connectToWebsocket()
@@ -110,114 +99,106 @@ function FreqPlan() {
     setSelectRow([])
   }
 
+  // 发送
+  const timer = useRef<any>(null)
+  const startCount = useRef(0)
+  useEffect(() => {
+    return () => {
+      if (timer.current) {
+        handleStop()
+      }
+    }
+  }, [])
   function handleSend() {
-    if (selectRow.length) {
-      const sendData = selectRow.map((select) => dataSource.find((item) => select === item.key))
-      sendData.forEach((rule) => {
-        const tx = {
-          startFreq: rule?.startFreq,
-          mode: rule?.mode,
-          bandSelect: rule?.bandSelect,
-          network: network,
-        }
+    const hasNeedSend = dataSource.some((item) => item.status === false)
 
-        sendPlan(JSON.stringify(tx))
-      })
-      window.$message.success("下发成功")
-    } else {
-      setIsSending(true)
-      window.$message.warning("开始发送")
-      dataSource.forEach((rule, index) => {
-        const tx = {
-          startFreq: rule?.startFreq,
-          mode: rule?.mode,
-          bandSelect: rule?.bandSelect,
-          network: network,
-        }
+    const dataSourceOfTimer = dataSource
 
-        intervalSendPlan(rule.startTime, rule.endTime, JSON.stringify(tx), index + 1)
-      })
+    if (!hasNeedSend) {
+      window.$message.warning("无规则需要下发")
+
+      return
     }
-  }
+    setIsSending(true)
 
-  // 发送数据
-  function sendPlan(data: string) {
-    try {
-      return sendMessage(data)
-    } catch (error) {
-      console.log("send message error", error)
-    }
-  }
+    const executeLogic = (count) => {
+      const newTimer = formatTime(count)
+      setPlanTimer(newTimer)
 
-  // 根据时间下发规则,如果没有选择row
-  const intervalSendPlan = (startTime: number, endTime: number, data: string, index: number) => {
-    let timer: any = null
+      const index = dataSourceOfTimer.findIndex(
+        (item) => item.startTime === newTimer && item.status === false
+      )
 
-    // 1. 获取当前时间
-    const nowDate = new Date().toLocaleDateString().replace(/\//g, "-")
-
-    // 2. 时间戳获取
-    const _startTime = new Date(`${nowDate} ${startTime}`).getTime()
-    const _endTime = new Date(`${nowDate} ${endTime}`).getTime()
-
-    // 3. 定时发送
-    if (_startTime === _endTime) {
-      sendPlan(data)
-    } else {
-      timer = setInterval(() => {
-        // console.log(Date.now() > _startTime)
-        if (Date.now() > _startTime) {
-          sendPlan(data)
-            ?.then(() => {
-              window.$message.success(`规则${index}已下发`)
-              if (index === dataSource.length) {
-                window.$message.success("所有规则已下发")
-                setIsSending(false)
-              }
-            })
-            .catch(() => {
-              window.$message.error(`规则${index}发送失败，请检查连接`)
-            })
-
-          clearInterval(timer)
-        }
-        setIsSending((lastStatus) => {
-          if (!lastStatus) {
-            clearInterval(timer)
-          }
-          return lastStatus
+      if (index !== -1) {
+        sendMessage(JSON.stringify(dataSourceOfTimer[index])).then(() => {
+          dispatch({
+            type: "update",
+            payload: {
+              ...dataSourceOfTimer[index],
+              status: true,
+            },
+          })
         })
-      }, interval)
+
+        if (index === dataSourceOfTimer.length - 1) {
+          clearInterval(timer.current)
+          window.$message.success("所有规则已下发")
+        } else {
+          window.$message.info(`第${index + 1}条规则下发成功`)
+          setIsSending(false)
+        }
+      }
     }
+
+    // 立即执行一次逻辑
+    executeLogic(startCount.current)
+
+    // 开启每秒执行的 interval
+    timer.current = setInterval(() => {
+      startCount.current++
+      executeLogic(startCount.current)
+    }, 1000)
+  }
+  // 停止发送
+  function handleStop() {
+    clearInterval(timer.current)
+    setIsSending(false)
+    window.$message.warning("已暂停发送")
   }
 
   function handleCancel() {
+    clearInterval(timer.current)
+    timer.current = null
+    startCount.current = 0
     setIsSending(false)
-    window.$message.success("暂停发送")
+    setPlanTimer("00:00:00")
+
+    // 重置所有已发送配置状态
+    const resetData = dataSource.map((item) => {
+      return {
+        ...item,
+        status: false,
+      }
+    })
+    dispatch({
+      type: "replace",
+      payload: resetData,
+    })
+
+    window.$message.warning("已结束发送")
   }
 
   // 监听数据变化
   const dataSourceRef = useRef(dataSource)
   useEffect(() => {
     dataSourceRef.current = dataSource // 更新 ref 的值
+    sessionStorage.setItem("table-data", JSON.stringify(dataSourceRef.current))
   }, [dataSource])
-
-  useEffect(() => {
-    const allData = JSON.parse(sessionStorage.getItem("table-data") ?? "{}")
-    dispatch({
-      type: "replace",
-      payload: allData[network] ?? [],
-    })
-
-    return () => {
-      allData[network] = dataSourceRef.current
-      sessionStorage.setItem("table-data", JSON.stringify(allData))
-    }
-  }, [dispatch, network])
 
   return (
     <Flex gap="middle" vertical className="w-full h-full pl-12 pt-12 gap-6 pr-12">
       <h2 className="font-bold text-2xl">用频规划</h2>
+      <Statistic title="规划用时" value={planTimer} />
       <Space className="flex justify-end">
         <AddTablePlan text="编辑" title="编辑规划" onConfirm={handleEdit} initData={selectData} />
         <AddTablePlan text="新增" title="新增规划" onConfirm={handleConfirmAdd}></AddTablePlan>
@@ -237,18 +218,19 @@ function FreqPlan() {
         />
       </Flex>
       <Space className="self-center">
-        {!isSending ? (
-          <CButton
-            onClick={handleSend}
-            className="!w-36 !h-14 bg-[#0D8383] text-white rounded-md border-[#0D8383]"
-          >
-            规划下发
-          </CButton>
-        ) : (
-          <CButton buttonType="danger" className="!w-36 !h-14" onClick={handleCancel}>
-            暂停
-          </CButton>
-        )}
+        <Button
+          onClick={handleSend}
+          disabled={isSending}
+          className="!w-36 !h-14 bg-[#0D8383] text-white rounded-md border-[#0D8383]"
+        >
+          开始
+        </Button>
+        <Button disabled={!isSending} danger className="!w-36 !h-14" onClick={handleStop}>
+          暂停
+        </Button>
+        <Button type="default" className="!w-36 !h-14" onClick={handleCancel}>
+          结束
+        </Button>
       </Space>
     </Flex>
   )
@@ -275,9 +257,8 @@ function AddTablePlan({ onConfirm, text, title, initData }: AddTablePlanProps) {
   }
 
   const onFinish = (values) => {
-    const { startTime, endTime } = values
+    const { startTime } = values
     const formatStartTime = startTime.format("HH:mm:ss")
-    const formatEndTime = endTime.format("HH:mm:ss")
 
     if (initData) {
       values.key = initData.key
@@ -285,7 +266,6 @@ function AddTablePlan({ onConfirm, text, title, initData }: AddTablePlanProps) {
     onConfirm({
       ...values,
       startTime: formatStartTime,
-      endTime: formatEndTime,
     })
     setIsModalOpen(false)
   }
@@ -302,7 +282,6 @@ function AddTablePlan({ onConfirm, text, title, initData }: AddTablePlanProps) {
         onCancel={handleCancel}
       >
         <TableForm initData={initData} onFinish={onFinish} />
-        {/* <FormConfig onFinish={onFinish} /> */}
       </Modal>
     </>
   )
@@ -372,14 +351,17 @@ const networkSelectOption = [
 // 添加或编辑表单组件
 function TableForm({ onFinish, onFinishFailed, initData }: TableFormProps) {
   const rules = [{ required: true, message: "请输入" }]
+
   const initFormData: DataType = {
+    network: 1,
     startFreq: 230,
     mode: 0,
     bandSelect: 1,
+    status: false,
     ...initData,
     startTime: dayjs(initData?.startTime ?? "00:00:00", "HH:mm:ss"),
-    endTime: dayjs(initData?.endTime ?? "00:00:01", "HH:mm:ss"),
   }
+  console.log("initData", initFormData)
 
   return (
     <>
@@ -407,7 +389,7 @@ function TableForm({ onFinish, onFinishFailed, initData }: TableFormProps) {
         <Form.Item shouldUpdate noStyle>
           {({ getFieldValue }) => {
             return (
-              <Form.Item label="通道" name="bandSelect">
+              <Form.Item label="通信通道" name="bandSelect">
                 <Select
                   className="!w-40"
                   disabled={getFieldValue("mode") === 0}
@@ -418,28 +400,18 @@ function TableForm({ onFinish, onFinishFailed, initData }: TableFormProps) {
           }}
         </Form.Item>
 
-        <Form.Item<DataType> label="起始时间" name="startTime" rules={rules}>
+        <Form.Item<DataType> label="配置时间" name="startTime" rules={rules}>
           <TimePicker className="w-40" />
         </Form.Item>
 
-        <Form.Item<DataType>
-          label="结束时间"
-          name="endTime"
-          rules={[
-            ...rules,
-            ({ getFieldValue }) => ({
-              validator(_, value) {
-                const startTime = getFieldValue("startTime")
-                if (startTime.isBefore(value)) {
-                  return Promise.resolve()
-                } else {
-                  return Promise.reject(new Error("结束时间不应早于起始时间"))
-                }
-              },
-            }),
-          ]}
-        >
-          <TimePicker className="w-40" />
+        <Form.Item rules={rules} shouldUpdate noStyle>
+          {({ getFieldValue }) => {
+            return (
+              <Form.Item<DataType> name="status" label="配置状态">
+                <span>{getFieldValue("status") || "未配置"}</span>
+              </Form.Item>
+            )
+          }}
         </Form.Item>
 
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
@@ -450,10 +422,6 @@ function TableForm({ onFinish, onFinishFailed, initData }: TableFormProps) {
       </Form>
     </>
   )
-}
-
-function NumberInput(props) {
-  return <InputNumber {...props} className="w-40" />
 }
 
 // 表格组件
@@ -478,6 +446,11 @@ function TablePlan({
 
   const columns: TableProps<DataType>["columns"] = [
     {
+      title: "子网",
+      dataIndex: "network",
+      key: "network",
+    },
+    {
       title: "起始频点(MHz)",
       dataIndex: "startFreq",
       key: "startFreq",
@@ -491,19 +464,22 @@ function TablePlan({
       },
     },
     {
-      title: "通道",
+      title: "通信通道",
       dataIndex: "bandSelect",
       key: "bandSelect",
     },
     {
-      title: "起始时间",
+      title: "配置时间",
       dataIndex: "startTime",
       key: "startTime",
     },
     {
-      title: "结束时间",
-      dataIndex: "endTime",
-      key: "endTime",
+      title: "配置状态",
+      dataIndex: "status",
+      key: "status",
+      render(value) {
+        return <>{value ? "已配置" : "未配置"}</>
+      },
     },
   ]
 
