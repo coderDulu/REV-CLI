@@ -2,6 +2,7 @@ import { useEffect } from "react"
 import Layout from "./components/layout/page"
 import { message } from "antd"
 import { TasksProvider } from "@/hooks/useConnect"
+import { useNavigate, useLocation } from "react-router-dom"
 
 function App() {
   const [messageApi, contextHolder] = message.useMessage()
@@ -19,6 +20,23 @@ function App() {
       }
     })
   }, [])
+
+  // 路由设置
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    // 从 localStorage 获取上次访问的路由
+    const lastRoute = localStorage.getItem("lastRoute")
+    if (lastRoute) {
+      navigate(lastRoute) // 跳转到上次访问的路由
+    }
+  }, [navigate])
+
+  useEffect(() => {
+    // 保存当前路由到 localStorage
+    localStorage.setItem("lastRoute", location.pathname)
+  }, [location.pathname]) // 只在路径变化时触发
 
   return (
     <TasksProvider>
