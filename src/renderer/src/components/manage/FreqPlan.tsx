@@ -24,6 +24,7 @@ import { FormConfig } from "../center/NetworkConfig"
 
 interface DataType {
   key?: React.Key
+  network: 1 | 2
   startFreq: number
   mode: 0 | 1 // 0 -> 自适应跳频，1 -> 频点固定模式
   bandSelect: number
@@ -217,35 +218,10 @@ function FreqPlan() {
   return (
     <Flex gap="middle" vertical className="w-full h-full pl-12 pt-12 gap-6 pr-12">
       <h2 className="font-bold text-2xl">用频规划</h2>
-
-      <Space align="center">
-        <Radio.Group onChange={(e) => setNetwork(e.target.value)} value={network}>
-          <Radio value={1}>子网络1</Radio>
-          <Radio value={2}>子网络2</Radio>
-        </Radio.Group>
-
-        <div>
-          <span className="text-sm">发送间隔：</span>
-          <Select
-            defaultValue={interval}
-            style={{ width: 120 }}
-            onChange={(value) => setInterVal(value)}
-            options={[
-              { value: 500, label: "500ms" },
-              { value: 1000, label: "1s" },
-              { value: 1500, label: "1.5s" },
-              { value: 2000, label: "2s" },
-            ]}
-          />
-        </div>
-      </Space>
-
-      <Space>
+      <Space className="flex justify-end">
         <AddTablePlan text="编辑" title="编辑规划" onConfirm={handleEdit} initData={selectData} />
         <AddTablePlan text="新增" title="新增规划" onConfirm={handleConfirmAdd}></AddTablePlan>
 
-        {/* <Button>导出</Button>
-        <Button>导入</Button> */}
         <Button danger onClick={handleDelete}>
           删除
         </Button>
@@ -254,11 +230,6 @@ function FreqPlan() {
       <TablePlan dataSource={dataSource} onSelect={handleSelect} />
 
       <Flex vertical gap={10}>
-        <Alert
-          showIcon
-          message="选择行点击下发按钮将会立即下发规则，否则会根据时间按时下发规则"
-          type="warning"
-        />
         <Alert
           showIcon
           message="规则如果正在定时下发中，跳转到其他页面或刷新都将停止发送"
@@ -392,6 +363,11 @@ const bandSelectOption = [
   { label: "自适应跳频", value: 0 },
   { label: "频点固定模式", value: 1 },
 ]
+// 子网选择
+const networkSelectOption = [
+  { label: "子网络1", value: 1 },
+  { label: "子网络2", value: 2 },
+]
 
 // 添加或编辑表单组件
 function TableForm({ onFinish, onFinishFailed, initData }: TableFormProps) {
@@ -418,8 +394,11 @@ function TableForm({ onFinish, onFinishFailed, initData }: TableFormProps) {
         autoComplete="off"
         className="mt-4"
       >
+        <Form.Item<DataType> name="network" label="子网选择">
+          <Select className="!w-40" options={networkSelectOption} />
+        </Form.Item>
         <Form.Item<DataType> name="startFreq" label="起始频点">
-          <Select  className="!w-40" options={startFreqOption} />
+          <Select className="!w-40" options={startFreqOption} />
         </Form.Item>
         <Form.Item<DataType> name="mode" label="频段模式">
           <Select className="!w-40" options={bandSelectOption} />
