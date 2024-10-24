@@ -104,28 +104,42 @@ const option = {
   animation: false,
 }
 
+const networkArr = [
+  {
+    network: 1,
+  },
+  {
+    network: 2,
+  },
+]
+
 function Index() {
   return (
     // <Test />
     <div className="w-full h-full pt-2 pb-10">
-      <div className="float-left w-1/2 h-full min-w-1 min-h-1">
-        <h1 className="text-center">子网1用频状态</h1>
-        <Spectrum />
-      </div>
-      <div className="float-right w-1/2 h-full min-w-1 min-h-1">
-        <h1 className="text-center">子网2用频状态</h1>
-        <Spectrum />
-      </div>
+      {networkArr.map((item) => {
+        return (
+          <div className="float-left w-1/2 h-full min-w-1 min-h-1">
+            <h1 className="text-center">子网{item.network}用频状态</h1>
+            <Spectrum network={item.network} />
+          </div>
+        )
+      })}
     </div>
   )
 }
-function Spectrum() {
+
+type Message = {
+  network: number
+  data: number[]
+}[]
+function Spectrum({ network }) {
   const { domRef, update } = useEcharts(option)
   const { connectToWebsocket, close, message } = useWebSocketConnect("manage-spectrum-status")
   const [limit, setLimit] = useState(5000)
   const [barData, setBarData] = useState<any[]>([])
   const [heatmapData, setHeatmapData] = useState<any[]>([])
-  const debouncedLimit = useDebounce(limit, 500)
+  const debouncedLimit = useDebounce(limit, 1000)
 
   const seriesData = useRef<any[]>([])
 
@@ -137,11 +151,11 @@ function Spectrum() {
     }
   }, [close, connectToWebsocket])
 
-  const updateData = useCallback((message: string, limit: number) => {
+  const updateData = useCallback((message: number[], limit: number) => {
     try {
-      const parseMsg = JSON.parse(message) as number[]
       const mapData = [] as number[]
-      const newMessage = parseMsg.map((item, index) => {
+      console.log("message", message)
+      const newMessage = message.map((item, index) => {
         if (item >= limit) {
           mapData[index] = 1
           return {
@@ -160,9 +174,22 @@ function Spectrum() {
       // console.log("error", error)
     }
   }, [])
+
   useEffect(() => {
-    updateData(message, debouncedLimit)
-  }, [message, debouncedLimit, updateData])
+    try {
+      const parseData = JSON.parse(message) as Message
+      const findMsg = parseData.find((item) => item.network === network)
+      if (findMsg) {
+        updateData(findMsg.data, debouncedLimit)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }, [message, debouncedLimit, updateData, network])
+
+  useEffect(() => {
+    window.$message.info(`子网${network}干扰定义设置为: ${debouncedLimit}`)
+  }, [debouncedLimit, network])
 
   // 解析热力图数据显示
   const parseData = useCallback(
@@ -182,17 +209,19 @@ function Spectrum() {
       })
       seriesData.current.push(...parseArr)
       update({
+        title: { text: `子网${network}干扰业务分布` },
         series: [{ data: seriesData.current }],
       })
     },
-    [update]
+    [network, update]
   )
+
   useEffect(() => {
     parseData(heatmapData)
   }, [parseData, heatmapData])
 
   return (
-    <div className="w-full h-full grid grid-rows-[auto_7fr_3fr]">
+    <div className="w-full h-full relative">
       <Form.Item labelCol={{ offset: 7 }} className="m-0" label="干扰定义设置">
         <InputNumber
           defaultValue={limit}
@@ -203,11 +232,11 @@ function Spectrum() {
         />
       </Form.Item>
 
-      <div className="min-w-1 min-h-1">
+      <div className="w-full absolute" style={{ top: "50px", height: "70%" }}>
         <div className="w-full h-full" ref={(dom) => (domRef.current = dom)}></div>
       </div>
 
-      <div className="min-w-1 min-h-1">
+      <div className="w-full absolute" style={{ top: "calc(50px + 70%)", height: "30%" }}>
         <BarOfSpectrum limit={debouncedLimit} data={barData} />
       </div>
     </div>
@@ -248,7 +277,7 @@ const barOption = {
   },
   grid: {
     top: 10,
-    height: "90%",
+    // height: "90%",
   },
   yAxis: {
     type: "value",

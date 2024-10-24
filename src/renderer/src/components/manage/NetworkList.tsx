@@ -10,7 +10,7 @@ interface DataType {
 }
 
 function NetworkList() {
-  const { connectToWebsocket } = useWebsocketConnect("network-info")
+  const { connectToWebsocket } = useWebsocketConnect("manage-network-info")
   const [list, setList] = useState<DataType[]>([])
 
   useEffect(() => {

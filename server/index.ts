@@ -34,7 +34,7 @@ const clients: Record<string, Set<WebSocket>> = {
   "/user": new Set(), // 用户端-获取用户id
   "/node-bar": new Set(), // 频段能量分布柱状图
   // 管理端
-  "/network-info": new Set(), // 网络列表
+  "/manage-network-info": new Set(), // 网络列表
   "/freq-plan": new Set(), // 用频规划
   "/freq-status-bar": new Set(), // 频谱使用状态
   "/manage-spectrum-status": new Set(), // 干扰业务分布以及柱状图
@@ -55,7 +55,17 @@ server.on("connection", (ws, req) => {
   switch (pathname) {
     case "/manage-spectrum-status": {
       setInterval(() => {
-        ws.send(JSON.stringify(generateData(32)))
+        const obj = [
+          {
+            network: 1,
+            data: generateData(32),
+          },
+          {
+            network: 2,
+            data: generateData(32),
+          },
+        ]
+        ws.send(JSON.stringify(obj))
       }, 100)
       break
     }
@@ -221,7 +231,7 @@ server.on("connection", (ws, req) => {
       }, 1000)
       break
     }
-    case "/network-info": {
+    case "/manage-network-info": {
       const data = [
         {
           network: 1, // 子网
@@ -364,20 +374,20 @@ function generateFreqStatus() {
 }
 
 function generateData(number: number) {
-  const data = [];
+  const data = []
 
   // 生成两个大于 10000 的随机数
   for (let i = 0; i < 2; i++) {
-    const random = Math.floor(Math.random() * (65536 - 10000)) + 10000;
-    data.push(random);
+    const random = Math.floor(Math.random() * (65536 - 10000)) + 10000
+    data.push(random)
   }
 
   // 生成其余小于 5000 的随机数
   for (let i = 2; i < number; i++) {
-    const random = Math.floor(Math.random() * 5000);
-    data.push(random);
+    const random = Math.floor(Math.random() * 5000)
+    data.push(random)
   }
 
   // 打乱数组顺序
-  return data.sort(() => Math.random() - 0.5);
+  return data.sort(() => Math.random() - 0.5)
 }

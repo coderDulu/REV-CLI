@@ -117,7 +117,7 @@ const option = {
 }
 
 function SpectrumBar() {
-  const { connectToWebsocket } = useWebsocketConnect("network-info")
+  const { connectToWebsocket } = useWebsocketConnect("manage-network-info")
   const { domRef, update } = useECharts(option)
 
   const parseData = useCallback((data) => {

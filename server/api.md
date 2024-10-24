@@ -222,7 +222,7 @@
 
 ## 5. 管理端
 
-### 全网态势-网络信息 `/network-info`
+### 全网态势-网络信息 `/manage-network-info`
 
 - 响应：
 
