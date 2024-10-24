@@ -71,6 +71,13 @@ function FreqPlan() {
   // 添加
   function handleConfirmAdd(data: DataType) {
     const key = nanoid()
+    const hasExitData = dataSource.some(
+      (item) => item.startTime === data.startTime && item.network === data.network
+    )
+    if (hasExitData) {
+      window.$message.warning("该时间点已存在")
+      return
+    }
     dispatch({
       type: "add",
       payload: {
