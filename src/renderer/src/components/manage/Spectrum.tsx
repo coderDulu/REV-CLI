@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import useWebSocketConnect from "@/hooks/useWebsocketConnect"
 import useEcharts from "@/hooks/useEcharts"
 import { useDebounce } from "@uidotdev/usehooks"
+import Test from "./Test"
 
 // prettier-ignore
 const xAxisData = Array(32).fill(0)
@@ -103,6 +104,21 @@ const option = {
   animation: false,
 }
 
+function Index() {
+  return (
+    // <Test />
+    <div className="w-full h-full pt-2 pb-10">
+      <div className="float-left w-1/2 h-full min-w-1 min-h-1">
+        <h1 className="text-center">子网1用频状态</h1>
+        <Spectrum />
+      </div>
+      <div className="float-right w-1/2 h-full min-w-1 min-h-1">
+        <h1 className="text-center">子网2用频状态</h1>
+        <Spectrum />
+      </div>
+    </div>
+  )
+}
 function Spectrum() {
   const { domRef, update } = useEcharts(option)
   const { connectToWebsocket, close, message } = useWebSocketConnect("manage-spectrum-status")
@@ -176,26 +192,28 @@ function Spectrum() {
   }, [parseData, heatmapData])
 
   return (
-    <Flex vertical gap={10} className="pt-2 w-full h-full flex flex-col gap-2 justify-center">
-      <Form.Item style={{ width: 400, margin: "0 auto" }} label="干扰定义设置">
+    <div className="w-full h-full grid grid-rows-[auto_7fr_3fr]">
+      <Form.Item labelCol={{ offset: 7 }} className="m-0" label="干扰定义设置">
         <InputNumber
           defaultValue={limit}
           onChange={(value) => value && setLimit(value)}
           className="w-40"
           min={1}
           max={65536}
-        ></InputNumber>
+        />
       </Form.Item>
-      <div className="basis-4/6">
+
+      <div className="min-w-1 min-h-1">
         <div className="w-full h-full" ref={(dom) => (domRef.current = dom)}></div>
       </div>
-      <div className="basis-2/6">
+
+      <div className="min-w-1 min-h-1">
         <BarOfSpectrum limit={debouncedLimit} data={barData} />
       </div>
-    </Flex>
+    </div>
   )
 }
-export default Spectrum
+export default Index
 
 function generageXData() {
   const start = 230
@@ -229,8 +247,8 @@ const barOption = {
     },
   },
   grid: {
-    top: 20,
-    // height: "80%",
+    top: 10,
+    height: "90%",
   },
   yAxis: {
     type: "value",
@@ -250,7 +268,7 @@ const barOption = {
 }
 
 function BarOfSpectrum({ data, limit }: { data: any; limit: number }) {
-  const { domRef, update } = useEcharts(barOption)
+  const { domRef, update, myChart } = useEcharts(barOption)
 
   useEffect(() => {
     const xAxis = {
@@ -259,15 +277,10 @@ function BarOfSpectrum({ data, limit }: { data: any; limit: number }) {
         formatter: (value, index) => {
           const valueToShow = data[index] // 假设 data 是对应的值
           if (valueToShow?.value >= limit) {
-            console.log(value)
             return value + "MHz"
           } else {
             return ""
           }
-
-          // return ""
-          // console.log('valueToShow', valueToShow, limit, valueToShow > limit ? value : "");
-          // return valueToShow > limit ? value : "" // 只有当值大于 5000 时才显示横坐标
         },
       },
     }
@@ -277,10 +290,10 @@ function BarOfSpectrum({ data, limit }: { data: any; limit: number }) {
     })
   }, [data, update, limit])
 
-  useEffect(() => {})
-  return (
-    <>
-      <div className="w-full h-full" ref={(dom) => (domRef.current = dom)}></div>
-    </>
-  )
+  useEffect(() => {
+    myChart.current?.on("click", () => {
+      console.log("clicked")
+    })
+  }, [myChart])
+  return <div className="w-full h-full" ref={(dom) => (domRef.current = dom)}></div>
 }

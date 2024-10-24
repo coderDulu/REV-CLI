@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ECharts Example</title>
+  <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+  <style>
+    /* body { */
+      /* width: 100vw; */
+      /* height: 100vh; */
+    /* } */
+    .container {
+      display: flex;
+      /* flex-direction: column; */
+      /* 纵向排列 */
+      height: 100%;
+      width: 90%;
+      border: 1px solid #ccc;
+      padding: 10px;
+      gap: 10px;
+    }
+
+    .element1 {
+      height: 40px;
+    }
+
+    .element2,
+    .element3 {
+      flex: 1;
+      color: #ccc;
+      border: 1px solid #ccc;
+      /* 平分剩余空间 */
+      min-width: 10px;
+    }
+
+    .chart {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="element1">元素1</div>
+    <div class="element2">
+      <div id="chart1" class="chart"></div>
+    </div>
+    <div class="element3">
+      <div id="chart2" class="chart"></div>
+    </div>
+  </div>
+
+  <script>
+    // 初始化第一个柱状图
+    var chart1 = echarts.init(document.getElementById('chart1'));
+    var option1 = {
+      title: {
+        text: '图表1'
+      },
+      tooltip: {},
+      xAxis: {
+        data: ['苹果', '香蕉', '橙子', '葡萄', '草莓']
+      },
+      yAxis: {},
+      series: [{
+        name: '销量',
+        type: 'bar',
+        data: [5, 20, 36, 10, 10]
+      }]
+    };
+    chart1.setOption(option1);
+
+    // 初始化第二个柱状图
+    var chart2 = echarts.init(document.getElementById('chart2'));
+    var option2 = {
+      title: {
+        text: '图表2'
+      },
+      tooltip: {},
+      xAxis: {
+        data: ['电脑', '手机', '电视', '耳机', '相机']
+      },
+      yAxis: {},
+      series: [{
+        name: '销量',
+        type: 'bar',
+        data: [15, 25, 46, 18, 22]
+      }]
+    };
+    chart2.setOption(option2);
+
+    // 处理窗口大小调整时图表自适应
+    window.addEventListener('resize', function () {
+      chart1.resize();
+      chart2.resize();
+    });
+  </script>
+</body>
+
+</html>
