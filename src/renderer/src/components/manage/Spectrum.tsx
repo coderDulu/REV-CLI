@@ -1,9 +1,8 @@
-import { Flex, Form, InputNumber } from "antd"
+import { Form, InputNumber } from "antd"
 import { useCallback, useEffect, useRef, useState } from "react"
 import useWebSocketConnect from "@/hooks/useWebsocketConnect"
 import useEcharts from "@/hooks/useEcharts"
 import { useDebounce } from "@uidotdev/usehooks"
-import Test from "./Test"
 
 // prettier-ignore
 const xAxisData = Array(32).fill(0)
@@ -119,7 +118,7 @@ function Index() {
     <div className="w-full h-full pt-2 pb-10">
       {networkArr.map((item) => {
         return (
-          <div className="float-left w-1/2 h-full min-w-1 min-h-1">
+          <div key={item.network} className="float-left w-1/2 h-full min-w-1 min-h-1">
             <h1 className="text-center">子网{item.network}用频状态</h1>
             <Spectrum network={item.network} />
           </div>
@@ -154,7 +153,6 @@ function Spectrum({ network }) {
   const updateData = useCallback((message: number[], limit: number) => {
     try {
       const mapData = [] as number[]
-      console.log("message", message)
       const newMessage = message.map((item, index) => {
         if (item >= limit) {
           mapData[index] = 1
@@ -183,7 +181,7 @@ function Spectrum({ network }) {
         updateData(findMsg.data, debouncedLimit)
       }
     } catch (error) {
-      console.log(error)
+      console.log("error", message)
     }
   }, [message, debouncedLimit, updateData, network])
 
