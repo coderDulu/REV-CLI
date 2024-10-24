@@ -12,7 +12,6 @@ const clients: Record<string, Set<WebSocket>> = {
   "/freq-config-get": new Set(), // 子网用频配置获取
   "/freq-config-set": new Set(), // 子网用频配置设置
 
-
   "/text-tx": new Set(), // 文本传输-发端
   "/text-rx": new Set(), // 文本传输-收端
   "/video-tx": new Set(), // 视频传输-发端
@@ -38,6 +37,7 @@ const clients: Record<string, Set<WebSocket>> = {
   "/network-info": new Set(), // 网络列表
   "/freq-plan": new Set(), // 用频规划
   "/freq-status-bar": new Set(), // 频谱使用状态
+  "/manage-spectrum-status": new Set(), // 干扰业务分布以及柱状图
 }
 
 server.on("connection", (ws, req) => {
@@ -53,27 +53,13 @@ server.on("connection", (ws, req) => {
   }
 
   switch (pathname) {
-    // case "/freq-status-bar": {
-    //   setInterval(() => {
-    //     const data = [
-    //       {
-    //         network: 1,      //子网id
-    //         freq: [230, 390] // 频谱范围
-    //       },
-    //       {
-    //         network: 2,
-    //         freq: [230, 390]
-    //       },
-    //     ]
-    //     ws.send(JSON.stringify(data))
-    //   }, 1000)
-    //   break
-    // }
+    case "/manage-spectrum-status": {
+      setInterval(() => {
+        ws.send(JSON.stringify(generateData(32)))
+      }, 100)
+      break
+    }
     case "/connect": {
-      // const data = {
-      //   type: "connect",
-      //   data: "success",
-      // }
       ws.send(0)
       break
     }
@@ -378,11 +364,20 @@ function generateFreqStatus() {
 }
 
 function generateData(number: number) {
-  const data = []
-  for (let i = 0; i < number; i++) {
-    const random = Math.random() * 100
-    data.push(random)
+  const data = [];
+
+  // 生成两个大于 10000 的随机数
+  for (let i = 0; i < 2; i++) {
+    const random = Math.floor(Math.random() * (65536 - 10000)) + 10000;
+    data.push(random);
   }
 
-  return data
+  // 生成其余小于 5000 的随机数
+  for (let i = 2; i < number; i++) {
+    const random = Math.floor(Math.random() * 5000);
+    data.push(random);
+  }
+
+  // 打乱数组顺序
+  return data.sort(() => Math.random() - 0.5);
 }
