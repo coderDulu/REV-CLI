@@ -267,6 +267,13 @@ const barOption = {
     axisLabel: {
       show: true,
       interval: 0,
+      rich: {
+        down: {
+          padding: [10, 0, 0, 0], // 向下偏移一点
+          fontSize: 12,
+          color: "#000", // 字体颜色可以根据需要调整
+        },
+      },
       // rotate: 30,
     },
     axisTick: {
@@ -303,7 +310,11 @@ function BarOfSpectrum({ data, limit }: { data: any; limit: number }) {
         show: true,
         formatter: (value, index) => {
           const valueToShow = data[index] // 假设 data 是对应的值
-          if (valueToShow?.value >= limit) {
+          if (index === 0) {
+            return `{down|Start ${value} MHz}` // 返回 rich 样式标记
+          } else if (index === data.length - 1) {
+            return `{down|Stop ${value} MHz}` // 返回 rich 样式标记
+          } else if (valueToShow?.value >= limit) {
             return value + "MHz"
           } else {
             return ""
