@@ -70,21 +70,22 @@ server.on("connection", (ws, req) => {
       break
     }
     case "/connect": {
-      ws.send(0)
+      ws.send(4)
       break
     }
     case "/topology": {
       const data = {
-        manage: ["0"],
-        center: ["4", "8"],
-        user: ["5", "6", "9", "10"],
+        manage: [0],
+        center: [4, ],
+        user: [5, 6, ],
         links: [
-          ["0", "4"],
-          ["0", "8"],
-          ["4", "5"],
-          ["4", "6"],
-          ["8", "9"],
-          ["8", "10"],
+          [0, 4],
+          [0, 8],
+          [4, 5],
+          [4, 6],
+          [8, 9],
+          [8, 10],
+          [5, 6],
         ],
       }
       setInterval(() => {

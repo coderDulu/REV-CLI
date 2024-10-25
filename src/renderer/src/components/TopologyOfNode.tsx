@@ -2,6 +2,7 @@ import useECharts from "@/hooks/useEcharts"
 import { useCallback, useEffect } from "react"
 import useWebsocketConnect from "@/hooks/useWebsocketConnect"
 import { Alert } from "antd"
+import { ids } from "@/hooks/useConnect"
 
 interface Props {
   tips?: string
@@ -62,14 +63,17 @@ function Topology({ onNodeClick, tips, exclude }: Props) {
         type: "graph",
         layout: "none",
         draggable: false,
-        symbolSize: 60,
+        symbolSize: 80,
         roam: true,
         label: {
           show: true,
           fontSize: 16,
+          formatter: function (params) {
+            return params.name.replace(/(\d+)/, "$1\n") // 根据需要调整分隔符
+          },
         },
-        edgeSymbol: ["circle", "arrow"],
-        edgeSymbolSize: [4, 10],
+        // edgeSymbol: ["circle", "circle"],
+        // edgeSymbolSize: [4, 10],
         data: [],
         links: [],
         force: {
@@ -122,14 +126,14 @@ function Topology({ onNodeClick, tips, exclude }: Props) {
     const parseMsg: TopologyData = JSON.parse(message)
     const { links, ...nodes } = parseMsg
     const nodeArr = generateCoordinates(nodes)
-    const linkArr = links.map((item) => ({ source: item[0], target: item[1] }))
+    const linkArr = links.map((item) => ({ source: item[0] + "", target: item[1] + "" }))
 
     return { data: nodeArr, links: linkArr }
   }, [])
 
   // 动态生成坐标
   function generateCoordinates(nodes) {
-    const xCenter = 500 // 中心 x 坐标，可以根据图表宽度调整
+    const xCenter = 500 // 中心 x 坐标
     const yPositions = {
       manage: 200, // 管理端在中央
       center: 400, // 中心端在管理端下方
@@ -139,10 +143,11 @@ function Topology({ onNodeClick, tips, exclude }: Props) {
     const result: any[] = []
 
     // 设置管理端节点的位置
-    nodes.manage.forEach((id, index) => {
+    nodes.manage.forEach((id) => {
       result.push({
-        name: id,
-        x: xCenter + index * 200, // 管理端在水平中央
+        name: ids[id],
+        id: +id,
+        x: xCenter, // 管理端在水平中央
         y: yPositions.manage,
         category: 0,
         symbol: "rect",
@@ -151,20 +156,30 @@ function Topology({ onNodeClick, tips, exclude }: Props) {
 
     // 设置中心端节点的位置，均匀分布在管理端下方
     nodes.center.forEach((id, index) => {
+      const xOffset = (index - (nodes.center.length - 1) / 2) * 300 // 增加中心节点的水平间距
       result.push({
-        name: id,
-        x: xCenter + index * 200, // 水平均匀分布
+        name: ids[id],
+        id: +id,
+        x: xCenter + xOffset,
         y: yPositions.center,
         category: 1,
         symbol: "roundRect",
       })
     })
 
-    // 设置接点端节点的位置，均匀分布在中心端下方
+    // 设置接点端节点的位置，确保不会重叠
     nodes.user.forEach((id, index) => {
+      // 计算叶子节点属于哪个中心节点
+      const centerIndex = Math.floor(index / (nodes.user.length / nodes.center.length))
+      const totalUsersForCenter = nodes.user.length / nodes.center.length // 每个中心节点对应的用户数量
+      const userIndexInCenter = index % totalUsersForCenter // 该用户在所属中心节点中的序号
+      const offsetX = 200 // 偏移量
+      // 计算叶子节点的水平偏移
+      const sideOffset = (userIndexInCenter - (totalUsersForCenter - 1) / 2) * offsetX // 动态计算每个叶子节点的水平位置
       result.push({
-        name: id,
-        x: xCenter - 100 + index * 200, // 水平均匀分布
+        name: ids[id],
+        id: +id,
+        x: result.find((node) => node.id === +nodes.center[centerIndex]).x + sideOffset, // 基于对应的中心端节点 x 坐标
         y: yPositions.user,
         category: 2,
       })
@@ -172,6 +187,7 @@ function Topology({ onNodeClick, tips, exclude }: Props) {
 
     return result
   }
+
   return (
     <div className="w-full h-full relative min-h-0 min-w-0">
       <div className="w-full h-full " ref={(dom) => (domRef.current = dom)}></div>

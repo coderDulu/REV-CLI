@@ -79,7 +79,7 @@ export default function SpectrumStatus() {
         }
       })
     })
-  }, [connectToWebsocket])
+  }, [connectToWebsocket, update])
 
   return (
     <div className="w-full h-full" ref={(dom) => (domRef.current = dom)}></div>
