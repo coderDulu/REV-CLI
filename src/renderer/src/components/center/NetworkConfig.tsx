@@ -6,13 +6,20 @@ import useWebsocketConnect from "@/hooks/useWebsocketConnect"
 import { useEffect } from "react"
 import SpectrumStatus from "../SpectrumStatus"
 import NetworkRate from "./NetWorkRate"
+import FreqFormConfig from "@/components/FreqFormConfig"
+import useConnect, { ids } from "@/hooks/useConnect"
 
 function NetworkConfig() {
   const { connectToWebsocket, sendMessage } = useWebsocketConnect("net-config-set")
+  const { role } = useConnect()
 
   useEffect(() => {
     connectToWebsocket()
   }, [connectToWebsocket])
+
+  useEffect(() => {
+    console.log("role", role)
+  }, [role])
 
   const onFinish = async (values: FormValues) => {
     try {
@@ -29,7 +36,8 @@ function NetworkConfig() {
     <div className="grid grid-cols-[auto_1fr] w-full h-full">
       <LineLeftItem>
         <h1 className="font-bold text-2xl">业务信道参数</h1>
-        <FormConfig onFinish={onFinish} onFinishFailed={onFinishFailed} />
+        <FreqFormConfig node={ids[role]} />
+        {/* <FormConfig onFinish={onFinish} onFinishFailed={onFinishFailed} /> */}
       </LineLeftItem>
       <div className="flex flex-col gap-10 min-w-0">
         <div className="flex-[1] min-h-0 min-w-0">
@@ -137,7 +145,6 @@ export function FormConfig({
     }
     form.setFieldsValue(updatedSwitches)
   }
-
 
   return (
     <CForm

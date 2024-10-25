@@ -1,6 +1,6 @@
 import useWebsocketConnect from "@/hooks/useWebsocketConnect"
 import { Form, Select } from "antd"
-import { useEffect, useCallback } from "react"
+import { useEffect, useCallback, useState } from "react"
 
 interface Props {
   node: string
@@ -69,8 +69,19 @@ function FreqFormConfig({ node }: Props) {
     useWebsocketConnect("freq-config-set")
   const [form] = Form.useForm()
 
+  const [network, setNetwork] = useState<number>()
+  useEffect(() => {
+    const id = node.at(2)
+    if (id) {
+      setNetwork(+id)
+    }
+  }, [node])
+
   const getFormData = useCallback(async () => {
     const res = await getWs()
+
+    sendMessageOfGet(JSON.stringify({ network: network }))
+
     res?.addEventListener("message", (ev) => {
       try {
         const parseData = JSON.parse(ev.data) as DataType
@@ -79,7 +90,7 @@ function FreqFormConfig({ node }: Props) {
         console.log("network-info parse error")
       }
     })
-  }, [form, getWs])
+  }, [form, getWs, network, sendMessageOfGet])
 
   useEffect(() => {
     getFormData()
@@ -98,23 +109,15 @@ function FreqFormConfig({ node }: Props) {
     })
   }, [setWs])
 
-  // 获取频点配置信息
-  useEffect(() => {
-    if (node.at(2)) {
-      sendMessageOfGet(JSON.stringify({ network: node.at(2) }))
-    }
-  }, [node, sendMessageOfGet])
-
   const onFinish = (values) => {
-    if (!node) {
+    if (!network) {
       window.$message.warning("请点击右侧，选择子网")
       return
     }
     const data = {
       ...values,
-      network: +node.replace("子网", ""),
+      network: network,
     }
-
     sendMessageOfSet(JSON.stringify(data))
   }
 

@@ -6,7 +6,7 @@ interface Connect {
   address: string
   port: number
   isConnect: boolean
-  role?: "manage" | "center" | "user"
+  role?: number
 }
 export enum ids {
   "管理端" = 0,
@@ -25,7 +25,6 @@ const initialTasks: Connect = storage
       address: "127.0.0.1",
       port: 8080,
       isConnect: false,
-      role: "manage",
     }
 
 const TasksContext = createContext<Connect>(initialTasks)
@@ -57,7 +56,7 @@ interface ActionType {
   address?: string
   port?: number
   isConnect?: boolean
-  role?: "manage" | "center" | "user"
+  role?: number
 }
 function tasksReducer(tasks: Connect, action: ActionType) {
   const { type, ...data } = action
