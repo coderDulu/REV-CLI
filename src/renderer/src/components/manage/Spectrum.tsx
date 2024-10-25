@@ -132,7 +132,7 @@ type Message = {
   network: number
   data: number[]
 }[]
-function Spectrum({ network }) {
+export function Spectrum({ network }) {
   const { domRef, update } = useEcharts(option)
   const { connectToWebsocket, close, message } = useWebSocketConnect("manage-spectrum-status")
   const [limit, setLimit] = useState(5000)
@@ -176,7 +176,7 @@ function Spectrum({ network }) {
   useEffect(() => {
     try {
       const parseData = JSON.parse(message) as Message
-      const findMsg = parseData.find((item) => item.network === network)
+      const findMsg = parseData.find((item) => item.network === +network)
       if (findMsg) {
         updateData(findMsg.data, debouncedLimit)
       }

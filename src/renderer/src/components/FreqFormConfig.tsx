@@ -78,20 +78,18 @@ function FreqFormConfig({ node }: Props) {
   }, [node])
 
   const getFormData = useCallback(async () => {
-    const res = await getWs()
-
     if (network !== undefined) {
+      const res = await getWs()
       sendMessageOfGet(JSON.stringify({ network: network }))
+      res?.addEventListener("message", (ev) => {
+        try {
+          const parseData = JSON.parse(ev.data) as DataType
+          form.setFieldsValue(parseData)
+        } catch (error) {
+          console.log("network-info parse error")
+        }
+      })
     }
-
-    res?.addEventListener("message", (ev) => {
-      try {
-        const parseData = JSON.parse(ev.data) as DataType
-        form.setFieldsValue(parseData)
-      } catch (error) {
-        console.log("network-info parse error")
-      }
-    })
   }, [form, getWs, network, sendMessageOfGet])
 
   useEffect(() => {
