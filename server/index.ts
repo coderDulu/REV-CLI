@@ -70,7 +70,7 @@ server.on("connection", (ws, req) => {
       break
     }
     case "/connect": {
-      ws.send(4)
+      ws.send(0)
       break
     }
     case "/topology": {

@@ -1,4 +1,5 @@
-import TopologyOfManage from "../Topology"
+// import TopologyOfManage from "../Topology"
+import TopologyOfNode from "../TopologyOfNode"
 import LineLeftItem from "../common/LineLeftItem"
 import FreqFormConfig from "../FreqFormConfig"
 import NetworkList from "./NetworkList"
@@ -20,7 +21,7 @@ function Network() {
         <div className="h-[200px] min-w-0">
           <SpectrumBar />
         </div>
-        <TopologyOfManage
+        <TopologyOfNode
           onNodeClick={(node) => {
             node.includes("子网") && setChooseNode(node.slice(0, 3))
           }}

@@ -133,7 +133,7 @@ export function FormConfig({
         })
       })
     })
-  }, [getConfig])
+  }, [form, getConfig])
 
   const handleSwitchChange = (changedSwitch) => {
     const switches = form.getFieldsValue(["autoChannel", "autoChannelModel", "fixFreqMode"])

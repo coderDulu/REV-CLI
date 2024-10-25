@@ -80,7 +80,9 @@ function FreqFormConfig({ node }: Props) {
   const getFormData = useCallback(async () => {
     const res = await getWs()
 
-    sendMessageOfGet(JSON.stringify({ network: network }))
+    if (network !== undefined) {
+      sendMessageOfGet(JSON.stringify({ network: network }))
+    }
 
     res?.addEventListener("message", (ev) => {
       try {

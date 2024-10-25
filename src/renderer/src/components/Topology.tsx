@@ -75,6 +75,7 @@ function Topology({ onNodeClick, tips }: Props) {
         if (message) {
           const { links, ...nodes } = JSON.parse(message)
           const treeData = buildTree(nodes, links)
+          console.log(treeData);
           if (!isSame(lastData, treeData)) {
             update({ series: [{ data: [treeData] }] })
           }
@@ -137,7 +138,7 @@ function buildTree(nodes, links) {
   links.forEach((link) => {
     const [parentId, childId] = link
     if (nodeMap[parentId]) {
-      nodeMap[parentId].children.push(nodeMap[childId])
+      nodeMap[parentId].children.push(nodeMap[childId] ?? [])
     }
   })
 
