@@ -162,10 +162,10 @@ server.on("connection", (ws, req) => {
     case "/net-rate": {
       setInterval(() => {
         const data = {
-          rate: Math.floor(Math.random() * 100),
+          rate: Math.floor(Math.random() * 70000),
         }
         ws.send(JSON.stringify(data))
-      }, 1000)
+      }, 100)
       break
     }
     case "/business": {
