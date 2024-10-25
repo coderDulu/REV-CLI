@@ -112,7 +112,7 @@ function FreqFormConfig({ node }: Props) {
     }
     const data = {
       ...values,
-      network: node,
+      network: +node.replace("子网", ""),
     }
 
     sendMessageOfSet(JSON.stringify(data))

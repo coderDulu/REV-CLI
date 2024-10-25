@@ -1,5 +1,4 @@
 import {
-  Radio,
   Space,
   Form,
   Select,
@@ -9,7 +8,6 @@ import {
   TimePicker,
   Modal,
   FormProps,
-  InputNumber,
   Flex,
   Alert,
   Statistic,
@@ -20,8 +18,6 @@ import { useImmerReducer } from "use-immer"
 import dayjs from "dayjs"
 import { nanoid } from "nanoid"
 import useWebsocketConnect from "@/hooks/useWebsocketConnect"
-import CButton from "../common/CButton"
-import { FormConfig } from "../center/NetworkConfig"
 import duration from "dayjs/plugin/duration" // 引入 duration 插件
 
 dayjs.extend(duration) // 使用插件
@@ -137,7 +133,15 @@ function FreqPlan() {
       )
 
       if (index !== -1) {
-        sendMessage(JSON.stringify(dataSourceOfTimer[index])).then(() => {
+        const { network, startFreq, mode, bandSelect } = dataSourceOfTimer[index]
+        sendMessage(
+          JSON.stringify({
+            network,
+            startFreq,
+            mode,
+            bandSelect,
+          })
+        ).then(() => {
           dispatch({
             type: "update",
             payload: {
@@ -150,9 +154,9 @@ function FreqPlan() {
         if (index === dataSourceOfTimer.length - 1) {
           clearInterval(timer.current)
           window.$message.success("所有规则已下发")
+          setIsSending(false)
         } else {
           window.$message.info(`第${index + 1}条规则下发成功`)
-          setIsSending(false)
         }
       }
     }

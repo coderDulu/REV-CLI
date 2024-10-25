@@ -12,7 +12,9 @@ interface Data {
 }
 
 interface TopologyData {
-  type: string;
-  data: Data;
+  manage: string[];
+  center: string[];
+  user: string[];
+  links: string[];
 }
 

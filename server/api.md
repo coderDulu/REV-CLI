@@ -223,6 +223,47 @@
 
 ## 5. 管理端
 
+### 子网用频配置获取 `/freq-config-get`
+
+- 请求：
+
+```json
+{ "network": "1" } // 子网 1 | 2，表示获取子网几的用频配置
+```
+
+- 响应：
+
+```json
+{
+  "startFreq": 240, // 起始频点
+  "mode": 0, // 0 -> 自适应跳频，1 -> 频点固定模式
+  "bandSelect": 21, // 通道
+  "network": 1 // 子网
+}
+```
+
+### 子网用频配置设置 `/freq-config-set`
+
+- 请求：
+
+```json
+{
+  "startFreq": 290, // 起始频点
+  "mode": 1, // 0 -> 自适应跳频，1 -> 频点固定模式
+  "bandSelect": 18, // 通道
+  "network": 2 // 子网
+}
+```
+
+- 响应：
+
+```json
+{
+  "result": "success", // success 或者 error
+  "message": "ok" // 对result的描述，主要是error时的描述
+}
+```
+
 ### 全网态势-网络信息 `/manage-network-info`
 
 - 响应：
@@ -271,6 +312,8 @@
 ```
 
 ### 用频规划 `/freq-plan`
+
+- 请求：
 
 ```json
 {
