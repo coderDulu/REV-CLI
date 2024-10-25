@@ -70,28 +70,22 @@ server.on("connection", (ws, req) => {
       break
     }
     case "/connect": {
-      ws.send(0)
+      ws.send(4)
       break
     }
     case "/topology": {
       const data = {
-        type: "topology",
-        data: {
-          nodes: {
-            manage: ["0"],
-            center: ["4", "8"],
-            user: ["5", "6", "9", "10"],
-          },
-
-          links: [
-            ["0", "4"],
-            ["0", "8"],
-            ["4", "5"],
-            ["4", "6"],
-            ["8", "9"],
-            ["8", "10"],
-          ],
-        },
+        manage: ["0"],
+        center: ["4", "8"],
+        user: ["5", "6", "9", "10"],
+        links: [
+          ["0", "4"],
+          ["0", "8"],
+          ["4", "5"],
+          ["4", "6"],
+          ["8", "9"],
+          ["8", "10"],
+        ],
       }
       setInterval(() => {
         ws.send(JSON.stringify(data))

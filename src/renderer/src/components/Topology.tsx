@@ -10,7 +10,7 @@ interface Props {
   onNodeClick?: (chooseNode: string) => void
 }
 
-const STYLES = {
+export const STYLES = {
   manage: {
     itemStyle: {
       color: "#ffb3b3",
@@ -30,7 +30,7 @@ const STYLES = {
     symbol: "circle",
   },
 }
-function Topology({ onNodeClick, tips, exclude }: Props) {
+function Topology({ onNodeClick, tips }: Props) {
   const { connectToWebsocket } = useWebsocketConnect("topology")
   const { domRef, update, myChart, isSame } = useECharts({
     title: {
@@ -73,9 +73,8 @@ function Topology({ onNodeClick, tips, exclude }: Props) {
       socket?.addEventListener("message", (ev) => {
         const message = ev.data
         if (message) {
-          const { data } = JSON.parse(message)
-
-          const treeData = buildTree(data.nodes, data.links)
+          const { links, ...nodes } = JSON.parse(message)
+          const treeData = buildTree(nodes, links)
           if (!isSame(lastData, treeData)) {
             update({ series: [{ data: [treeData] }] })
           }
@@ -84,11 +83,13 @@ function Topology({ onNodeClick, tips, exclude }: Props) {
         }
       })
     })
+  }, [connectToWebsocket, isSame, update])
 
+  useEffect(() => {
     myChart.current?.on("click", (params) => {
       onNodeClick && onNodeClick(params.name)
     })
-  }, [connectToWebsocket])
+  }, [myChart, onNodeClick])
 
   return (
     <div className="w-full h-full relative min-h-0 min-w-0">

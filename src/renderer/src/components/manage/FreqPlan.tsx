@@ -368,7 +368,6 @@ function TableForm({ onFinish, onFinishFailed, initData }: TableFormProps) {
     ...initData,
     startTime: dayjs(initData?.startTime ?? "00:00:00", "HH:mm:ss"),
   }
-  console.log("initData", initFormData)
 
   return (
     <>
