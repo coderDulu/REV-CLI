@@ -1,14 +1,15 @@
 /**
  * 瀑布图下发的柱状图
  */
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import YaxisRangeSet from "./YaxisRangeSet"
 import useEcharts from "@/hooks/useEcharts"
+import useWebsocketConnect from "@/hooks/useWebsocketConnect"
 
 const barOption = {
   xAxis: {
     type: "category",
-    data: generageXData(),
+    data: [],
     // show: false,
     // splitArea: {
     //   show: true,
@@ -52,17 +53,40 @@ const barOption = {
 
 function BarOfSpectrum({ data, limit }: { data: any; limit: number }) {
   const { domRef, update, myChart } = useEcharts(barOption)
+  const { connectToWebsocket, message } = useWebsocketConnect("spectrum-status")
+  const xRange = useRef([230, 670])
 
   useEffect(() => {
+    connectToWebsocket()
+  }, [connectToWebsocket])
+
+  useEffect(() => {
+    try {
+      const parseData = JSON.parse(message)
+      if (parseData) {
+        const start = parseData.startFreq
+        const end = parseData.endFreq
+
+        xRange.current = [start, end]
+      }
+    } catch (error) {
+      console.log("error", message)
+    }
+  }, [message])
+
+  useEffect(() => {
+    const startFreq = xRange.current[0]
+    const endFreq = xRange.current[1]
     const xAxis = {
+      data: generageXData(startFreq, endFreq),
       axisLabel: {
         show: true,
         formatter: (value, index) => {
           const valueToShow = data[index] // 假设 data 是对应的值
           if (index === 0) {
-            return `{down|Start ${value} MHz}` // 返回 rich 样式标记
+            return `{down|Start ${startFreq} MHz}` // 返回 rich 样式标记
           } else if (index === data.length - 1) {
-            return `{down|Stop ${value} MHz}` // 返回 rich 样式标记
+            return `{down|Stop ${endFreq} MHz}` // 返回 rich 样式标记
           } else if (valueToShow?.value >= limit) {
             return value + "MHz"
           } else {
@@ -113,9 +137,7 @@ function BarOfSpectrum({ data, limit }: { data: any; limit: number }) {
 
 export default BarOfSpectrum
 
-function generageXData() {
-  const start = 230
-  const end = 670
+function generageXData(start, end) {
   const numCategories = 32
 
   // 计算每个类别的间隔

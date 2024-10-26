@@ -23,7 +23,7 @@ const NetworkConfig = lazy(() => import("@/components/center/NetworkConfig"))
 const AutoFreq = lazy(() => import("@/components/center/AutoFreq"))
 
 function addLazy(children: ReactNode) {
-  return <Suspense fallback={<div>Error</div>}>{children}</Suspense>
+  return <Suspense fallback={<></>}>{children}</Suspense>
 }
 
 function Error() {

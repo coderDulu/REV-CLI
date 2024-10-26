@@ -74,6 +74,9 @@ function FreqFormConfig({ node }: Props) {
     const id = node?.at(2)
     if (id) {
       setNetwork(+id)
+      setTimeout(() => {
+        setNetwork(undefined)
+      }, 500);
     }
   }, [node])
 
