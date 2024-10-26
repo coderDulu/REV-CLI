@@ -68,8 +68,9 @@ function FreqFormConfig({ node }: Props) {
   const { connectToWebsocket: setWs, sendMessage: sendMessageOfSet } =
     useWebsocketConnect("freq-config-set")
   const [form] = Form.useForm()
-
+  const [lastNetwork, setLastNetwork] = useState<number>()
   const [network, setNetwork] = useState<number>()
+
   useEffect(() => {
     const id = node?.at(2)
     if (id) {
@@ -79,6 +80,12 @@ function FreqFormConfig({ node }: Props) {
       }, 500);
     }
   }, [node])
+
+  useEffect(() => {
+    return () => {
+      setLastNetwork(network)
+    }
+  }, [network])
 
   const getFormData = useCallback(async () => {
     if (network !== undefined) {
@@ -113,13 +120,13 @@ function FreqFormConfig({ node }: Props) {
   }, [setWs])
 
   const onFinish = (values) => {
-    if (!network) {
+    if (!lastNetwork) {
       window.$message.warning("请点击右侧，选择子网")
       return
     }
     const data = {
       ...values,
-      network: network,
+      network: lastNetwork,
     }
     sendMessageOfSet(JSON.stringify(data))
   }

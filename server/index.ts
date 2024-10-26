@@ -76,8 +76,8 @@ server.on("connection", (ws, req) => {
     case "/topology": {
       const data = {
         manage: [0],
-        center: [4],
-        user: [5, 6],
+        center: [4, 8],
+        user: [5, 6, 9, 10],
         links: [
           [0, 4],
           [0, 8],
