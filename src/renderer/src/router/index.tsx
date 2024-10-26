@@ -3,7 +3,7 @@ import { createHashRouter, Navigate } from "react-router-dom";
 import { lazy, type ReactNode, Suspense } from "react";
 
 import App from "../App";
-import NodeStatus from "@/components/user/NodeStatus";
+import UserStatus from "@/components/user/UserStatus";
 // import SuspenseLoading from "@/views/SuspenseLoading";
 
 const Manage = lazy(() => import("@/views/ManageView"));
@@ -45,7 +45,8 @@ export const menus = [
   {
     name: "user",
     children: [
-      { name: "节点状态", path: "/user/node-status" },
+      { name: "网络状态", path: "/user/node-status" },
+      { name: "频谱状态", path: "/user/status" },
       { name: "业务传输", path: "/user/txrx" },
     ],
   },
@@ -124,8 +125,12 @@ const config = createHashRouter([
           },
           {
             path: "/user/node-status",
-            element: <NodeStatus />,
+            element: <UserStatus />,
 
+          },
+          {
+            path: "/user/status",
+            element: <Spectrum />,
           },
           {
             path: "/user/txrx",

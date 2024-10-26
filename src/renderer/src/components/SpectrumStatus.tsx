@@ -9,9 +9,9 @@ export default function SpectrumStatus({ onFreqChange }) {
     title: {
       text: `频谱管控状态`,
       top: 20,
-      left: 20,
+      left: 40,
       textStyle: {
-        fontSize: 24,
+        fontSize: 18,
         color: "#000",
       },
     },

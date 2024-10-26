@@ -1,7 +1,7 @@
 import LineLeftItem from "../common/LineLeftItem"
 import FreqFormConfig from "@/components/FreqFormConfig"
 import useConnect, { ids } from "@/hooks/useConnect"
-import { Spectrum } from "@/components/manage/Spectrum"
+import SpectrumItem from "@/components/SpectrumItem"
 
 function NetworkConfig() {
   const { role } = useConnect()
@@ -13,7 +13,7 @@ function NetworkConfig() {
         <FreqFormConfig node={ids[role]} />
       </LineLeftItem>
       <div className="flex flex-col gap-10 min-w-0 p-4">
-        <Spectrum network={ids[role]?.at(2)}/>
+        <SpectrumItem network={ids[role]?.at(2)}/>
         {/* <div className="flex-[1] min-h-0 min-w-0">
           <SpectrumStatus />
         </div>

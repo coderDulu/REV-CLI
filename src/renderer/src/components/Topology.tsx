@@ -36,7 +36,7 @@ function Topology({ onNodeClick, tips }: Props) {
     title: {
       text: "网络拓扑",
       textStyle: {
-        fontSize: 24,
+        fontSize: 18,
         color: "#000",
       },
       top: 40,

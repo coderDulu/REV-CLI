@@ -31,7 +31,7 @@ const initOption = {
     top: "10px",
     left: "4%",
     textStyle: {
-      fontSize: 24,
+      fontSize: 18,
       color: "#000",
     },
   },

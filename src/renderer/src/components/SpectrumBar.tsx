@@ -27,7 +27,7 @@ const option = {
   title: {
     text: "频谱使用状态",
     textStyle: {
-      fontSize: 24,
+      fontSize: 18,
       color: "#000",
     },
     top: 4,
