@@ -19,11 +19,17 @@ function App() {
         window.electron.send("toggle-dev-tools")
       }
     })
+
+    window.onerror = function (message, source, lineno, colno, error) {
+      console.error("捕获到错误:", message)
+      // 可以选择显示友好的错误消息或记录错误
+      return true // 防止错误信息显示在控制台
+    }
   }, [])
 
   // 路由设置
-  const navigate = useNavigate();
-  const location = useLocation();
+  const navigate = useNavigate()
+  const location = useLocation()
 
   useEffect(() => {
     // 从 localStorage 获取上次访问的路由

@@ -9,6 +9,15 @@ interface Props {
   exclude?: number[] // 不显示节点 0, 1, 2 / 管理端、中心端、节点段
   onNodeClick?: (chooseNode: string) => void
 }
+
+// 动态生成坐标\
+type TopologyNodes = {
+  manage: number[]
+  center: number[]
+  user: number[]
+  links: number[][]
+}
+
 function Topology({ onNodeClick, tips, exclude }: Props) {
   const { connectToWebsocket, message } = useWebsocketConnect("topology")
   const { domRef, update, myChart } = useECharts({
@@ -131,8 +140,7 @@ function Topology({ onNodeClick, tips, exclude }: Props) {
     return { data: nodeArr, links: linkArr }
   }, [])
 
-  // 动态生成坐标
-  function generateCoordinates(nodes) {
+  function generateCoordinates(nodes: TopologyNodes) {
     const xCenter = 500 // 中心 x 坐标
     const yPositions = {
       manage: 200, // 管理端在中央

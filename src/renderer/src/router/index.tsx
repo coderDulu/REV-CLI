@@ -1,28 +1,33 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createHashRouter, Navigate } from "react-router-dom";
-import { lazy, type ReactNode, Suspense } from "react";
+import { createHashRouter, Navigate } from "react-router-dom"
+import { lazy, type ReactNode, Suspense } from "react"
 
-import App from "../App";
-import UserStatus from "@/components/user/UserStatus";
-import NodeStatus from "@/components/user/NodeStatus";
+import App from "../App"
+import UserStatus from "@/components/user/UserStatus"
+import NodeStatus from "@/components/user/NodeStatus"
+import { Result } from "antd"
 // import SuspenseLoading from "@/views/SuspenseLoading";
 
-const Manage = lazy(() => import("@/views/ManageView"));
-const CenterView = lazy(() => import("@/views/CenterView"));
-const UserView = lazy(() => import("@/views/UserView"));
+const Manage = lazy(() => import("@/views/ManageView"))
+const CenterView = lazy(() => import("@/views/CenterView"))
+const UserView = lazy(() => import("@/views/UserView"))
 // manage
-const Network = lazy(() => import("@/components/manage/Network"));
-const Spectrum = lazy(() => import("@/components/manage/Spectrum"));
-const FreqPlan = lazy(() => import("@/components/manage/FreqPlan"));
+const Network = lazy(() => import("@/components/manage/Network"))
+const Spectrum = lazy(() => import("@/components/manage/Spectrum"))
+const FreqPlan = lazy(() => import("@/components/manage/FreqPlan"))
 
 // center
-const TxRx = lazy(() => import("@/components/TxRx/Index"));
-const NetworkStatus = lazy(() => import("@/components/center/NetworkStatus"));
-const NetworkConfig = lazy(() => import("@/components/center/NetworkConfig"));
-const AutoFreq = lazy(() => import("@/components/center/AutoFreq"));
+const TxRx = lazy(() => import("@/components/TxRx/Index"))
+const NetworkStatus = lazy(() => import("@/components/center/NetworkStatus"))
+const NetworkConfig = lazy(() => import("@/components/center/NetworkConfig"))
+const AutoFreq = lazy(() => import("@/components/center/AutoFreq"))
 
 function addLazy(children: ReactNode) {
-  return <Suspense fallback={<></>}>{children}</Suspense>;
+  return <Suspense fallback={<div>Error</div>}>{children}</Suspense>
+}
+
+function Error() {
+  return <Result status="404" title="404" subTitle="当前页面出现错误，请稍后重试。" />
 }
 
 export const menus = [
@@ -51,7 +56,7 @@ export const menus = [
       { name: "业务传输", path: "/user/txrx" },
     ],
   },
-];
+]
 
 const config = createHashRouter([
   {
@@ -69,14 +74,17 @@ const config = createHashRouter([
           {
             path: "/manage/network",
             element: addLazy(<Network />),
+            errorElement: <Error/>
           },
           {
             path: "/manage/status",
             element: addLazy(<Spectrum />),
+            errorElement: <Error/>
           },
           {
             path: "/manage/plan",
             element: addLazy(<FreqPlan />),
+            errorElement: <Error/>
           },
           {
             path: "*",
@@ -96,18 +104,22 @@ const config = createHashRouter([
           {
             path: "/center/net-status",
             element: addLazy(<NetworkStatus />),
+            errorElement: <Error/>
           },
           {
             path: "/center/net-config",
             element: addLazy(<NetworkConfig />),
+            errorElement: <Error/>
           },
           {
             path: "/center/freq",
             element: addLazy(<AutoFreq />),
+            errorElement: <Error/>
           },
           {
             path: "/center/txrx",
             element: <TxRx />,
+            errorElement: <Error/>
           },
           {
             path: "*",
@@ -127,7 +139,6 @@ const config = createHashRouter([
           {
             path: "/user/node-status",
             element: <NodeStatus />,
-
           },
           {
             path: "/user/status",
@@ -136,7 +147,6 @@ const config = createHashRouter([
           {
             path: "/user/txrx",
             element: <TxRx />,
-
           },
           {
             path: "*",
@@ -146,6 +156,6 @@ const config = createHashRouter([
       },
     ],
   },
-]);
+])
 
-export default config;
+export default config
