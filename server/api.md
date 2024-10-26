@@ -6,7 +6,7 @@
 
 ## 通用
 
-### 1. 设备连接 `/connect`
+### 1. 设备连接 `/connect`  <a id="connect"></a>
 
 - 响应
 
@@ -17,7 +17,7 @@
 };
 ```
 
-### 2. 子网用频配置获取 `/freq-config-get`
+### 2. 子网用频配置获取 `/freq-config-get <a id="freq-config-get"></a>
 
 - 请求
 
@@ -38,7 +38,7 @@
 }
 ```
 
-### 3. 子网用频配置设置 `/freq-config-set`
+### 3. 子网用频配置设置 `/freq-config-set`  <a id="freq-config-set"></a>
 
 - 请求：
 
@@ -60,9 +60,7 @@
 }
 ```
 
-## 2. 中心端
-
-### 拓扑（A） `/topology`
+### 4. 拓扑（A） `/topology`  <a id="topology"></a>
 
 - 响应：
 
@@ -83,85 +81,9 @@
 }
 ```
 
-### 网络配置
+----
 
-#### 频段能量分布(A) `/network-bar`
-
-- 响应：
-
-```json
-[1, 0, 0 ...] // 1024个数据
-```
-
-#### 业务信道参数获取(A) `/net-config-get`
-
-- 响应：
-
-```json
-{
-  "startFreq": 200, // 起始频点
-  "autoChannel": true, // 自适应跳频
-  "fixFreqMode": false, // 频点固定模式
-  "bandSelect": 29 // 通道
-}
-```
-
-### 业务信道参数设置 `/net-config-set`
-
-- 请求：
-
-```json
-{
-  "startFreq": 200, // 起始频点
-  "autoChannel": true, // 自适应跳频
-  "fixFreqMode": false, // 频点固定模式
-  "bandSelect": 29 // 通道
-}
-```
-
-- 响应：
-
-```json
-{
-  "result": "success", // success 或者 error
-  "message": "ok" // 对result的描述，主要是error时的描述
-}
-```
-
-### 频谱管控状态（A） `/spectrum-status`
-
-- 响应
-
-```json
-{
-  "startFreq": 390,
-  "endFreq": 550
-}
-```
-
-### 实时网络传输速率（A） `/net-rate`
-
-- 响应
-
-```json
-{
-  "rate": 65
-}
-```
-
-### 自主选频-子网干扰业务 `/network-freq-status`
-
-- 响应
-
-```json
-{
-  "field_num": 1,
-  "start_freq": 250,
-  "freq_status": [1, 1, 8, 2, "-", 3, 6, 6, "-", 1]
-}
-```
-
-## 3. 业务传输
+## 业务传输 <a id="tx-rx"></a>
 
 `逻辑就是：先发送目的地址，然后发送数据，收到什么数据就往目的地址发什么数据`
 
@@ -191,73 +113,15 @@
 
 #### 收端 `/file-rx`
 
-## 4. 用户端
+## 管理端
 
-### 获取节点 id（A） `/user`
+----
 
-- 响应：
+###  [网络拓扑](#topology) (点击跳转)
 
-```json
-{
-  "type": "user",
-  "data": 5
-}
-```
+### [子网用频配置获取](#freq-config-get) (点击跳转)
 
-### 节点频段能量分布 `/node-bar`
-
-- 响应：
-
-```json
-[
-  88.46648943500699,
-  20.08267975450668,
-  ...
-] // 32个数据
-```
-
-## 5. 管理端
-
-### 子网用频配置获取 `/freq-config-get`
-
-- 请求：
-
-```json
-{ "network": "1" } // 子网 1 | 2，表示获取子网几的用频配置
-```
-
-- 响应：
-
-```json
-{
-  "startFreq": 240, // 起始频点
-  "mode": 0, // 0 -> 自适应跳频，1 -> 频点固定模式
-  "bandSelect": 21, // 通道
-  "network": 1 // 子网
-}
-```
-
-### 子网用频配置设置 `/freq-config-set`
-
-- 请求：
-
-```json
-{
-  "startFreq": 290, // 起始频点
-  "mode": 1, // 0 -> 自适应跳频，1 -> 频点固定模式
-  "bandSelect": 18, // 通道
-  "network": 2 // 子网
-}
-```
-
-- 响应：
-
-```json
-{
-  "result": "success", // success 或者 error
-  "message": "ok" // 对result的描述，主要是error时的描述
-}
-```
+### [子网用频配置设置](#freq-config-set) (点击跳转)
 
 ### 全网态势-网络信息 `/manage-network-info`
 
@@ -282,7 +146,7 @@
 ]
 ```
 
-### 频谱状态页面接口 `/manage-spectrum-status`
+### 频谱状态页面接口 `/manage-spectrum-status`  <a id="manage-spectrum-status"></a>
 
 - 响应：
 
@@ -318,3 +182,56 @@
   "bandSelect": 1 // 通道
 }
 ```
+
+----
+
+## 中心端
+
+----
+
+### 网络状态页面
+
+#### [网络拓扑](#topology) (点击跳转)
+
+#### 实时网络传输速率
+
+- 响应：
+
+```json
+{
+  "rate": 59021
+}
+```
+
+----
+
+### 频谱管控页面
+
+#### [业务信道参数获取和设置](#freq-config-get) (点击跳转)
+
+#### [子网干扰业务数据及柱状图数据](#manage-spectrum-status) (点击跳转)
+
+----
+
+### 信道感知页面
+#### 频谱管控状态（A） `/spectrum-status`
+
+- 响应
+
+```json
+{
+  "startFreq": 390,
+  "endFreq": 550
+}
+```
+#### 设备感知状态柱状图 `/network-bar`
+
+* 响应：
+
+  ```json
+  [ 2272, 248, 2293, ...] // 1024个柱状图数据
+  ```
+
+----
+
+### [业务传输页面](#tx-rx)(点击跳转)
