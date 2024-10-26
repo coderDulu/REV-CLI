@@ -71,7 +71,7 @@ function FreqFormConfig({ node }: Props) {
 
   const [network, setNetwork] = useState<number>()
   useEffect(() => {
-    const id = node.at(2)
+    const id = node?.at(2)
     if (id) {
       setNetwork(+id)
     }
