@@ -74,7 +74,7 @@ const option = {
       emphasis: {
         focus: "series",
       },
-      data: [160],
+      data: [],
     },
     {
       id: 2,
@@ -99,7 +99,7 @@ const option = {
       emphasis: {
         focus: "series",
       },
-      data: [160],
+      data: [],
     },
     {
       name: "未使用",
