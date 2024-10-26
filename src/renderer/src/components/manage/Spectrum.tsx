@@ -349,6 +349,6 @@ function BarOfSpectrum({ data, limit }: { data: any; limit: number }) {
   }
   return <>
      <div onClick={() => setShow(true)} className="w-full h-full" ref={(dom) => (domRef.current = dom)}></div>
-     <YaxisRangeSet visible={show} onRangeSubmit={handleRangeSubmit}/>
+     <YaxisRangeSet onClose={() => setShow(false)} visible={show} onRangeSubmit={handleRangeSubmit}/>
   </>
 }

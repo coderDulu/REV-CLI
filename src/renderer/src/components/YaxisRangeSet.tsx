@@ -5,7 +5,7 @@ import { RuleObject } from "rc-field-form/lib/interface"
 interface RangeFormProps {
   onRangeSubmit: (values: { min: number; max: number }) => void
   visible: boolean
-  onClose?: () => void
+  onClose: () => void
 }
 
 const RangeForm: React.FC<RangeFormProps> = ({ onRangeSubmit, visible, onClose }) => {

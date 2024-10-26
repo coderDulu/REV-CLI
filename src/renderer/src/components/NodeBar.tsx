@@ -161,7 +161,7 @@ function NodeBar({ node, option = {} }: { node?: string; xLength?: number; optio
         className="w-full h-full"
         ref={(dom) => (domRef.current = dom)}
       ></div>
-      <YaxisRangeSet visible={show} onRangeSubmit={handleRangeSubmit}/>
+      <YaxisRangeSet onClose={() => setShow(false)} visible={show} onRangeSubmit={handleRangeSubmit}/>
     </>
   )
 }
