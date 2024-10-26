@@ -1,6 +1,4 @@
 import LineLeftItem from "../common/LineLeftItem"
-import SpectrumStatus from "../SpectrumStatus"
-import NetworkRate from "./NetWorkRate"
 import FreqFormConfig from "@/components/FreqFormConfig"
 import useConnect, { ids } from "@/hooks/useConnect"
 import { Spectrum } from "@/components/manage/Spectrum"

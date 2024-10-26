@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import useWebSocketConnect from "@/hooks/useWebsocketConnect"
 import useEcharts from "@/hooks/useEcharts"
 import { useDebounce } from "@uidotdev/usehooks"
+import YaxisRangeSet from "../YaxisRangeSet"
 
 // prettier-ignore
 const xAxisData = Array(32).fill(0)
@@ -333,5 +334,21 @@ function BarOfSpectrum({ data, limit }: { data: any; limit: number }) {
       console.log("clicked")
     })
   }, [myChart])
-  return <div className="w-full h-full" ref={(dom) => (domRef.current = dom)}></div>
+
+  // 设置y轴范围
+  const [show, setShow] = useState(false)
+
+  const handleRangeSubmit = (values) => {
+    update({
+      yAxis: {
+        min: values.min,
+        max: values.max,
+      },
+    })
+    setShow(false)
+  }
+  return <>
+     <div onClick={() => setShow(true)} className="w-full h-full" ref={(dom) => (domRef.current = dom)}></div>
+     <YaxisRangeSet visible={show} onRangeSubmit={handleRangeSubmit}/>
+  </>
 }

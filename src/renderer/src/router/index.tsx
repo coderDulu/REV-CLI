@@ -38,7 +38,7 @@ export const menus = [
     children: [
       { name: "网络状态", path: "/center/net-status" },
       { name: "频谱管控", path: "/center/net-config" },
-      { name: "自主选频", path: "/center/freq" },
+      { name: "信道感知", path: "/center/freq" },
       { name: "业务传输", path: "/center/txrx" },
     ],
   },

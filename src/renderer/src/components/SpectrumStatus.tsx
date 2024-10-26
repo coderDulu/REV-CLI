@@ -1,10 +1,10 @@
-import useECharts from "@/hooks/useEcharts";
-import useWebsocketConnect from "@/hooks/useWebsocketConnect";
-import { useEffect } from "react";
+import useECharts from "@/hooks/useEcharts"
+import useWebsocketConnect from "@/hooks/useWebsocketConnect"
+import { useEffect } from "react"
 
 // 频谱管控状态
-export default function SpectrumStatus() {
-  const { connectToWebsocket } = useWebsocketConnect("spectrum-status");
+export default function SpectrumStatus({ onFreqChange }) {
+  const { connectToWebsocket } = useWebsocketConnect("spectrum-status")
   const { domRef, update } = useECharts({
     title: {
       text: `频谱管控状态`,
@@ -18,9 +18,9 @@ export default function SpectrumStatus() {
     tooltip: {
       formatter: (params: any) => {
         if (params.seriesName == "受控") {
-          return "受控频段";
+          return "受控频段"
         } else {
-          return "未受控频段";
+          return "未受控频段"
         }
       },
     },
@@ -32,7 +32,7 @@ export default function SpectrumStatus() {
       height: "50%",
       top: "50%",
       containLabel: true,
-      left: "4%"
+      left: "4%",
     },
     xAxis: {
       type: "value",
@@ -95,16 +95,15 @@ export default function SpectrumStatus() {
         },
       },
     ],
-  });
+  })
 
   useEffect(() => {
     connectToWebsocket().then((socket) => {
-      let lastData = {};
+      let lastData = {}
       socket?.addEventListener("message", (ev) => {
         try {
-          const { startFreq, endFreq } = JSON.parse(ev.data);
-          // const startData1 = parseInt(startFreq) - 10
-          // const endData1 = startData1 + 160
+          const { startFreq, endFreq } = JSON.parse(ev.data)
+          onFreqChange([startFreq, endFreq])
           const option = {
             series: [
               {
@@ -121,15 +120,15 @@ export default function SpectrumStatus() {
                 },
               },
             ],
-          };
-          update(option, lastData);
-          lastData = option;
+          }
+          update(option, lastData)
+          lastData = option
         } catch (error) {
-          console.log("SpectrumStatus", error);
+          console.log("SpectrumStatus", error)
         }
-      });
-    });
-  }, [connectToWebsocket]);
+      })
+    })
+  }, [connectToWebsocket, onFreqChange, update])
 
-  return <div className="w-full h-full" ref={(dom) => (domRef.current = dom)}></div>;
+  return <div className="w-full h-full" ref={(dom) => (domRef.current = dom)}></div>
 }

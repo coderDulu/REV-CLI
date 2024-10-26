@@ -53,8 +53,6 @@ function NodeStatus() {
     })
   }, [nodeBarWs, parseData])
 
-
-
   // useEffect(() => {
   //   const ws = websocketRef.current;
   //   ws?.addEventListener("message", parseData);
@@ -70,7 +68,7 @@ function NodeStatus() {
         <ChannelUse chooseNode={chooseNode} />
       </div>
       <div className="w-full h-1/2">
-        <NodeBar data={data} node={chooseNode} xLength={32}/>
+        <NodeBar node={chooseNode} xLength={32} />
       </div>
     </div>
   )
