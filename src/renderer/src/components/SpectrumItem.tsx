@@ -1,3 +1,6 @@
+/**
+ * 瀑布图
+ */
 import useEcharts from "@/hooks/useEcharts"
 import { useDebounce } from "@uidotdev/usehooks"
 import { Form, InputNumber } from "antd"
@@ -16,15 +19,15 @@ const days = Array(100).fill(0)
 // prettier-ignore
 const colors = ["#efbe8d", "#71b4b9", "#e9a3a3"]
 const option = {
-  title: {
-    text: `子网1干扰业务分布`,
-    top: "0px",
-    left: "4%",
-    textStyle: {
-      fontSize: 18,
-      color: "#000",
-    },
-  },
+  // title: {
+  //   text: `子网1干扰业务分布`,
+  //   top: "0px",
+  //   left: "4%",
+  //   textStyle: {
+  //     fontSize: 18,
+  //     color: "#000",
+  //   },
+  // },
   tooltip: {
     position: "top",
     formatter: (params: any) => {
@@ -108,7 +111,7 @@ const option = {
   animation: false,
 }
 
-function SpectrumItem({ network }) {
+function SpectrumItem({ network, title }: { network: string | number; title?: string }) {
   const { domRef, update } = useEcharts(option)
   const { connectToWebsocket, close, message } = useWebsocketConnect("manage-spectrum-status")
   const [limit, setLimit] = useState(5000)
@@ -183,11 +186,11 @@ function SpectrumItem({ network }) {
       })
       seriesData.current.push(...parseArr)
       update({
-        title: { text: `子网${network}干扰业务分布` },
+        // title: { text: `子网${network}干扰业务分布` },
         series: [{ data: seriesData.current }],
       })
     },
-    [network, update]
+    [update]
   )
 
   useEffect(() => {
@@ -196,7 +199,7 @@ function SpectrumItem({ network }) {
 
   return (
     <div className="w-full h-full relative">
-      <h1 className="text-center text-xl mb-2">用频状态</h1>
+      <h1 className="text-center text-xl mb-2">{title ?? "用频状态"}</h1>
       <Form.Item labelCol={{ offset: 7 }} className="m-0" label="干扰定义设置">
         <InputNumber
           defaultValue={limit}

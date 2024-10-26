@@ -1,3 +1,6 @@
+/**
+ * 频谱使用状态(多个子网使用)
+ */
 import useECharts from "@/hooks/useEcharts"
 import useWebsocketConnect from "@/hooks/useWebsocketConnect"
 import { useCallback, useEffect } from "react"
@@ -10,9 +13,6 @@ type DataType = {
   freq: number
 }[]
 
-const unusedColor = "#66ffff" // 所有未使用的颜色
-const subnet1Color = "#ffcc00" // 子网1的颜色
-const subnet2Color = "#ff7c80" // 子网2的颜色
 const startFreq = 230
 const endFreq = 670
 

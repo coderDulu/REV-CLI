@@ -1,9 +1,13 @@
+/**
+ * @description: 频谱管控状态，单个子网使用
+ * 
+ */
 import useECharts from "@/hooks/useEcharts"
 import useWebsocketConnect from "@/hooks/useWebsocketConnect"
 import { useEffect } from "react"
 
 // 频谱管控状态
-export default function SpectrumStatus({ onFreqChange }) {
+export default function SpectrumStatus({ onFreqChange }: { onFreqChange?: (freq: number[]) => void}) {
   const { connectToWebsocket } = useWebsocketConnect("spectrum-status")
   const { domRef, update } = useECharts({
     title: {
@@ -103,7 +107,7 @@ export default function SpectrumStatus({ onFreqChange }) {
       socket?.addEventListener("message", (ev) => {
         try {
           const { startFreq, endFreq } = JSON.parse(ev.data)
-          onFreqChange([startFreq, endFreq])
+          onFreqChange && onFreqChange([startFreq, endFreq])
           const option = {
             series: [
               {

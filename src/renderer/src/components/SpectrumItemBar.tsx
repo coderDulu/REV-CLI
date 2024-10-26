@@ -1,3 +1,6 @@
+/**
+ * 瀑布图下发的柱状图
+ */
 import { useEffect, useState } from "react"
 import YaxisRangeSet from "./YaxisRangeSet"
 import useEcharts from "@/hooks/useEcharts"

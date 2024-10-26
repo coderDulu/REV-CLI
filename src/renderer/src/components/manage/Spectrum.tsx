@@ -16,7 +16,7 @@ function Index() {
       {networkArr.map((item) => {
         return (
           <div key={item.network} className="float-left w-1/2 h-full min-w-1 min-h-1">
-            <SpectrumItem network={item.network} />
+            <SpectrumItem title={`子网${item.network}用频状态`} network={item.network} />
           </div>
         )
       })}

@@ -9,7 +9,7 @@ export default function SpectrumStatus() {
     grid: {
       bottom: "8%",
       left: "10%",
-      height: "70%",
+      // height: "199%",
     },
     tooltip: {
       show: true,
@@ -36,7 +36,7 @@ export default function SpectrumStatus() {
       type: "value",
       name: "速率 (Byte/s)", // y 轴名称
       min: 0,
-      max: 70000,
+      max: 70 * 1024,
       // axisLabel: {
       //   formatter: function (value) {
       //     return value + ' Byte/s';
@@ -60,7 +60,7 @@ export default function SpectrumStatus() {
     animation: false,
     title: {
       text: "实时网络传输速率",
-      top: 10,
+      top: 0,
       left: 20,
       textStyle: {
         fontSize: 18,

@@ -1,5 +1,5 @@
 import TopologyNode from "../TopologyOfNode"
-import SpectrumBar from "../SpectrumBar"
+import SpectrumStatus from "../SpectrumStatus"
 import NetWorkRate from "../center/NetWorkRate"
 
 function NodeStatus() {
@@ -8,7 +8,7 @@ function NodeStatus() {
       <div className="w-full h-1/2 flex items-center">
         <TopologyNode />
         <div className="h-40 w-full">
-          <SpectrumBar />
+          <SpectrumStatus />
         </div>
       </div>
       <div className="w-full h-1/2">

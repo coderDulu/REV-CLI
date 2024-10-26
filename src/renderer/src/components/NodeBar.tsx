@@ -1,14 +1,12 @@
+/**
+ * 节点感知状态
+ */
+
 import useEcharts from "@/hooks/useEcharts"
 import useWebsocketConnect from "@/hooks/useWebsocketConnect"
 import { useEffect } from "react"
 import { useImmer } from "use-immer"
 import YaxisRangeSet from "./YaxisRangeSet"
-
-function generateArray(count: number) {
-  return Array(count)
-    .fill(0)
-    .map((item, index) => index)
-}
 
 const initOption = {
   title: {

@@ -4,6 +4,7 @@ import { lazy, type ReactNode, Suspense } from "react";
 
 import App from "../App";
 import UserStatus from "@/components/user/UserStatus";
+import NodeStatus from "@/components/user/NodeStatus";
 // import SuspenseLoading from "@/views/SuspenseLoading";
 
 const Manage = lazy(() => import("@/views/ManageView"));
@@ -125,12 +126,12 @@ const config = createHashRouter([
           },
           {
             path: "/user/node-status",
-            element: <UserStatus />,
+            element: <NodeStatus />,
 
           },
           {
             path: "/user/status",
-            element: <Spectrum />,
+            element: <UserStatus />,
           },
           {
             path: "/user/txrx",
