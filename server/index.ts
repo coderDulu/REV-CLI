@@ -59,8 +59,8 @@ server.on("connection", (ws, req) => {
           {
             network: 1,
             data: generateData(32),
-            startFreq: 390,
-            endFreq: 550,
+            startFreq: 380,
+            endFreq: 540,
           },
           {
             network: 2,
@@ -152,29 +152,11 @@ server.on("connection", (ws, req) => {
       }, 30)
       break
     }
-    // case "/manage-spectrum-status": {
-    //   setInterval(() => {
-    //     const data = [
-    //       {
-    //         startFreq: 390,
-    //         endFreq: 550,
-    //         network: 1,
-    //       },
-    //       {
-    //         startFreq: 390,
-    //         endFreq: 550,
-    //         network: 1,
-    //       },
-    //     ]
-    //     ws.send(JSON.stringify(data))
-    //   }, 1000)
-    //   break
-    // }
     case "/spectrum-status": {
       setInterval(() => {
         const data = {
-          startFreq: 390,
-          endFreq: 550,
+          startFreq: 380,
+          endFreq: 540,
           network: 1,
         }
 

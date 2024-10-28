@@ -40,8 +40,8 @@ export default function SpectrumStatus({ onFreqChange }: { onFreqChange?: (freq:
     },
     xAxis: {
       type: "value",
-      min: 225,
-      max: 678,
+      min: 230,
+      max: 670,
     },
     yAxis: {
       type: "category",

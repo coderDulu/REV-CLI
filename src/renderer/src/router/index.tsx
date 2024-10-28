@@ -7,21 +7,20 @@ import App from "../App"
 import UserStatus from "@/components/user/UserStatus"
 import { Result } from "antd"
 import TxRx from "@/components/TxRx/Index"
-
+// center
+import CenterView from "@/views/CenterView"
+import NetworkConfig from "@/components/center/NetworkConfig"
+import AutoFreq from "@/components/center/AutoFreq"
+// user
 import NodeStatus from "@/components/user/NodeStatus"
 import NetworkStatus from "@/components/center/NetworkStatus"
 
 const Manage = lazy(() => import("@/views/ManageView"))
-const CenterView = lazy(() => import("@/views/CenterView"))
 const UserView = lazy(() => import("@/views/UserView"))
 // manage
 const Network = lazy(() => import("@/components/manage/Network"))
 const Spectrum = lazy(() => import("@/components/manage/Spectrum"))
 const FreqPlan = lazy(() => import("@/components/manage/FreqPlan"))
-
-// center
-const NetworkConfig = lazy(() => import("@/components/center/NetworkConfig"))
-const AutoFreq = lazy(() => import("@/components/center/AutoFreq"))
 
 function addLazy(children: ReactNode) {
   return <Suspense fallback={<></>}>{children}</Suspense>
@@ -96,7 +95,7 @@ const config = createHashRouter([
       {
         path: "/center",
         id: "center",
-        element: addLazy(<CenterView />),
+        element: <CenterView />,
         children: [
           {
             index: true,
@@ -104,22 +103,38 @@ const config = createHashRouter([
           },
           {
             path: "/center/net-status",
-            element: addLazy(<NetworkStatus />),
+            element: (
+              <KeepAlive id="center-net-status">
+                <NetworkStatus />
+              </KeepAlive>
+            ),
             errorElement: <Error />,
           },
           {
             path: "/center/net-config",
-            element: addLazy(<NetworkConfig />),
+            element: (
+              <KeepAlive id="center-net-config">
+                <NetworkConfig />
+              </KeepAlive>
+            ),
             errorElement: <Error />,
           },
           {
             path: "/center/freq",
-            element: addLazy(<AutoFreq />),
+            element: (
+              // <KeepAlive id="center-freq">
+              <AutoFreq />
+              // </KeepAlive>
+            ),
             errorElement: <Error />,
           },
           {
             path: "/center/txrx",
-            element: <TxRx />,
+            element: (
+              <KeepAlive id="center-tx-rx">
+                <TxRx />
+              </KeepAlive>
+            ),
             errorElement: <Error />,
           },
           {
@@ -130,7 +145,8 @@ const config = createHashRouter([
       },
       {
         path: "/user",
-        element: addLazy(<UserView />),
+        element: <UserView />,
+        errorElement: <Error />,
         id: "user",
         children: [
           {
@@ -144,6 +160,7 @@ const config = createHashRouter([
                 <NodeStatus />
               </KeepAlive>
             ),
+            errorElement: <Error />,
           },
           {
             path: "/user/status",
@@ -152,6 +169,7 @@ const config = createHashRouter([
                 <UserStatus />
               </KeepAlive>
             ),
+            errorElement: <Error />,
           },
           {
             path: "/user/txrx",
@@ -160,6 +178,7 @@ const config = createHashRouter([
                 <TxRx />
               </KeepAlive>
             ),
+            errorElement: <Error />,
           },
           {
             path: "*",
