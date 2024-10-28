@@ -1,6 +1,6 @@
-import HeaderLayout from "./header/HeaderLayout";
-import SiderLayout from "./SiderLayout";
-import { Outlet } from "react-router-dom";
+import HeaderLayout from "./header/HeaderLayout"
+import SiderLayout from "./SiderLayout"
+import { Outlet } from "react-router-dom"
 
 function Layout() {
   return (
@@ -13,7 +13,7 @@ function Layout() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default Layout;
+export default Layout

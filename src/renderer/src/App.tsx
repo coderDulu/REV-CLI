@@ -3,6 +3,7 @@ import Layout from "./components/layout/page"
 import { message } from "antd"
 import { TasksProvider } from "@/hooks/useConnect"
 import { useNavigate, useLocation } from "react-router-dom"
+import { AliveScope } from "react-activation"
 
 function App() {
   const [messageApi, contextHolder] = message.useMessage()
@@ -20,7 +21,7 @@ function App() {
       }
     })
 
-    window.onerror = function (message, source, lineno, colno, error) {
+    window.onerror = function (message) {
       console.error("捕获到错误:", message)
       // 可以选择显示友好的错误消息或记录错误
       return true // 防止错误信息显示在控制台
@@ -47,7 +48,9 @@ function App() {
   return (
     <TasksProvider>
       {contextHolder}
-      <Layout />
+      <AliveScope>
+        <Layout />
+      </AliveScope>
     </TasksProvider>
   )
 }

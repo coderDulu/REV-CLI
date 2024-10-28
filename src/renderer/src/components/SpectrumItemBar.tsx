@@ -51,32 +51,20 @@ const barOption = {
   animation: false,
 }
 
-function BarOfSpectrum({ data, limit }: { data: any; limit: number }) {
+function BarOfSpectrum({
+  data,
+  limit,
+  xRange,
+}: {
+  data: any
+  limit: number
+  xRange: [number, number]
+}) {
   const { domRef, update, myChart } = useEcharts(barOption)
-  const { connectToWebsocket, message } = useWebsocketConnect("spectrum-status")
-  const xRange = useRef([230, 670])
 
   useEffect(() => {
-    connectToWebsocket()
-  }, [connectToWebsocket])
-
-  useEffect(() => {
-    try {
-      const parseData = JSON.parse(message)
-      if (parseData) {
-        const start = parseData.startFreq
-        const end = parseData.endFreq
-
-        xRange.current = [start, end]
-      }
-    } catch (error) {
-      console.log("error", message)
-    }
-  }, [message])
-
-  useEffect(() => {
-    const startFreq = xRange.current[0]
-    const endFreq = xRange.current[1]
+    const startFreq = xRange[0]
+    const endFreq = xRange[1]
     const xAxis = {
       data: generageXData(startFreq, endFreq),
       axisLabel: {
@@ -99,7 +87,7 @@ function BarOfSpectrum({ data, limit }: { data: any; limit: number }) {
       xAxis,
       series: [{ data: data ?? [] }],
     })
-  }, [data, update, limit])
+  }, [data, update, limit, xRange])
 
   useEffect(() => {
     myChart.current?.on("click", () => {

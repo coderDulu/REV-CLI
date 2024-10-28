@@ -11,16 +11,18 @@ const useECharts = (initOption: echarts.EChartsCoreOption) => {
   }, [])
 
   useEffect(() => {
-    if (domRef.current) {
-      myChart.current = echarts.init(domRef.current as HTMLElement)
-      myChart.current.setOption(initOption)
-      // myChart.current.showLoading();
-      window.addEventListener("resize", handleResize)
-    }
-    return () => {
-      myChart.current?.dispose()
-      window.removeEventListener("resize", handleResize)
-    }
+    setTimeout(() => {
+      if (domRef.current) {
+        myChart.current = echarts.init(domRef.current as HTMLElement)
+        myChart.current.setOption(initOption)
+        // myChart.current.showLoading();
+        window.addEventListener("resize", handleResize)
+      }
+    }, 0)
+    // return () => {
+    //   myChart.current?.dispose()
+    //   window.removeEventListener("resize", handleResize)
+    // }
   }, [])
 
   const isSame = useCallback((newVal: object, oldVal: object) => {

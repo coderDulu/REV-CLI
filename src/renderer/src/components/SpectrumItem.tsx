@@ -11,6 +11,8 @@ import useWebsocketConnect from "@/hooks/useWebsocketConnect"
 type Message = {
   network: number
   data: number[]
+  startFreq: number
+  endFreq: number
 }[]
 // prettier-ignore
 const xAxisData = Array(32).fill(0)
@@ -118,6 +120,7 @@ function SpectrumItem({ network, title }: { network: string | number; title?: st
   const [barData, setBarData] = useState<any[]>([])
   const [heatmapData, setHeatmapData] = useState<any[]>([])
   const debouncedLimit = useDebounce(limit, 1000)
+  const [xRange, setXRange] = useState([230, 670])
 
   const seriesData = useRef<any[]>([])
 
@@ -157,6 +160,8 @@ function SpectrumItem({ network, title }: { network: string | number; title?: st
       const parseData = JSON.parse(message) as Message
       const findMsg = parseData.find((item) => item.network === +network)
       if (findMsg) {
+        const { startFreq, endFreq } = findMsg
+        setXRange([startFreq, endFreq])
         updateData(findMsg.data, debouncedLimit)
       }
     } catch (error) {
@@ -215,7 +220,7 @@ function SpectrumItem({ network, title }: { network: string | number; title?: st
       </div>
 
       <div className="w-full absolute" style={{ top: "calc(50px + 70%)", height: "30%" }}>
-        <BarOfSpectrum limit={debouncedLimit} data={barData} />
+        <BarOfSpectrum xRange={xRange} limit={debouncedLimit} data={barData} />
       </div>
     </div>
   )

@@ -1,6 +1,6 @@
 {
   "name": "freq-config",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "",
   "type": "module",
   "main": "./dist/main/index.cjs",
@@ -46,6 +46,7 @@
     "npm-run-all2": "^6.2.2",
     "postcss": "^8.4.40",
     "react": "^18.3.1",
+    "react-activation": "^0.12.4",
     "react-csv": "^2.2.2",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.25.1",

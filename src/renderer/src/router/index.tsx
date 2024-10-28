@@ -1,12 +1,12 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createHashRouter, Navigate } from "react-router-dom"
 import { lazy, type ReactNode, Suspense } from "react"
+import KeepAlive from "react-activation"
 
 import App from "../App"
 import UserStatus from "@/components/user/UserStatus"
 import NodeStatus from "@/components/user/NodeStatus"
 import { Result } from "antd"
-// import SuspenseLoading from "@/views/SuspenseLoading";
 
 const Manage = lazy(() => import("@/views/ManageView"))
 const CenterView = lazy(() => import("@/views/CenterView"))
@@ -74,17 +74,17 @@ const config = createHashRouter([
           {
             path: "/manage/network",
             element: addLazy(<Network />),
-            errorElement: <Error/>
+            errorElement: <Error />,
           },
           {
             path: "/manage/status",
             element: addLazy(<Spectrum />),
-            errorElement: <Error/>
+            errorElement: <Error />,
           },
           {
             path: "/manage/plan",
             element: addLazy(<FreqPlan />),
-            errorElement: <Error/>
+            errorElement: <Error />,
           },
           {
             path: "*",
@@ -104,22 +104,22 @@ const config = createHashRouter([
           {
             path: "/center/net-status",
             element: addLazy(<NetworkStatus />),
-            errorElement: <Error/>
+            errorElement: <Error />,
           },
           {
             path: "/center/net-config",
             element: addLazy(<NetworkConfig />),
-            errorElement: <Error/>
+            errorElement: <Error />,
           },
           {
             path: "/center/freq",
             element: addLazy(<AutoFreq />),
-            errorElement: <Error/>
+            errorElement: <Error />,
           },
           {
             path: "/center/txrx",
             element: <TxRx />,
-            errorElement: <Error/>
+            errorElement: <Error />,
           },
           {
             path: "*",
@@ -138,15 +138,27 @@ const config = createHashRouter([
           },
           {
             path: "/user/node-status",
-            element: <NodeStatus />,
+            element: (
+              <KeepAlive id="user-node-status">
+                <NodeStatus />
+              </KeepAlive>
+            ),
           },
           {
             path: "/user/status",
-            element: <UserStatus />,
+            element: (
+              <KeepAlive id="user-status">
+                <UserStatus />
+              </KeepAlive>
+            ),
           },
           {
             path: "/user/txrx",
-            element: <TxRx />,
+            element: (
+              // <KeepAlive id="user-txrx">
+                <TxRx />
+              // </KeepAlive>
+            ),
           },
           {
             path: "*",
