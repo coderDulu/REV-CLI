@@ -18,7 +18,7 @@ const useECharts = (initOption: echarts.EChartsCoreOption) => {
         // myChart.current.showLoading();
         window.addEventListener("resize", handleResize)
       }
-    }, 0)
+    }, 10)
     // return () => {
     //   myChart.current?.dispose()
     //   window.removeEventListener("resize", handleResize)

@@ -5,8 +5,11 @@ import KeepAlive from "react-activation"
 
 import App from "../App"
 import UserStatus from "@/components/user/UserStatus"
-import NodeStatus from "@/components/user/NodeStatus"
 import { Result } from "antd"
+import TxRx from "@/components/TxRx/Index"
+
+import NodeStatus from "@/components/user/NodeStatus"
+import NetworkStatus from "@/components/center/NetworkStatus"
 
 const Manage = lazy(() => import("@/views/ManageView"))
 const CenterView = lazy(() => import("@/views/CenterView"))
@@ -17,8 +20,6 @@ const Spectrum = lazy(() => import("@/components/manage/Spectrum"))
 const FreqPlan = lazy(() => import("@/components/manage/FreqPlan"))
 
 // center
-const TxRx = lazy(() => import("@/components/TxRx/Index"))
-const NetworkStatus = lazy(() => import("@/components/center/NetworkStatus"))
 const NetworkConfig = lazy(() => import("@/components/center/NetworkConfig"))
 const AutoFreq = lazy(() => import("@/components/center/AutoFreq"))
 
@@ -155,9 +156,9 @@ const config = createHashRouter([
           {
             path: "/user/txrx",
             element: (
-              // <KeepAlive id="user-txrx">
+              <KeepAlive id="user-txrx">
                 <TxRx />
-              // </KeepAlive>
+              </KeepAlive>
             ),
           },
           {

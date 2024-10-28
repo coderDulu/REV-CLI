@@ -1,12 +1,12 @@
-import { Flex } from "antd";
-import RxItem from "./RxItem";
-import TxItem from "./TxItem";
-import { Fragment, useState } from "react";
-import clsx from "clsx";
-import FileTxItem from "./FileTxItem";
-import FileRxItem from "./FileRxItem";
-import VideoTxItem from "./VideoTxItem";
-import VideoRxItem from "./VideoRxItem";
+import { Flex } from "antd"
+import RxItem from "./RxItem"
+import TxItem from "./TxItem"
+import { Fragment, useState } from "react"
+import clsx from "clsx"
+import FileTxItem from "./FileTxItem"
+import FileRxItem from "./FileRxItem"
+import VideoTxItem from "./VideoTxItem"
+import VideoRxItem from "./VideoRxItem"
 
 const options: TabsProp[] = [
   {
@@ -36,23 +36,23 @@ const options: TabsProp[] = [
       </Flex>
     ),
   },
-];
+]
 
 function Index() {
   return (
     <div className="w-full h-full">
       <Tabs options={options} />
     </div>
-  );
+  )
 }
 
 interface TabsProp {
-  name: string;
-  children?: React.ReactNode;
+  name: string
+  children?: React.ReactNode
 }
 function Tabs({ options }: { options: TabsProp[] }) {
-  const [activeKey, setActiveKey] = useState(0);
-  const activeStyle = "border-b border-b-4 border-b-[#0d8383] font-bold text-[#000] transition";
+  const [activeKey, setActiveKey] = useState(0)
+  const activeStyle = "border-b border-b-4 border-b-[#0d8383] font-bold text-[#000] transition"
 
   return (
     <div className="flex flex-col w-full h-full gap-6">
@@ -63,16 +63,17 @@ function Tabs({ options }: { options: TabsProp[] }) {
             onClick={() => setActiveKey(index)}
             className={clsx("h-full flex items-center justify-center", {
               [activeStyle]: activeKey === index,
-            })}>
+            })}
+          >
             {item.name}
           </li>
         ))}
       </ul>
       {options.map((item, index) => {
-        return <Fragment key={item.name}>{index === activeKey ? item.children : null}</Fragment>;
+        return <Fragment key={item.name}>{index === activeKey ? item.children : null}</Fragment>
       })}
     </div>
-  );
+  )
 }
 
-export default Index;
+export default Index

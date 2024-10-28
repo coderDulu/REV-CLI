@@ -1,117 +1,125 @@
-import { Form, FormProps, Input, InputNumber, Select, Switch } from "antd";
-import TxRxContainer from "./TxRxContainer";
-import { useEffect, useRef, useState } from "react";
-import useWebsocketConnect from "@/hooks/useWebsocketConnect";
-import ActionButtons from "../common/ActionButtons";
+import { Form, FormProps, Input, InputNumber, Select, Switch } from "antd"
+import TxRxContainer from "./TxRxContainer"
+import { useEffect, useRef, useState } from "react"
+import useWebsocketConnect from "@/hooks/useWebsocketConnect"
+import ActionButtons from "../common/ActionButtons"
 
 function TxItem() {
   return (
     <TxRxContainer title="发送数据" borderColor="#0D8383" bgColor="#f3fbfc">
       <FormSet />
     </TxRxContainer>
-  );
+  )
 }
 
 const layout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 8 },
-};
+}
 
 const tailLayout = {
   wrapperCol: { offset: 6, span: 16 },
-};
+}
 
-const rules = [{ required: true, message: "请输入内容" }];
+const rules = [{ required: true, message: "请输入内容" }]
 
 interface FormDataType {
-  network: number;
-  interval: number;
-  data: string;
-  isAuto: boolean;
+  network: number
+  interval: number
+  data: string
+  isAuto: boolean
 }
 function FormSet() {
-  const [form] = Form.useForm();
-  const [sendDataLen, setSendDataLen] = useState(0);
-  const { sendMessage, connectToWebsocket } = useWebsocketConnect("text-tx");
-  const { sendMessage: sendToNetwork, connectToWebsocket: connectNetwork } = useWebsocketConnect("address");
-  const [isSending, setIsSending] = useState(false);
-  const sendDataTimer = useRef<NodeJS.Timeout | null>(null);
+  const [form] = Form.useForm()
+  const [sendDataLen, setSendDataLen] = useState(0)
+  const { sendMessage, connectToWebsocket } = useWebsocketConnect("text-tx")
+  const { sendMessage: sendToNetwork, connectToWebsocket: connectNetwork } =
+    useWebsocketConnect("address")
+  const [isSending, setIsSending] = useState(false)
+  const sendDataTimer = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     connectNetwork()
   }, [connectNetwork])
 
   useEffect(() => {
-    connectToWebsocket();
+    connectToWebsocket()
     return () => {
-      sendDataTimer.current && clearInterval(sendDataTimer.current);
-    };
-  }, [connectToWebsocket]);
+      sendDataTimer.current && clearInterval(sendDataTimer.current)
+    }
+  }, [connectToWebsocket])
 
   const onFinish: FormProps<FormDataType>["onFinish"] = (values) => {
-    sendInterval(values);
-  };
+    sendInterval(values)
+  }
 
   async function sendInterval(values: FormDataType) {
     try {
-      const { interval, isAuto, data: sendData } = values;
-      await sendToNetwork(form.getFieldValue("network"));
+      const { interval, isAuto, data: sendData } = values
+      await sendToNetwork(form.getFieldValue("network"))
       if (isAuto) {
         setIsSending((sending) => {
           if (!sending) {
-            window.$message.success("开启定时发送");
-            return true;
+            window.$message.success("开启定时发送")
+            return true
           }
-          return sending;
-        });
+          return sending
+        })
         sendDataTimer.current = setInterval(() => {
           send(sendData)
             .catch(() => {
-              onStop();
+              onStop()
             })
             .then(() => {
-              setSendDataLen((sendDataLen) => sendDataLen + sendData.length);
-            });
-        }, interval);
+              setSendDataLen((sendDataLen) => sendDataLen + sendData.length)
+            })
+        }, interval)
       } else {
-        send(sendData);
-        setSendDataLen(sendDataLen + sendData.length);
+        send(sendData)
+        setSendDataLen(sendDataLen + sendData.length)
         window.$message.success({
           content: "发送成功",
-          duration: 1
-        });
+          duration: 1,
+        })
       }
     } catch (error) {
-      window.$message.error("发送失败");
+      window.$message.error("发送失败")
     }
   }
 
   async function send(sendData: string) {
     try {
-      await sendMessage(sendData);
+      await sendMessage(sendData)
     } catch (err) {
-      window.$message.error("发送失败");
-      setIsSending(false);
-      throw err;
+      window.$message.error("发送失败")
+      setIsSending(false)
+      throw err
     }
   }
 
   const onStop = () => {
-    sendDataTimer.current && clearInterval(sendDataTimer.current);
-    setIsSending(false);
-    window.$message.warning("已停止");
-  };
+    sendDataTimer.current && clearInterval(sendDataTimer.current)
+    setIsSending(false)
+    window.$message.warning("已停止")
+  }
 
   const onClear = () => {
-    onStop();
-    setSendDataLen(0);
-    form.resetFields(["data"]);
-  };
+    onStop()
+    setSendDataLen(0)
+    form.resetFields(["data"])
+  }
 
   return (
-    <Form form={form} {...layout} initialValues={{ interval: 1000, isAuto: true }} name="control-hooks" onFinish={onFinish} style={{ maxWidth: 600 }}>
+    <Form
+      form={form}
+      {...layout}
+      initialValues={{ interval: 1000, isAuto: true }}
+      name="control-hooks"
+      onFinish={onFinish}
+      style={{ maxWidth: 600 }}
+    >
       <Form.Item name="network" label="通信目的节点" rules={rules}>
-        <InputNumber min={0}/>
+        <InputNumber min={0} />
       </Form.Item>
       <Form.Item name="interval" label="数据发送间隔" rules={rules}>
         <Select placeholder="请选择" allowClear>
@@ -135,7 +143,7 @@ function FormSet() {
         <ActionButtons isSending={isSending} onStop={onStop} onReset={onClear} />
       </Form.Item>
     </Form>
-  );
+  )
 }
 
-export default TxItem;
+export default TxItem
