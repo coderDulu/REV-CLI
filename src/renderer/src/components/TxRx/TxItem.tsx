@@ -119,9 +119,13 @@ function FormSet() {
       onFinish={onFinish}
       style={{ maxWidth: 600 }}
     >
-      <Form.Item name="network" label="通信目的节点" rules={rules}>
-        {/* <InputNumber min={0} /> */}
-        <DestNode />
+      <Form.Item shouldUpdate label="通信目的节点" rules={rules}>
+        {({ getFieldValue, setFieldValue }) => (
+          <DestNode
+            value={getFieldValue("network")}
+            onChange={(val: string) => setFieldValue("network", val)}
+          />
+        )}
       </Form.Item>
       <Form.Item name="interval" label="数据发送间隔" rules={rules}>
         <Select placeholder="请选择" allowClear>

@@ -86,7 +86,12 @@ function FileForm() {
       style={{ maxWidth: 600 }}
     >
       <Form.Item label="通信目的节点" name="network" rules={rules}>
-        <DestNode />
+        {({ getFieldValue, setFieldValue }) => (
+          <DestNode
+            value={getFieldValue("network")}
+            onChange={(val: string) => setFieldValue("network", val)}
+          />
+        )}
       </Form.Item>
       <Form.Item label="选择文件" rules={rules}>
         <Upload.Dragger name="files" {...props} maxCount={1}>

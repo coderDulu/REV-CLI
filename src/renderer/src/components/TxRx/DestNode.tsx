@@ -1,10 +1,23 @@
-import { Select } from "antd";
-import { ids } from "@/hooks/useConnect";
+import { Select } from "antd"
+import { ids } from "@/hooks/useConnect"
+import useConnect from "@/hooks/useConnect"
+import { useEffect, useState } from "react"
 
-const options = Object.keys(ids).filter(Number).map((key) => ({label: ids[key], value: key}))
-console.log('options', options, Object.keys(ids).filter(Number));
-function DestNode() {
-  return  <Select options={options}></Select>;
+const options = Object.keys(ids)
+  .filter(Number)
+  .map((key) => ({ label: ids[key], value: key }))
+
+function DestNode({ onChange, value }) {
+  const [selectOptions, setSelectOptions] = useState(options)
+
+  const { role } = useConnect()
+
+  useEffect(() => {
+    const op = options.filter((item) => item.value !== role + "")
+    setSelectOptions(op)
+  }, [role])
+
+  return <Select options={selectOptions} onChange={onChange} value={value} />
 }
 
-export default DestNode;
+export default DestNode
