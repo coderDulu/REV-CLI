@@ -1,10 +1,11 @@
-import { Form, InputNumber, Upload, UploadProps } from "antd"
+import { Form, Upload, UploadProps } from "antd"
 import TxRxContainer from "./TxRxContainer"
 import CButton from "../common/CButton"
 import { InboxOutlined } from "@ant-design/icons"
 import { useEffect, useState } from "react"
 import useWebsocketConnect from "@/hooks/useWebsocketConnect"
 import { readFileInChunks } from "@/utils/blob"
+import DestNode from "./DestNode"
 
 function FileTxItem() {
   return (
@@ -85,7 +86,7 @@ function FileForm() {
       style={{ maxWidth: 600 }}
     >
       <Form.Item label="通信目的节点" name="network" rules={rules}>
-        <InputNumber min={0}/>
+        <DestNode />
       </Form.Item>
       <Form.Item label="选择文件" rules={rules}>
         <Upload.Dragger name="files" {...props} maxCount={1}>

@@ -37,6 +37,7 @@ const RangeForm: React.FC<RangeFormProps> = ({ onRangeSubmit, visible, onClose }
       title="设置Y轴显示范围"
       open={visible}
       onCancel={onClose}
+      maskClosable={false}
       footer={null} // 表单内部有提交按钮，因此移除默认 footer
     >
       <Form

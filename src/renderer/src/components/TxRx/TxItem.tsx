@@ -1,8 +1,9 @@
-import { Form, FormProps, Input, InputNumber, Select, Switch } from "antd"
+import { Form, FormProps, Input, Select, Switch } from "antd"
 import TxRxContainer from "./TxRxContainer"
 import { useEffect, useRef, useState } from "react"
 import useWebsocketConnect from "@/hooks/useWebsocketConnect"
 import ActionButtons from "../common/ActionButtons"
+import DestNode from "./DestNode"
 
 function TxItem() {
   return (
@@ -119,7 +120,8 @@ function FormSet() {
       style={{ maxWidth: 600 }}
     >
       <Form.Item name="network" label="通信目的节点" rules={rules}>
-        <InputNumber min={0} />
+        {/* <InputNumber min={0} /> */}
+        <DestNode />
       </Form.Item>
       <Form.Item name="interval" label="数据发送间隔" rules={rules}>
         <Select placeholder="请选择" allowClear>
