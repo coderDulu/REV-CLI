@@ -1,6 +1,7 @@
 import useECharts from "@/hooks/useEcharts"
 import useWebsocketConnect from "@/hooks/useWebsocketConnect"
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
+import YaxisRangeSet from "../YaxisRangeSet"
 
 // 频谱管控状态
 export default function SpectrumStatus() {
@@ -116,5 +117,29 @@ export default function SpectrumStatus() {
     }
   }, [connectToWebsocket, update])
 
-  return <div className="w-full h-full" ref={(dom) => (domRef.current = dom)}></div>
+  // 控制y轴范围
+  const [show, setShow] = useState(false)
+  const handleRangeSubmit = (values) => {
+    update({
+      yAxis: {
+        min: values.min,
+        max: values.max,
+      },
+    })
+    setShow(false)
+  }
+  return (
+    <>
+      <div
+        onClick={() => setShow(true)}
+        className="w-full h-full"
+        ref={(dom) => (domRef.current = dom)}
+      ></div>
+      <YaxisRangeSet
+        onClose={() => setShow(false)}
+        visible={show}
+        onRangeSubmit={handleRangeSubmit}
+      />
+    </>
+  )
 }

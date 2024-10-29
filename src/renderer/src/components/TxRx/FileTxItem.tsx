@@ -85,7 +85,7 @@ function FileForm() {
       onFinish={onFinish}
       style={{ maxWidth: 600 }}
     >
-      <Form.Item label="通信目的节点" name="network" rules={rules}>
+      <Form.Item shouldUpdate label="通信目的节点" rules={rules}>
         {({ getFieldValue, setFieldValue }) => (
           <DestNode
             value={getFieldValue("network")}

@@ -14,12 +14,13 @@ import AutoFreq from "@/components/center/AutoFreq"
 // user
 import NodeStatus from "@/components/user/NodeStatus"
 import NetworkStatus from "@/components/center/NetworkStatus"
+// manage
+import Spectrum from "@/components/manage/Spectrum"
 
 const Manage = lazy(() => import("@/views/ManageView"))
 const UserView = lazy(() => import("@/views/UserView"))
 // manage
 const Network = lazy(() => import("@/components/manage/Network"))
-const Spectrum = lazy(() => import("@/components/manage/Spectrum"))
 const FreqPlan = lazy(() => import("@/components/manage/FreqPlan"))
 
 function addLazy(children: ReactNode) {
@@ -78,7 +79,11 @@ const config = createHashRouter([
           },
           {
             path: "/manage/status",
-            element: addLazy(<Spectrum />),
+            element: (
+              <KeepAlive id="manage-status">
+                <Spectrum />
+              </KeepAlive>
+            ),
             errorElement: <Error />,
           },
           {

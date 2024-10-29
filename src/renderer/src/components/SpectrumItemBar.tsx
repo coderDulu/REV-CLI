@@ -1,10 +1,9 @@
 /**
  * 瀑布图下发的柱状图
  */
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import YaxisRangeSet from "./YaxisRangeSet"
 import useEcharts from "@/hooks/useEcharts"
-import useWebsocketConnect from "@/hooks/useWebsocketConnect"
 
 const barOption = {
   xAxis: {
@@ -58,9 +57,9 @@ function BarOfSpectrum({
 }: {
   data: any
   limit: number
-  xRange: [number, number]
+  xRange: number[]
 }) {
-  const { domRef, update, myChart } = useEcharts(barOption)
+  const { domRef, update } = useEcharts(barOption)
 
   useEffect(() => {
     const startFreq = xRange[0]
@@ -88,12 +87,6 @@ function BarOfSpectrum({
       series: [{ data: data ?? [] }],
     })
   }, [data, update, limit, xRange])
-
-  useEffect(() => {
-    myChart.current?.on("click", () => {
-      console.log("clicked")
-    })
-  }, [myChart])
 
   // 设置y轴范围
   const [show, setShow] = useState(false)
