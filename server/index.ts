@@ -74,14 +74,14 @@ server.on("connection", (ws, req) => {
       break
     }
     case "/connect": {
-      ws.send(5)
+      ws.send(0)
       break
     }
     case "/topology": {
       const data = {
         manage: [0],
-        center: [4, 8],
-        user: [5, 6, 9, 10],
+        center: [4,8],
+        user: [5,6,9,10],
         links: [
           [0, 4],
           [0, 8],

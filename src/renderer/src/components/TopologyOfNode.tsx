@@ -139,7 +139,6 @@ function Topology({ onNodeClick, tips, exclude }: Props) {
 
     return { data: nodeArr, links: linkArr }
   }, [])
-
   function generateCoordinates(nodes: TopologyNodes) {
     const xCenter = 500 // 中心 x 坐标
     const yPositions = {
@@ -151,47 +150,61 @@ function Topology({ onNodeClick, tips, exclude }: Props) {
     const result: any[] = []
 
     // 设置管理端节点的位置
-    nodes.manage.forEach((id) => {
-      result.push({
-        name: ids[id],
-        id: +id,
-        x: xCenter, // 管理端在水平中央
-        y: yPositions.manage,
-        category: 0,
-        symbol: "rect",
+    if (nodes.manage.length > 0) {
+      nodes.manage.forEach((id) => {
+        result.push({
+          name: ids[id],
+          id: +id,
+          x: xCenter, // 管理端在水平中央
+          y: yPositions.manage,
+          category: 0,
+          symbol: "rect",
+        })
       })
-    })
+    }
 
-    // 设置中心端节点的位置，均匀分布在管理端下方
-    nodes.center.forEach((id, index) => {
-      const xOffset = (index - (nodes.center.length - 1) / 2) * 300 // 增加中心节点的水平间距
-      result.push({
-        name: ids[id],
-        id: +id,
-        x: xCenter + xOffset,
-        y: yPositions.center,
-        category: 1,
-        symbol: "roundRect",
+    // 设置中心端节点的位置
+    if (nodes.center.length > 0) {
+      const centerSpacing = nodes.center.length > 1 ? 300 : 0 // 多个中心节点时才增加间距
+      nodes.center.forEach((id, index) => {
+        const xOffset = (index - (nodes.center.length - 1) / 2) * centerSpacing // 增加中心节点的水平间距
+        result.push({
+          name: ids[id],
+          id: +id,
+          x: xCenter + xOffset,
+          y: yPositions.center,
+          category: 1,
+          symbol: "roundRect",
+        })
       })
-    })
+    }
 
-    // 设置接点端节点的位置，确保不会重叠
-    nodes.user.forEach((id, index) => {
-      // 计算叶子节点属于哪个中心节点
-      const centerIndex = Math.floor(index / (nodes.user.length / nodes.center.length))
-      const totalUsersForCenter = nodes.user.length / nodes.center.length // 每个中心节点对应的用户数量
-      const userIndexInCenter = index % totalUsersForCenter // 该用户在所属中心节点中的序号
-      const offsetX = 200 // 偏移量
-      // 计算叶子节点的水平偏移
-      const sideOffset = (userIndexInCenter - (totalUsersForCenter - 1) / 2) * offsetX // 动态计算每个叶子节点的水平位置
-      result.push({
-        name: ids[id],
-        id: +id,
-        x: result.find((node) => node.id === +nodes.center[centerIndex]).x + sideOffset, // 基于对应的中心端节点 x 坐标
-        y: yPositions.user,
-        category: 2,
+    // 设置接点端节点的位置
+    if (nodes.user.length > 0) {
+      // 计算每个中心节点对应的用户数量
+      const totalUsersForCenter = Math.ceil(nodes.user.length / (nodes.center.length || 1)) // 避免除以0
+      nodes.user.forEach((id, index) => {
+        // 计算叶子节点属于哪个中心节点
+        const centerIndex = Math.floor(index / totalUsersForCenter)
+        const userIndexInCenter = index % totalUsersForCenter // 该用户在所属中心节点中的序号
+        const offsetX = 200 // 偏移量
+
+        // 计算叶子节点的水平偏移
+        const sideOffset = (userIndexInCenter - (totalUsersForCenter - 1) / 2) * offsetX // 动态计算每个叶子节点的水平位置
+
+        // 基于对应的中心端节点 x 坐标
+        const centerNodeX =
+          result.find((node) => node.id === +nodes.center[centerIndex])?.x || xCenter
+
+        result.push({
+          name: ids[id],
+          id: +id,
+          x: centerNodeX + sideOffset,
+          y: yPositions.user,
+          category: 2,
+        })
       })
-    })
+    }
 
     return result
   }
