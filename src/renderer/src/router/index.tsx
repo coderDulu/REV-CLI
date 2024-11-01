@@ -5,7 +5,7 @@ import KeepAlive from "react-activation"
 
 import App from "../App"
 import UserStatus from "@/components/user/UserStatus"
-import { Result } from "antd"
+import { Result, Skeleton, Spin } from "antd"
 import TxRx from "@/components/TxRx/Index"
 // center
 import CenterView from "@/views/CenterView"
@@ -16,15 +16,26 @@ import NodeStatus from "@/components/user/NodeStatus"
 import NetworkStatus from "@/components/center/NetworkStatus"
 // manage
 import Spectrum from "@/components/manage/Spectrum"
+import Network from "@/components/manage/Network"
 
 const Manage = lazy(() => import("@/views/ManageView"))
 const UserView = lazy(() => import("@/views/UserView"))
 // manage
-const Network = lazy(() => import("@/components/manage/Network"))
+// const Network = lazy(() => import("@/components/manage/Network"))
 const FreqPlan = lazy(() => import("@/components/manage/FreqPlan"))
 
 function addLazy(children: ReactNode) {
-  return <Suspense fallback={<></>}>{children}</Suspense>
+  return (
+    <Suspense
+      fallback={
+        <Spin spinning={true} fullscreen  size="large">
+          加载中...
+        </Spin>
+      }
+    >
+      {children}
+    </Suspense>
+  )
 }
 
 function Error() {
@@ -74,7 +85,11 @@ const config = createHashRouter([
           { index: true, element: <Navigate to="/manage/network" replace /> },
           {
             path: "/manage/network",
-            element: addLazy(<Network />),
+            element: (
+              <KeepAlive id="manage-network">
+                <Network />
+              </KeepAlive>
+            ),
             errorElement: <Error />,
           },
           {

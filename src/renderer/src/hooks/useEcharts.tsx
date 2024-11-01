@@ -1,6 +1,7 @@
 import { useRef, useEffect, useCallback } from "react"
 import * as echarts from "echarts"
 import { isEqual } from "lodash-es"
+import { useActivate } from 'react-activation'
 
 const useECharts = (initOption: echarts.EChartsCoreOption) => {
   const domRef = useRef<HTMLElement | null>(null)
@@ -11,19 +12,28 @@ const useECharts = (initOption: echarts.EChartsCoreOption) => {
   }, [])
 
   useEffect(() => {
-    setTimeout(() => {
+    // setTimeout(() => {
       if (domRef.current) {
         myChart.current = echarts.init(domRef.current as HTMLElement)
         myChart.current.setOption(initOption)
         // myChart.current.showLoading();
+        myChart.current.showLoading()
+        setTimeout(() => {
+          handleResize()
+          myChart.current?.hideLoading()
+        }, 100);
         window.addEventListener("resize", handleResize)
       }
-    }, 100)
+    // }, 100)
     // return () => {
     //   myChart.current?.dispose()
     //   window.removeEventListener("resize", handleResize)
     // }
   }, [])
+
+  useActivate(() => {
+    handleResize()
+  })
 
   const isSame = useCallback((newVal: object, oldVal: object) => {
     return isEqual(newVal, oldVal)

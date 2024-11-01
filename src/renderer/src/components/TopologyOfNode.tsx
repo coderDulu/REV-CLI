@@ -102,9 +102,16 @@ function Topology({ onNodeClick, tips, exclude }: Props) {
   useEffect(() => {
     connectToWebsocket()
 
-    myChart.current?.on("click", (params) => {
+    const onMessage = (params) => {
       onNodeClick && onNodeClick(params.name)
-    })
+    }
+    const myCharts = myChart.current
+
+    myCharts?.on("click", onMessage)
+
+    return () => {
+      myCharts?.off("click", onMessage)
+    }
   }, [connectToWebsocket])
 
   let lastData = {}

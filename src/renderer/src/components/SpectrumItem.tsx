@@ -7,6 +7,7 @@ import { Form, InputNumber } from "antd"
 import { useCallback, useEffect, useRef, useState } from "react"
 import BarOfSpectrum from "./SpectrumItemBar"
 import useWebsocketConnect from "@/hooks/useWebsocketConnect"
+import { useActivate, useUnactivate } from 'react-activation'
 
 type Message = {
   network: number
@@ -115,7 +116,7 @@ const option = {
 
 function SpectrumItem({ network, title }: { network: string | number; title?: string }) {
   const { domRef, update } = useEcharts(option)
-  const { connectToWebsocket, close, message } = useWebsocketConnect("manage-spectrum-status")
+  const { connectToWebsocket, close } = useWebsocketConnect("manage-spectrum-status")
   const [limit, setLimit] = useState(5000)
   const [barData, setBarData] = useState<any[]>([])
   const [heatmapData, setHeatmapData] = useState<any[]>([])
@@ -123,14 +124,6 @@ function SpectrumItem({ network, title }: { network: string | number; title?: st
   const [xRange, setXRange] = useState([230, 670])
 
   const seriesData = useRef<any[]>([])
-
-  useEffect(() => {
-    connectToWebsocket()
-
-    return () => {
-      close()
-    }
-  }, [close, connectToWebsocket])
 
   const updateData = useCallback((message: number[], limit: number) => {
     try {
@@ -156,18 +149,49 @@ function SpectrumItem({ network, title }: { network: string | number; title?: st
   }, [])
 
   useEffect(() => {
-    try {
-      const parseData = JSON.parse(message) as Message
-      const findMsg = parseData.find((item) => item.network === +network)
-      if (findMsg) {
-        const { startFreq, endFreq } = findMsg
-        setXRange([startFreq, endFreq])
-        updateData(findMsg.data, debouncedLimit)
-      }
-    } catch (error) {
-      console.log("error", message)
-    }
-  }, [message, debouncedLimit, updateData, network])
+    connectToWebsocket().then(res => {
+      res?.addEventListener('message', (ev) => {
+        const message = ev.data
+        try {
+          const parseData = JSON.parse(message) as Message
+          const findMsg = parseData.find((item) => item.network === +network)
+          if (findMsg) {
+            const { startFreq, endFreq } = findMsg
+            setXRange([startFreq, endFreq])
+            updateData(findMsg.data, debouncedLimit)
+          }
+        } catch (error) {
+          console.log("error", message)
+        }
+      })
+    })
+
+    // return () => {
+    //   close()
+    // }
+  }, [connectToWebsocket, debouncedLimit, network, updateData])
+
+  // useActivate(() => {
+  //   connectToWebsocket()
+  // })
+
+  // useUnactivate(() => {
+  //   close()
+  // })
+
+  // useEffect(() => {
+  //   try {
+  //     const parseData = JSON.parse(message) as Message
+  //     const findMsg = parseData.find((item) => item.network === +network)
+  //     if (findMsg) {
+  //       const { startFreq, endFreq } = findMsg
+  //       setXRange([startFreq, endFreq])
+  //       updateData(findMsg.data, debouncedLimit)
+  //     }
+  //   } catch (error) {
+  //     console.log("error", message)
+  //   }
+  // }, [message, debouncedLimit, updateData, network])
 
   useEffect(() => {
     window.$message.info(`子网${network}干扰定义设置为: ${debouncedLimit}`)

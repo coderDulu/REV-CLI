@@ -29,6 +29,7 @@ function Network() {
         </div>
         <TopologyOfNode
           onNodeClick={(node) => {
+            console.log("node", node)
             node.includes("子网") && setChooseNode(node.slice(0, 3))
             setTimeout(() => {
               setChooseNode("")

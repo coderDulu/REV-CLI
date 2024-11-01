@@ -5,48 +5,46 @@ function useWebSocket() {
   const [readyState, setReadyState] = useState<number>(WebSocket.CLOSED)
   const websocketRef = useRef<WebSocket | null>(null)
 
-  const connect = useCallback(
-    (url: string) => {
-      return new Promise<WebSocket>((resolve, reject) => {
-        // 如果已经存在 WebSocket 连接，直接返回
-        if (websocketRef.current && websocketRef.current.readyState === WebSocket.OPEN) {
-          return resolve(websocketRef.current)
-        }
+  const handleMessage = useCallback((event: MessageEvent) => {
+    setMessage(event.data)
+  }, [])
 
-        // 关闭旧连接，准备创建新连接
-        if (websocketRef.current) {
-          websocketRef.current.close()
-        }
+  const connect = useCallback((url: string) => {
+    return new Promise<WebSocket>((resolve, reject) => {
+      if (websocketRef.current && websocketRef.current.readyState === WebSocket.OPEN) {
+        return resolve(websocketRef.current)
+      }
 
-        const ws = new WebSocket(url)
-        websocketRef.current = ws
-        setReadyState(WebSocket.CONNECTING)
+      if (websocketRef.current) {
+        websocketRef.current.close()
+        websocketRef.current.removeEventListener("message", handleMessage)
+      }
 
-        ws.onopen = () => {
-          setReadyState(WebSocket.OPEN)
-          resolve(ws)
-        }
+      const ws = new WebSocket(url)
+      websocketRef.current = ws
+      setReadyState(WebSocket.CONNECTING)
 
-        ws.onmessage = (event) => {
-          setMessage(() => event.data)
-        }
+      ws.addEventListener("message", handleMessage)
 
-        ws.onerror = (error) => {
-          console.error("WebSocket error: ", error)
-        }
+      ws.onopen = () => {
+        setReadyState(WebSocket.OPEN)
+        resolve(ws)
+      }
 
-        ws.onclose = (event) => {
-          setReadyState(WebSocket.CLOSED)
-          setMessage("")
-          reject(event)
-        }
-      })
-    },
-    [] // 依赖数组为空，确保 useCallback 不会在每次渲染时重新创建
-  )
+      ws.onerror = (error) => {
+        console.error("WebSocket error: ", error)
+        reject(error)
+      }
+
+      ws.onclose = (event) => {
+        setReadyState(WebSocket.CLOSED)
+        setMessage("")
+        reject(event)
+      }
+    })
+  }, [])
 
   useEffect(() => {
-    // 组件卸载时，关闭 WebSocket 连接
     return () => {
       if (websocketRef.current) {
         websocketRef.current.close()
@@ -79,7 +77,6 @@ function useWebSocket() {
     readyState,
     close,
     websocketRef,
-    addEventListener: websocketRef.current?.addEventListener,
   }
 }
 
