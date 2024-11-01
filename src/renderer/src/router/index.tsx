@@ -28,7 +28,7 @@ function addLazy(children: ReactNode) {
   return (
     <Suspense
       fallback={
-        <Spin spinning={true} fullscreen  size="large">
+        <Spin spinning={true} fullscreen size="large">
           加载中...
         </Spin>
       }
@@ -142,9 +142,9 @@ const config = createHashRouter([
           {
             path: "/center/freq",
             element: (
-              // <KeepAlive id="center-freq">
-              <AutoFreq />
-              // </KeepAlive>
+              <KeepAlive id="center-freq">
+                <AutoFreq />
+              </KeepAlive>
             ),
             errorElement: <Error />,
           },
