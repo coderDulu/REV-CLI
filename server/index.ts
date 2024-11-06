@@ -74,7 +74,7 @@ server.on("connection", (ws, req) => {
       break
     }
     case "/connect": {
-      ws.send(4)
+      ws.send(0)
       break
     }
     case "/topology": {
@@ -153,7 +153,7 @@ server.on("connection", (ws, req) => {
       break
     }
     case "/spectrum-status": {
-      setInterval(() => {
+      // setInterval(() => {
         const start = getRandomInt(230, 300)
         const end = getRandomInt(300, 670)
         const data = {
@@ -163,7 +163,7 @@ server.on("connection", (ws, req) => {
         }
 
         ws.send(JSON.stringify(data))
-      }, 1000)
+      // }, 1000)
       break
     }
     case "/net-rate": {

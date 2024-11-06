@@ -5,6 +5,7 @@ import NetworkList from "./NetworkList"
 import SpectrumBar from "../SpectrumBar"
 
 import { useEffect, useRef, useState } from "react"
+import KeepAlive from "react-activation"
 
 function Network() {
   const [chooseNode, setChooseNode] = useState<string>("")
@@ -18,8 +19,12 @@ function Network() {
   return (
     <div className="flex w-full h-full">
       <LineLeftItem>
-        <h1 className="font-bold text-xl">{lastChooseNode}用频配置</h1>
-        <FreqFormConfig node={chooseNode} />
+        <div>
+          <h1 className="font-bold text-xl">{lastChooseNode}用频配置</h1>
+          <KeepAlive id="freq-form">
+            <FreqFormConfig node={chooseNode} />
+          </KeepAlive>
+        </div>
         <h1 className="font-bold text-xl">网络信息</h1>
         <NetworkList />
       </LineLeftItem>
