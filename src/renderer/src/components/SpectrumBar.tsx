@@ -90,6 +90,22 @@ const option = {
       data: [10],
     },
     {
+      id: 3,
+      name: "冲突",
+      type: "bar",
+      stack: "total",
+      label: {
+        show: false,
+      },
+      itemStyle: {
+        color: "#ee6666",
+      },
+      emphasis: {
+        focus: "series",
+      },
+      data: [0],
+    },
+    {
       name: "子网2使用",
       type: "bar",
       stack: "total",
@@ -113,10 +129,9 @@ const option = {
       },
       data: [endFreq],
     },
-
   ],
   animation: true,
-  animationDurationUpdate: 100
+  animationDurationUpdate: 100,
 }
 
 function SpectrumBar() {
@@ -127,6 +142,27 @@ function SpectrumBar() {
     try {
       const parse = JSON.parse(data) as DataType
       const sortData = parse.sort((a, b) => a.freqBand[0] - b.freqBand[0])
+      const conflict = sortData[0].freqBand[1] - sortData[1].freqBand[0]
+      if (conflict && conflict > 0) {
+        update({
+          series: [
+            {
+              id: 3,
+              data: [conflict],
+              
+            },
+          ],
+        })
+      } else {
+        update({
+          series: [
+            {
+              id: 3,
+              data: [0],
+            },
+          ],
+        })
+      }
 
       const seriesData: any[] = []
 

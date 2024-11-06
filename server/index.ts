@@ -153,7 +153,7 @@ server.on("connection", (ws, req) => {
       break
     }
     case "/spectrum-status": {
-      // setInterval(() => {
+      setInterval(() => {
         const start = getRandomInt(230, 300)
         const end = getRandomInt(300, 670)
         const data = {
@@ -163,7 +163,7 @@ server.on("connection", (ws, req) => {
         }
 
         ws.send(JSON.stringify(data))
-      // }, 1000)
+      }, 1000)
       break
     }
     case "/net-rate": {
@@ -234,9 +234,9 @@ server.on("connection", (ws, req) => {
       break
     }
     case "/manage-network-info": {
-      setInterval(() => {
-        const network1 = [getRandomInt(230, 280), getRandomInt(280, 320)]
-        const network2 = [getRandomInt(320, 400), getRandomInt(400, 670)]
+      // setInterval(() => {
+        const network1 = [230, 380]
+        const network2 = [380, 440]
         const data = [
           {
             network: 1, // 子网
@@ -255,7 +255,7 @@ server.on("connection", (ws, req) => {
         ]
 
         sendMessageToAllClients(JSON.stringify(data), pathname, ws)
-      }, 1000)
+      // }, 1000)
       break
     }
     case "/net-config-get": {
