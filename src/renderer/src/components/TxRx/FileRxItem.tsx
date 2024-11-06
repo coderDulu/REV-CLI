@@ -70,7 +70,7 @@ function FileRxItem() {
   return (
     <TxRxContainer title="接收文件" borderColor="#F0B376" bgColor="#fff7ef">
       <Flex className="w-full h-full p-5" vertical>
-        <Progress strokeColor="#f0b376" status="active" percent={progress} />
+        <Progress strokeColor="#f0b376" status="" percent={progress} />
         {/* {fileInfo.current?.name} */}
         <FileList
           options={[

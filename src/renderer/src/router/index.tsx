@@ -123,29 +123,17 @@ const config = createHashRouter([
           },
           {
             path: "/center/net-status",
-            element: (
-              <KeepAlive id="center-net-status">
-                <NetworkStatus />
-              </KeepAlive>
-            ),
+            element: <NetworkStatus />,
             errorElement: <Error />,
           },
           {
             path: "/center/net-config",
-            element: (
-              <KeepAlive id="center-net-config">
-                <NetworkConfig />
-              </KeepAlive>
-            ),
+            element: <NetworkConfig />,
             errorElement: <Error />,
           },
           {
             path: "/center/freq",
-            element: (
-              <KeepAlive id="center-freq">
-                <AutoFreq />
-              </KeepAlive>
-            ),
+            element: <AutoFreq />,
             errorElement: <Error />,
           },
           {

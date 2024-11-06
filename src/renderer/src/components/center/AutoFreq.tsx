@@ -3,6 +3,7 @@ import SpectrumStatus from "@/components/SpectrumStatus"
 import NodeBar from "../NodeBar"
 import { useImmer } from "use-immer"
 import { useCallback } from "react"
+import KeepAlive from "react-activation"
 
 function AutoFreq() {
   const [option, setOption] = useImmer<any>({})
@@ -41,7 +42,9 @@ function AutoFreq() {
         <SpectrumStatus onFreqChange={handleFreqChanged} />
       </div>
       <div className="flex-[2]">
-        <NodeBar option={option} />
+        <KeepAlive id="center-nodebar">
+          <NodeBar option={option} />
+        </KeepAlive>
       </div>
     </div>
   )

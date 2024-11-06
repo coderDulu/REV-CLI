@@ -49,7 +49,7 @@ function FormSet() {
       name="rx"
       style={{ maxWidth: 600, minHeight: 400 }}
     >
-      <Form.Item label="已发送数据长度">{receiveData.length}</Form.Item>
+      <Form.Item label="已接收数据长度">{receiveData.length}</Form.Item>
       <Form.Item wrapperCol={{ offset: 2, span: 20 }} rules={rules}>
         <Input.TextArea
           value={receiveData}

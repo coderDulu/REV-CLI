@@ -1,6 +1,7 @@
 import { Flex } from "antd"
 import TopologyOfNode from "../TopologyOfNode"
 import NetWorkRate from "./NetWorkRate"
+import KeepAlive from "react-activation"
 
 function NetworkStatus() {
   return (
@@ -9,7 +10,9 @@ function NetworkStatus() {
         <TopologyOfNode />
       </div>
       <div className="flex-1 min-h-0">
-        <NetWorkRate />
+        <KeepAlive id='center-rate'>
+          <NetWorkRate />
+        </KeepAlive>
       </div>
     </Flex>
   )

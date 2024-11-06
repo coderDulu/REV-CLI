@@ -5,6 +5,8 @@ import useWebsocketConnect from "@/hooks/useWebsocketConnect"
 import ActionButtons from "../common/ActionButtons"
 import DestNode from "./DestNode"
 
+
+
 function TxItem() {
   return (
     <TxRxContainer title="发送数据" borderColor="#0D8383" bgColor="#f3fbfc">
@@ -54,9 +56,15 @@ function FormSet() {
     sendInterval(values)
   }
 
+  // 使用一个函数来发送数据
+
+
   async function sendInterval(values: FormDataType) {
     try {
       const { interval, isAuto, data: sendData } = values
+
+      // eslint-disable-next-line no-inner-declarations
+   
       await sendToNetwork(form.getFieldValue("network"))
       if (isAuto) {
         setIsSending((sending) => {
@@ -84,6 +92,7 @@ function FormSet() {
         })
       }
     } catch (error) {
+      console.log("error => ", error)
       window.$message.error("发送失败")
     }
   }

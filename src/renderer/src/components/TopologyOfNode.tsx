@@ -87,16 +87,16 @@ function Topology({ onNodeClick, tips, exclude }: Props) {
         links: [],
         force: {
           repulsion: 500,
-          layoutAnimation: true,
+          layoutAnimation: false,
         },
         zoom: 0.8,
         lineStyle: {
           width: 3,
         },
-        animation: true,
+        animation: false,
       },
     ],
-    animation: true,
+    animation: false,
   })
 
   useEffect(() => {
