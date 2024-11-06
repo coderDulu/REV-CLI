@@ -11,8 +11,8 @@ function AutoFreq() {
   const handleFreqChanged = useCallback(
     (band: number[]) => {
       if (band.length === 2) {
-        const startFreq = band[0]
-        const endFreq = band[1]
+        const startFreq = band[0] ?? ""
+        const endFreq = band[1] ?? ""
         const xData = generateSegments(startFreq, endFreq, 1023)
         const xAxis = {
           data: xData,

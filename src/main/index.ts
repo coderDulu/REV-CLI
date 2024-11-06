@@ -106,7 +106,6 @@ app.on("window-all-closed", function () {
   }
 })
 
-export default mainWindow
 
 // app.disableHardwareAcceleration() // 禁用硬件加速
 // app.commandLine.appendSwitch('ignore-gpu-blacklist') // 忽略 GPU 黑名单

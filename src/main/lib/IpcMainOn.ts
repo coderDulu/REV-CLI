@@ -1,5 +1,5 @@
 import { ipcMain, BrowserWindow } from "electron"
-import { mainWindow } from "../index"
+// import { mainWindow } from "../index"
 export type Names = "toggle-dev-tools"
 type IpcMainHandle = {
   name: Names
@@ -10,6 +10,8 @@ const EVENT_POOL: IpcMainHandle[] = [
   {
     name: "toggle-dev-tools",
     callback: (event) => {
+      const mainWindow = BrowserWindow.fromWebContents(event.sender)
+
       if (mainWindow) {
         mainWindow.webContents.toggleDevTools() // 打开/关闭开发者工具
       }

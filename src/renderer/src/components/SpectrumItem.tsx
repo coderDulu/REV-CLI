@@ -194,7 +194,7 @@ function SpectrumItem({ network, title }: { network: string | number; title?: st
   // }, [message, debouncedLimit, updateData, network])
 
   useEffect(() => {
-    window.$message.info(`子网${network}干扰定义设置为: ${debouncedLimit}`)
+    window.$message.info(`子网${network ?? ""}干扰定义设置为: ${debouncedLimit}`)
   }, [debouncedLimit, network])
 
   // 解析热力图数据显示

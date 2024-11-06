@@ -154,9 +154,11 @@ server.on("connection", (ws, req) => {
     }
     case "/spectrum-status": {
       setInterval(() => {
+        const start = getRandomInt(230, 300)
+        const end = getRandomInt(300, 670)
         const data = {
-          startFreq: 380,
-          endFreq: 540,
+          startFreq: start,
+          endFreq: end,
           network: 1,
         }
 

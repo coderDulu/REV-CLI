@@ -62,8 +62,8 @@ function BarOfSpectrum({
   const { domRef, update } = useEcharts(barOption)
 
   useEffect(() => {
-    const startFreq = xRange[0]
-    const endFreq = xRange[1]
+    const startFreq = xRange[0] ?? ""
+    const endFreq = xRange[1] ?? ""
     const xAxis = {
       data: generageXData(startFreq, endFreq),
       axisLabel: {

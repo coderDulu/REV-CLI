@@ -1,10 +1,10 @@
 {
   "name": "freq-config",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "description": "",
   "type": "module",
   "main": "./dist/main/index.cjs",
-  "date": "20241104",
+  "date": "20241106",
   "scripts": {
     "dev": "concurrently \"npm run dev:renderer\" \"npm run dev:main\" --kill-others-on-fail",
     "dev:main": "nodemon",
@@ -19,7 +19,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@rollup/plugin-typescript": "^11.1.6",
+    "@rollup/plugin-typescript": "^12.1.1",
     "@types/lodash-es": "^4.17.12",
     "@types/node": "^20.14.12",
     "@types/react": "^18.3.3",
