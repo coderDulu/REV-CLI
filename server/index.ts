@@ -235,7 +235,7 @@ server.on("connection", (ws, req) => {
     }
     case "/manage-network-info": {
       // setInterval(() => {
-        const network1 = [230, 380]
+        const network1 = [230, 390]
         const network2 = [380, 440]
         const data = [
           {

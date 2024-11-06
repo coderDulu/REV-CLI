@@ -87,7 +87,7 @@ const option = {
       emphasis: {
         focus: "series",
       },
-      data: [10],
+      data: [0],
     },
     {
       id: 3,
@@ -141,27 +141,31 @@ function SpectrumBar() {
   const parseData = useCallback((data) => {
     try {
       const parse = JSON.parse(data) as DataType
-      const sortData = parse.sort((a, b) => a.freqBand[0] - b.freqBand[0])
-      const conflict = sortData[0].freqBand[1] - sortData[1].freqBand[0]
-      if (conflict && conflict > 0) {
-        update({
-          series: [
-            {
-              id: 3,
-              data: [conflict],
-              
-            },
-          ],
-        })
-      } else {
-        update({
-          series: [
-            {
-              id: 3,
-              data: [0],
-            },
-          ],
-        })
+      // 使用 Map 去重，基于 id 属性
+      const uniqueArr = Array.from(new Map(parse.map((item) => [item.network, item])).values())
+      console.log(uniqueArr)
+      const sortData = uniqueArr.sort((a, b) => a.freqBand[0] - b.freqBand[0])
+      if (sortData.length === 2) {
+        const conflict = sortData[0].freqBand[1] - sortData[1].freqBand[0]
+        if (conflict && conflict > 0) {
+          update({
+            series: [
+              {
+                id: 3,
+                data: [conflict],
+              },
+            ],
+          })
+        } else {
+          update({
+            series: [
+              {
+                id: 3,
+                data: [0],
+              },
+            ],
+          })
+        }
       }
 
       const seriesData: any[] = []
