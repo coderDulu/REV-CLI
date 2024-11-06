@@ -7,7 +7,7 @@ import { Form, InputNumber } from "antd"
 import { useCallback, useEffect, useRef, useState } from "react"
 import BarOfSpectrum from "./SpectrumItemBar"
 import useWebsocketConnect from "@/hooks/useWebsocketConnect"
-import { useActivate, useUnactivate } from 'react-activation'
+import KeepAlive, { useActivate, useUnactivate } from "react-activation"
 
 type Message = {
   network: number
@@ -149,8 +149,8 @@ function SpectrumItem({ network, title }: { network: string | number; title?: st
   }, [])
 
   useEffect(() => {
-    connectToWebsocket().then(res => {
-      res?.addEventListener('message', (ev) => {
+    connectToWebsocket().then((res) => {
+      res?.addEventListener("message", (ev) => {
         const message = ev.data
         try {
           const parseData = JSON.parse(message) as Message
@@ -229,6 +229,7 @@ function SpectrumItem({ network, title }: { network: string | number; title?: st
   return (
     <div className="w-full h-full relative">
       <h1 className="text-center text-xl mb-2">{title ?? "用频状态"}</h1>
+
       <Form.Item labelCol={{ offset: 7 }} className="m-0" label="干扰定义设置">
         <InputNumber
           defaultValue={limit}

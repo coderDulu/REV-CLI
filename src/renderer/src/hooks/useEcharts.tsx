@@ -18,10 +18,14 @@ const useECharts = (initOption: echarts.EChartsCoreOption) => {
         myChart.current.setOption(initOption)
         // myChart.current.showLoading();
         myChart.current.showLoading()
-        setTimeout(() => {
+        // setTimeout(() => {
+        //   handleResize()
+        //   myChart.current?.hideLoading()
+        // }, 100);
+        requestAnimationFrame(() => {
           handleResize()
           myChart.current?.hideLoading()
-        }, 100);
+        })
         window.addEventListener("resize", handleResize)
       }
     // }, 100)

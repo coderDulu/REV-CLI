@@ -13,6 +13,8 @@ function NetworkConfig() {
       <LineLeftItem>
         <h1 className="font-bold text-2xl">业务信道参数</h1>
         <FreqFormConfig node={ids[role]} />
+        <h1 className="font-bold text-2xl">网络信道参数</h1>
+
         <NetworkList />
       </LineLeftItem>
       <div className="flex flex-col gap-10 min-w-0 p-4">

@@ -80,8 +80,8 @@ server.on("connection", (ws, req) => {
     case "/topology": {
       const data = {
         manage: [0],
-        center: [4,8],
-        user: [5,6,9,10],
+        center: [4, 8],
+        user: [5, 6, 9, 10],
         links: [
           [0, 4],
           [0, 8],
@@ -232,24 +232,28 @@ server.on("connection", (ws, req) => {
       break
     }
     case "/manage-network-info": {
-      const data = [
-        {
-          network: 1, // 子网
-          freqBand: [290, 450], // 频点范围
-          mode: 0, // 0 -> 自适应跳频，1 -> 频点固定模式
-          bandSelect: 1, // 通道
-          freq: 277.5, // 频点
-        },
-        {
-          network: 2, // 子网
-          freqBand: [500, 660], // 频点范围
-          mode: 1, // 0 -> 自适应跳频，1 -> 频点固定模式
-          bandSelect: 9, // 通道
-          freq: 299.5, // 频点
-        },
-      ]
+      setInterval(() => {
+        const network1 = [getRandomInt(230, 280), getRandomInt(280, 320)]
+        const network2 = [getRandomInt(320, 400), getRandomInt(400, 670)]
+        const data = [
+          {
+            network: 1, // 子网
+            freqBand: network1, // 频点范围
+            mode: 0, // 0 -> 自适应跳频，1 -> 频点固定模式
+            bandSelect: 1, // 通道
+            freq: 277.5, // 频点
+          },
+          {
+            network: 2, // 子网
+            freqBand: network2, // 频点范围
+            mode: 1, // 0 -> 自适应跳频，1 -> 频点固定模式
+            bandSelect: 9, // 通道
+            freq: 299.5, // 频点
+          },
+        ]
 
-      sendMessageToAllClients(JSON.stringify(data), pathname, ws)
+        sendMessageToAllClients(JSON.stringify(data), pathname, ws)
+      }, 1000)
       break
     }
     case "/net-config-get": {
@@ -357,6 +361,10 @@ function sendMessageToAllClients(message: any, path: string, ws?: WebSocket) {
 }
 
 console.log(`WebSocket server is running on ws://localhost:${port}`)
+
+function getRandomInt(min: number, max: number): number {
+  return Math.floor(Math.random() * (max - min + 1)) + min
+}
 
 function generateFreqStatus() {
   const arr = []

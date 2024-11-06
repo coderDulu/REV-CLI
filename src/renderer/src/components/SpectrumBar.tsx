@@ -113,7 +113,10 @@ const option = {
       },
       data: [endFreq],
     },
+
   ],
+  animation: true,
+  animationDurationUpdate: 100
 }
 
 function SpectrumBar() {
