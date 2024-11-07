@@ -144,7 +144,7 @@ function SpectrumItem({ network, title }: { network: string | number; title?: st
       setHeatmapData([...mapData]) // 更新热力图数据
       setBarData(newMessage) // 更新柱状图数据
     } catch (error) {
-      // console.log("error", error)
+      console.log("SpectrumItem error ", error)
     }
   }, [])
 

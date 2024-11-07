@@ -86,9 +86,7 @@ const config = createHashRouter([
           {
             path: "/manage/network",
             element: (
-              // <KeepAlive id="manage-network">
               <Network />
-              // </KeepAlive>
             ),
             errorElement: <Error />,
           },
