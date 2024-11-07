@@ -27,6 +27,7 @@ function ConnectForm({ showModel, onHide }: Props) {
         type: "update",
         isConnect: false
       })
+      location.reload()
     }
   }, [])
 

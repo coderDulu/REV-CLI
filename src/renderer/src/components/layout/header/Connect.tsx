@@ -2,17 +2,15 @@ import { useEffect, useState } from "react"
 import ConnectDialog from "@/components/ConnectDialog"
 import { useConnect } from "@/hooks/useConnect"
 import { Space, Tag } from "antd"
-import { useNavigate } from "react-router-dom"
 
 function Connect() {
   const { isConnect } = useConnect()
   const [showModel, setShowModel] = useState(!isConnect)
-  const navigate = useNavigate()
   useEffect(() => {
     if (!isConnect) {
       setShowModel(true)
     }
-  }, [isConnect, navigate])
+  }, [isConnect])
 
   return (
     <Space className="app-noDrag">

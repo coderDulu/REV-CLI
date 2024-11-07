@@ -77,7 +77,7 @@ function FreqFormConfig({ node }: Props) {
       setNetwork(+id)
       setTimeout(() => {
         setNetwork(undefined)
-      }, 500);
+      }, 500)
     }
   }, [node])
 
@@ -107,19 +107,11 @@ function FreqFormConfig({ node }: Props) {
   }, [getFormData])
 
   useEffect(() => {
-    setWs().then((res) => {
-      res?.addEventListener("message", (ev) => {
-        const data = JSON.parse(ev.data)
-        if (data.result === "success") {
-          window.$message.success("设置成功")
-        } else {
-          window.$message.error("设置失败")
-        }
-      })
-    })
+    console.log("S")
+    setWs()
   }, [setWs])
 
-  const onFinish = (values) => {
+  const onFinish = async (values) => {
     if (!lastNetwork) {
       window.$message.warning("请点击右侧，选择子网")
       return
@@ -128,7 +120,12 @@ function FreqFormConfig({ node }: Props) {
       ...values,
       network: lastNetwork,
     }
-    sendMessageOfSet(JSON.stringify(data))
+    const result = await sendMessageOfSet(JSON.stringify(data))
+    if (result) {
+      window.$message.success("设置成功")
+    } else {
+      window.$message.error("设置失败")
+    }
   }
 
   const onFinishFailed = () => {}
