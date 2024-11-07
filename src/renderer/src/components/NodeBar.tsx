@@ -4,7 +4,7 @@
 
 import useEcharts from "@/hooks/useEcharts"
 import useWebsocketConnect from "@/hooks/useWebsocketConnect"
-import { useEffect } from "react"
+import { useCallback, useEffect } from "react"
 import { useImmer } from "use-immer"
 import YaxisRangeSet from "./YaxisRangeSet"
 
@@ -63,19 +63,19 @@ const initOption = {
   animation: false,
 }
 function NodeBar({ node, option = {} }: { node?: string; xLength?: number; option?: object }) {
-  const { connectToWebsocket, close } = useWebsocketConnect("network-bar")
+  const { connectToWebsocket } = useWebsocketConnect("network-bar")
   const [data, setData] = useImmer([])
-  useEffect(() => {
+
+  const connectToWs = useCallback(() => {
     connectToWebsocket().then((res) => {
       res?.addEventListener("message", (ev) => {
         setData(JSON.parse(ev.data))
       })
     })
-
-    return () => {
-      close()
-    }
-  }, [close, connectToWebsocket, setData])
+  }, [connectToWebsocket, setData])
+  useEffect(() => {
+    connectToWs()
+  }, [connectToWs])
 
   const { domRef, update, myChart } = useEcharts({
     ...initOption,
@@ -86,6 +86,7 @@ function NodeBar({ node, option = {} }: { node?: string; xLength?: number; optio
       console.log("params", params)
     })
   }, [myChart])
+
   // useEffect(() => {
   //   const chart = myChart.current
   //   if (chart) {
@@ -159,7 +160,11 @@ function NodeBar({ node, option = {} }: { node?: string; xLength?: number; optio
         className="w-full h-full"
         ref={(dom) => (domRef.current = dom)}
       ></div>
-      <YaxisRangeSet onClose={() => setShow(false)} visible={show} onRangeSubmit={handleRangeSubmit}/>
+      <YaxisRangeSet
+        onClose={() => setShow(false)}
+        visible={show}
+        onRangeSubmit={handleRangeSubmit}
+      />
     </>
   )
 }

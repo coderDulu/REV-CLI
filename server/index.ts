@@ -74,7 +74,7 @@ server.on("connection", (ws, req) => {
       break
     }
     case "/connect": {
-      ws.send(0)
+      ws.send(4)
       break
     }
     case "/topology": {
@@ -349,7 +349,7 @@ server.on("connection", (ws, req) => {
   })
 
   ws.on("close", () => {
-    console.log("Client disconnected")
+    console.log("Client disconnected", req.url)
     // 从集合中移除已断开的客户端
     if (clients[req.url!]) {
       clients[req.url!].delete(ws)

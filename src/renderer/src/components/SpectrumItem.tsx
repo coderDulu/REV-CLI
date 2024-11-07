@@ -7,7 +7,6 @@ import { Form, InputNumber } from "antd"
 import { useCallback, useEffect, useRef, useState } from "react"
 import BarOfSpectrum from "./SpectrumItemBar"
 import useWebsocketConnect from "@/hooks/useWebsocketConnect"
-import KeepAlive, { useActivate, useUnactivate } from "react-activation"
 
 type Message = {
   network: number
@@ -122,6 +121,7 @@ function SpectrumItem({ network, title }: { network: string | number; title?: st
   const [heatmapData, setHeatmapData] = useState<any[]>([])
   const debouncedLimit = useDebounce(limit, 1000)
   const [xRange, setXRange] = useState([230, 670])
+  
 
   const seriesData = useRef<any[]>([])
 
@@ -148,7 +148,7 @@ function SpectrumItem({ network, title }: { network: string | number; title?: st
     }
   }, [])
 
-  useEffect(() => {
+  const connectToWs = useCallback(() => {
     connectToWebsocket().then((res) => {
       res?.addEventListener("message", (ev) => {
         const message = ev.data
@@ -165,19 +165,13 @@ function SpectrumItem({ network, title }: { network: string | number; title?: st
         }
       })
     })
-
-    // return () => {
-    //   close()
-    // }
   }, [connectToWebsocket, debouncedLimit, network, updateData])
 
-  // useActivate(() => {
-  //   connectToWebsocket()
-  // })
 
-  // useUnactivate(() => {
-  //   close()
-  // })
+  useEffect(() => {
+    connectToWs()
+  }, [connectToWs])
+
 
   // useEffect(() => {
   //   try {

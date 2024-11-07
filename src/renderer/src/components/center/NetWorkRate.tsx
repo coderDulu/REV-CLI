@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react"
 import YaxisRangeSet from "../YaxisRangeSet"
 
 // 频谱管控状态
+
 export default function SpectrumStatus() {
   const { connectToWebsocket } = useWebsocketConnect("net-rate")
   const { domRef, update } = useECharts({
@@ -72,6 +73,8 @@ export default function SpectrumStatus() {
 
   const startTime = useRef<number>(0)
   const xAxisData = useRef<string[]>([])
+
+  
   useEffect(() => {
     connectToWebsocket().then((socket) => {
       const lastData: number[][] = []
