@@ -124,7 +124,6 @@ const conflictOption = {
   },
 }
 const generateNetworkOption = function (name: string, start: number, end: number) {
-
   return {
     type: "bar",
     name: name,
@@ -163,12 +162,16 @@ function SpectrumBar() {
       // 使用 Map 去重，基于 id 属性
       const uniqueArr = Array.from(new Map(parse.map((item) => [item.network, item])).values())
       const sortData = uniqueArr.sort((a, b) => a.freqBand[0] - b.freqBand[0])
-      
+
       // 子网1添加
-      const newOption = generateNetworkOption(`子网${sortData[0].network}使用`, sortData[0].freqBand[0], sortData[0].freqBand[1])
+      const newOption = generateNetworkOption(
+        `子网${sortData[0].network}使用`,
+        sortData[0].freqBand[0],
+        sortData[0].freqBand[1]
+      )
       seriesData.push(newOption)
 
-      // 冲突
+      // 冲突/未使用/子网2添加
       if (sortData.length === 2) {
         const conflict = sortData[0].freqBand[1] - sortData[1].freqBand[0]
         if (conflict && conflict > 0) {
@@ -179,25 +182,34 @@ function SpectrumBar() {
         } else {
           seriesData.push({ ...conflictOption })
         }
+
+        // 子网1和子网2之间的间隔
+        seriesData.push({
+          ...NoUseOption,
+          data: [sortData[1].freqBand[0] - sortData[0].freqBand[1]],
+        })
+
+        // 子网2添加
+        const newOption2 = generateNetworkOption(
+          `子网${sortData[1].network}使用`,
+          sortData[1].freqBand[0],
+          sortData[1].freqBand[1]
+        )
+        seriesData.push(newOption2)
+
+        // 其余未使用
+        seriesData.push({
+          ...NoUseOption,
+          data: [endFreq - sortData[1].freqBand[1]],
+        })
+      } else {
+        // 其余未使用
+        seriesData.push({
+          ...NoUseOption,
+          data: [endFreq - sortData[0].freqBand[1]],
+        })
       }
 
-      // 子网1和子网2之间的间隔
-      seriesData.push({
-        ...NoUseOption,
-        data: [sortData[1].freqBand[0] - sortData[0].freqBand[1]],
-      })
-
-      // 子网2添加
-      const newOption2 = generateNetworkOption(`子网${sortData[1].network}使用`, sortData[1].freqBand[0], sortData[1].freqBand[1])
-      seriesData.push(newOption2)
-
-      // 其余未使用
-      seriesData.push({
-        ...NoUseOption,
-        data: [endFreq - sortData[1].freqBand[1]],
-      })
-
-     
       update({
         series: seriesData,
       })
