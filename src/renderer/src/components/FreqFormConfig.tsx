@@ -63,8 +63,8 @@ const channelOptions = channelArr.map((item) => ({
 }))
 
 function FreqFormConfig({ node }: Props) {
-  // const { connectToWebsocket: getWs, sendMessage: sendMessageOfGet } =
-    // useWebsocketConnect("freq-config-get")
+  const { connectToWebsocket: getWs, sendMessage: sendMessageOfGet } =
+    useWebsocketConnect("freq-config-get")
   const { connectToWebsocket: setWs, sendMessage: sendMessageOfSet } =
     useWebsocketConnect("freq-config-set")
   const [form] = Form.useForm()
@@ -87,24 +87,24 @@ function FreqFormConfig({ node }: Props) {
     }
   }, [network])
 
-  // const getFormData = useCallback(async () => {
-  //   if (network !== undefined) {
-  //     const res = await getWs()
-  //     sendMessageOfGet(JSON.stringify({ network: network }))
-  //     res?.addEventListener("message", (ev) => {
-  //       try {
-  //         const parseData = JSON.parse(ev.data) as DataType
-  //         form.setFieldsValue(parseData)
-  //       } catch (error) {
-  //         console.log("network-info parse error")
-  //       }
-  //     })
-  //   }
-  // }, [form, getWs, network, sendMessageOfGet])
+  const getFormData = useCallback(async () => {
+    if (network !== undefined) {
+      const res = await getWs()
+      sendMessageOfGet(JSON.stringify({ network: network }))
+      res?.addEventListener("message", (ev) => {
+        try {
+          const parseData = JSON.parse(ev.data) as DataType
+          form.setFieldsValue(parseData)
+        } catch (error) {
+          console.log("network-info parse error")
+        }
+      })
+    }
+  }, [form, getWs, network, sendMessageOfGet])
 
-  // useEffect(() => {
-  //   getFormData()
-  // }, [getFormData])
+  useEffect(() => {
+    getFormData()
+  }, [getFormData])
 
   useEffect(() => {
     setWs().then((res) => {
