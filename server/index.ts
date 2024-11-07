@@ -70,11 +70,11 @@ server.on("connection", (ws, req) => {
           },
         ]
         ws.send(JSON.stringify(obj))
-      }, 30)
+      }, 16)
       break
     }
     case "/connect": {
-      ws.send(4)
+      ws.send(0)
       break
     }
     case "/topology": {
@@ -236,7 +236,7 @@ server.on("connection", (ws, req) => {
     case "/manage-network-info": {
       // setInterval(() => {
         const network1 = [240, 400]
-        const network2 = [380, 440]
+        const network2 = [370, 440]
         const data = [
           {
             network: 1, // 子网

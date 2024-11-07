@@ -3,7 +3,7 @@
  */
 import useECharts from "@/hooks/useEcharts"
 import useWebsocketConnect from "@/hooks/useWebsocketConnect"
-import { useCallback, useEffect } from "react"
+import { useCallback, useEffect, useRef } from "react"
 
 type DataType = {
   network: number
@@ -123,7 +123,7 @@ const conflictOption = {
     color: "#ee6666",
   },
 }
-const generateNetworkOption = function (name: string, start: number, end: number) {
+const generateNetworkOption = function (name: string, start: number, end: number, data?: number[]) {
   return {
     type: "bar",
     name: name,
@@ -134,17 +134,34 @@ const generateNetworkOption = function (name: string, start: number, end: number
       fontWeight: "bolder",
     },
     stack: "total",
-    data: [end - start], // 子网1的值
+    data: data ?? [end - start], // 子网的值
   }
+}
+
+function addFirstOption(sortData: any[]) {
+  const conflict = sortData[0].freqBand[1] - sortData[1].freqBand[0]
+  console.log(sortData[0].freqBand[1] - sortData[0].freqBand[0])
+  // 添加第一个子网
+  const newOption = generateNetworkOption(
+    `子网${sortData[0].network}使用`,
+    sortData[0].freqBand[0],
+    sortData[0].freqBand[1],
+    [sortData[0].freqBand[1] - sortData[0].freqBand[0] - conflict]
+  )
+  seriesData.push(newOption)
 }
 
 function SpectrumBar() {
   const { connectToWebsocket } = useWebsocketConnect("manage-network-info")
-  const { domRef, update } = useECharts(option)
-
+  const { domRef, update, isSame, myChart } = useECharts(option)
+  const lastData = useRef<any[]>([])
   const parseData = useCallback((data) => {
     try {
       const parse = JSON.parse(data) as DataType
+
+      // 使用 Map 去重，基于 id 属性
+      const uniqueArr = Array.from(new Map(parse.map((item) => [item.network, item])).values())
+      const sortData = uniqueArr.sort((a, b) => a.freqBand[0] - b.freqBand[0])
       const seriesData: any[] = [
         {
           name: "未使用",
@@ -156,25 +173,25 @@ function SpectrumBar() {
           emphasis: {
             focus: "series",
           },
-          data: [startFreq],
+          data: [startFreq + (sortData[0].freqBand[0] - startFreq)], // 开端与第一个之间的未使用
         },
       ]
-      // 使用 Map 去重，基于 id 属性
-      const uniqueArr = Array.from(new Map(parse.map((item) => [item.network, item])).values())
-      const sortData = uniqueArr.sort((a, b) => a.freqBand[0] - b.freqBand[0])
 
-      // 子网1添加
+      // 添加第一个子网
       const newOption = generateNetworkOption(
         `子网${sortData[0].network}使用`,
         sortData[0].freqBand[0],
-        sortData[0].freqBand[1]
+        sortData[0].freqBand[1],
+        [sortData[0].freqBand[1] - sortData[0].freqBand[0]]
       )
       seriesData.push(newOption)
 
       // 冲突/未使用/子网2添加
       if (sortData.length === 2) {
+        // 冲突
         const conflict = sortData[0].freqBand[1] - sortData[1].freqBand[0]
         if (conflict && conflict > 0) {
+          seriesData[seriesData.length - 1].data = [sortData[0].freqBand[1] - sortData[0].freqBand[0] - conflict]
           seriesData.push({
             ...conflictOption,
             data: [conflict],
@@ -196,23 +213,22 @@ function SpectrumBar() {
           sortData[1].freqBand[1]
         )
         seriesData.push(newOption2)
-
-        // 其余未使用
-        seriesData.push({
-          ...NoUseOption,
-          data: [endFreq - sortData[1].freqBand[1]],
+      }
+      // 其余未使用
+      seriesData.push({
+        ...NoUseOption,
+        data: [endFreq - sortData[sortData.length - 1].freqBand[1]],
+      })
+      if (isSame(lastData.current, seriesData)) {
+        update({
+          series: seriesData,
         })
       } else {
-        // 其余未使用
-        seriesData.push({
-          ...NoUseOption,
-          data: [endFreq - sortData[0].freqBand[1]],
-        })
+        option.series = seriesData as never[]
+        myChart.current?.setOption(option, true)
       }
 
-      update({
-        series: seriesData,
-      })
+      lastData.current = seriesData
     } catch (error) {
       console.log("parse error", error)
     }

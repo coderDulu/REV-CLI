@@ -31,9 +31,11 @@ function HeaderTabs() {
   useEffect(() => {
     if (connect.role) {
       setName(ids[connect.role])
+      const path = list.find((item) => item.role.includes(connect.role ?? ""))?.value
       const lastRoute = localStorage.getItem("lastRoute")
-      if (lastRoute) {
-        navigate(lastRoute)
+      if (path) {
+        const url = lastRoute?.startsWith(path) ? lastRoute : path
+        navigate(url)
       }
     }
   }, [connect, navigate])

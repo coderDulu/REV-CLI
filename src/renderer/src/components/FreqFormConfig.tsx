@@ -107,7 +107,6 @@ function FreqFormConfig({ node }: Props) {
   }, [getFormData])
 
   useEffect(() => {
-    console.log("S")
     setWs()
   }, [setWs])
 
