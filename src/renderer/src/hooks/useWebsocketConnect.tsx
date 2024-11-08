@@ -11,6 +11,7 @@ function useWebsocketConnect(path: string) {
 
   const connectToWebsocket = useCallback(async () => {
     try {
+  
       if (isConnect) {
         const ws = await connect(wsUrl)
         return ws
@@ -22,7 +23,7 @@ function useWebsocketConnect(path: string) {
       console.error("Error connecting to websocket:", error)
       return null
     }
-  }, [connect, isConnect, close, wsUrl])
+  }, [isConnect, connect, wsUrl, close])
 
   return { ...args, close, connectToWebsocket }
 }

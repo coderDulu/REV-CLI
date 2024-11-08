@@ -4,7 +4,16 @@ function useWebSocket(reconnectInterval = 2000, maxRetries = 5) {
   const [message, setMessage] = useState<any>("")
   const [readyState, setReadyState] = useState<number>(WebSocket.CLOSED)
   const websocketRef = useRef<WebSocket | null>(null)
-  const retryCountRef = useRef(0) // Track retries for reconnection
+  const retryCountRef = useRef(0)
+  const urlRef = useRef<string | null>(null)
+  const reconnect = useRef(false)
+
+  useEffect(() => {
+    reconnect.current = true
+    return () => {
+      reconnect.current = false
+    }
+  }, [])
 
   const handleMessage = useCallback((event: MessageEvent) => {
     setMessage(event.data)
@@ -12,11 +21,19 @@ function useWebSocket(reconnectInterval = 2000, maxRetries = 5) {
 
   const connect = useCallback(
     (url: string) => {
-      return new Promise<WebSocket>((resolve, reject) => {
-        if (websocketRef.current && websocketRef.current.readyState === WebSocket.OPEN) {
-          return resolve(websocketRef.current)
-        }
+      if (!reconnect.current) {
+        return
+      }
 
+      if (
+        websocketRef.current &&
+        websocketRef.current.readyState !== WebSocket.CLOSED &&
+        urlRef.current === url
+      ) {
+        return Promise.resolve(websocketRef.current)
+      }
+
+      return new Promise<WebSocket>((resolve, reject) => {
         if (websocketRef.current) {
           websocketRef.current.close()
           websocketRef.current.removeEventListener("message", handleMessage)
@@ -24,13 +41,14 @@ function useWebSocket(reconnectInterval = 2000, maxRetries = 5) {
 
         const ws = new WebSocket(url)
         websocketRef.current = ws
+        urlRef.current = url
         setReadyState(WebSocket.CONNECTING)
 
         ws.addEventListener("message", handleMessage)
 
         ws.onopen = () => {
           setReadyState(WebSocket.OPEN)
-          retryCountRef.current = 0 // Reset retry count on successful connection
+          retryCountRef.current = 0
           resolve(ws)
         }
 
@@ -44,10 +62,7 @@ function useWebSocket(reconnectInterval = 2000, maxRetries = 5) {
           setMessage("")
           if (retryCountRef.current < maxRetries) {
             retryCountRef.current += 1
-            setTimeout(() => {
-              console.log("reconnecting...")
-              connect(url) // Attempt reconnection
-            }, reconnectInterval)
+            setTimeout(() => connect(url), reconnectInterval)
           } else {
             reject(event)
           }
@@ -69,7 +84,7 @@ function useWebSocket(reconnectInterval = 2000, maxRetries = 5) {
     if (websocketRef.current) {
       websocketRef.current.close()
       setMessage("")
-      retryCountRef.current = 0 // Reset retry count if closed manually
+      retryCountRef.current = 0
     }
   }, [])
 
