@@ -138,19 +138,6 @@ const generateNetworkOption = function (name: string, start: number, end: number
   }
 }
 
-function addFirstOption(sortData: any[]) {
-  const conflict = sortData[0].freqBand[1] - sortData[1].freqBand[0]
-  console.log(sortData[0].freqBand[1] - sortData[0].freqBand[0])
-  // 添加第一个子网
-  const newOption = generateNetworkOption(
-    `子网${sortData[0].network}使用`,
-    sortData[0].freqBand[0],
-    sortData[0].freqBand[1],
-    [sortData[0].freqBand[1] - sortData[0].freqBand[0] - conflict]
-  )
-  seriesData.push(newOption)
-}
-
 function SpectrumBar() {
   const { connectToWebsocket } = useWebsocketConnect("manage-network-info")
   const { domRef, update, isSame, myChart } = useECharts(option)
@@ -191,7 +178,9 @@ function SpectrumBar() {
         // 冲突
         const conflict = sortData[0].freqBand[1] - sortData[1].freqBand[0]
         if (conflict && conflict > 0) {
-          seriesData[seriesData.length - 1].data = [sortData[0].freqBand[1] - sortData[0].freqBand[0] - conflict]
+          seriesData[seriesData.length - 1].data = [
+            sortData[0].freqBand[1] - sortData[0].freqBand[0] - conflict,
+          ]
           seriesData.push({
             ...conflictOption,
             data: [conflict],
@@ -213,12 +202,19 @@ function SpectrumBar() {
           sortData[1].freqBand[1]
         )
         seriesData.push(newOption2)
+        if (conflict && conflict > 0) {
+          seriesData[seriesData.length - 1].data = [
+            sortData[1].freqBand[1] - sortData[1].freqBand[0] - conflict,
+          ]
+        }
       }
       // 其余未使用
       seriesData.push({
         ...NoUseOption,
         data: [endFreq - sortData[sortData.length - 1].freqBand[1]],
       })
+
+      console.log(seriesData)
       if (isSame(lastData.current, seriesData)) {
         update({
           series: seriesData,
