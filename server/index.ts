@@ -2,7 +2,7 @@ import WebSocket from "ws"
 import fs from "fs"
 import * as url from "url"
 
-const port = 8080
+const port = 5005
 const server = new WebSocket.Server({ port, host: "0.0.0.0" })
 
 // 用于跟踪每"个 URL 对应的客户端
@@ -79,7 +79,7 @@ server.on("connection", (ws, req) => {
       break
     }
     case "/connect": {
-      ws.send(4)
+      ws.send(5)
       break
     }
     case "/topology": {

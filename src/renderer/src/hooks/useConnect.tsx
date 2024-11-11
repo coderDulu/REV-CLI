@@ -22,8 +22,8 @@ const storage = sessionStorage.getItem("connect")
 const initialTasks: Connect = storage
   ? JSON.parse(storage)
   : {
-      address: "127.0.0.1",
-      port: 8080,
+      address: import.meta.env.VITE_BASE_URL,
+      port: 5005,
       isConnect: false,
     }
 

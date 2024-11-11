@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import mpegts from "mpegts.js"
 import { Empty } from "antd"
 import clsx from "clsx"
+import useConnect from "@/hooks/useConnect"
 
 import TxRxContainer from "./TxRxContainer"
 import ActionButton from "@/components/common/ActionButtons"
@@ -14,12 +15,12 @@ const VideoRxItem = () => {
   )
 }
 
-function startReceiveVideo(element: HTMLMediaElement) {
+function startReceiveVideo(element: HTMLMediaElement, address: string, port: number) {
   if (mpegts.getFeatureList().mseLivePlayback) {
     const flvPlayer = mpegts.createPlayer(
       {
         type: "mse",
-        url: "ws://localhost:8080/video-rx",
+        url: `ws://${address}:${port}/video-rx`,
         isLive: true,
       },
       {
@@ -42,10 +43,11 @@ const WebSocketVideoPlayer = () => {
   const videoRef = useRef(null)
   const flvPlayerRef = useRef<mpegts.Player | null>(null)
   const [isSending, setIsSending] = useState(false)
+  const { address, port } = useConnect()
 
   useEffect(() => {
     if (videoRef.current) {
-      flvPlayerRef.current = startReceiveVideo(videoRef.current)
+      flvPlayerRef.current = startReceiveVideo(videoRef.current, address, port)
 
       flvPlayerRef.current?.on(mpegts.Events.STATISTICS_INFO, (info) => {
         const { speed, decodedFrames } = info
@@ -77,10 +79,7 @@ const WebSocketVideoPlayer = () => {
   return (
     <div className="flex flex-col gap-10 p-5 w-full h-full">
       <div
-        className={clsx(
-          "h-60 flex items-center justify-center",
-          isSending ? "hidden" : "block"
-        )}
+        className={clsx("h-60 flex items-center justify-center", isSending ? "hidden" : "block")}
       >
         <Empty description="暂无数据" />
       </div>
