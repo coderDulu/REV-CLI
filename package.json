@@ -10,9 +10,8 @@
     "dev:main": "nodemon",
     "dev:renderer": "cd ./src/renderer && vite",
     "run:main": "electron .",
-    "build:renderer": "cd src/renderer && vite build -m production",
-
-    "build:main": "rollup -c rollup.config.js",
+    "build:renderer": "cd src/renderer && cross-env NODE_ENV=production vite build",
+    "build:main": "cross-env NODE_ENV=production rollup -c rollup.config.js",
     "package": "run-s build:* && electron-builder -w",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev:server": "cd server && nodemon index.ts"
@@ -34,6 +33,7 @@
     "autoprefixer": "^10.4.19",
     "clsx": "^2.1.1",
     "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3",
     "echarts": "^5.5.1",
     "electron": "^29.0.0",
     "electron-builder": "^24.13.3",
