@@ -37,6 +37,9 @@ const initOption = {
     axisTick: {
       show: false,
     },
+    axisLine: {
+      onZero: false
+    }
   },
   tooltip: {
     trigger: "axis",
@@ -50,8 +53,9 @@ const initOption = {
   yAxis: {
     name: "能量(dBm)",
     type: "value",
-    min: 0,
-    max: 65536,
+    min: -40,
+    max: 20,
+    startValue: -40
   },
   series: [
     {
