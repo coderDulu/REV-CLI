@@ -7,14 +7,19 @@ const options = Object.keys(ids)
   .filter(Number)
   .map((key) => ({ label: ids[key], value: key }))
 
+console.log("options", options)
+
 function DestNode({ onChange, value }) {
   const [selectOptions, setSelectOptions] = useState(options)
 
   const { role } = useConnect()
 
   useEffect(() => {
-    const op = options.filter((item) => item.value !== role + "")
-    setSelectOptions(op)
+    if (role) {
+      const network = ids[role].slice(0, 3)
+      const op = options.filter((item) => item.value !== role + "" && item.label.startsWith(network))
+      setSelectOptions(op)
+    }
   }, [role])
 
   return <Select options={selectOptions} onChange={onChange} value={value} />

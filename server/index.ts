@@ -392,16 +392,16 @@ function generateData(number: number) {
   const data = []
 
   // 生成两个大于 10000 的随机数
-  for (let i = 0; i < 2; i++) {
-    const random = Math.floor(Math.random() * (65536 - 10000)) + 10000
+  for (let i = 0; i < number; i++) {
+    const random = getRandomInt(-40, 20)
     data.push(random)
   }
 
   // 生成其余小于 5000 的随机数
-  for (let i = 2; i < number; i++) {
-    const random = Math.floor(Math.random() * 5000)
-    data.push(random)
-  }
+  // for (let i = 2; i < number; i++) {
+  //   const random = Math.floor(Math.random() * 5000)
+  //   data.push(random)
+  // }
 
   // 打乱数组顺序
   return data.sort(() => Math.random() - 0.5)
