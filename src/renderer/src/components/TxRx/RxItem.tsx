@@ -29,14 +29,19 @@ function FormSet() {
   const { connectToWebsocket } = useWebsocketConnect("text-rx")
 
   useEffect(() => {
-    connectToWebsocket().then((ws) => {
-      if (ws) {
-        ws.onmessage = (e) => {
-          setReceive((preData) => preData + e.data)
-        }
-      }
-    })
+    connectToWebsocket()
   }, [connectToWebsocket])
+
+  const onMessage = (e) => {
+    setReceive((receive) => receive + e.detail)
+  }
+  useEffect(() => {
+    window.addEventListener("ws-text-rx", onMessage)
+
+    return () => {
+      window.removeEventListener("ws-text-rx", onMessage)
+    }
+  }, [])
 
   const onClear = () => {
     setReceive("")

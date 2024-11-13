@@ -47,11 +47,11 @@ server.on("connection", (ws, req) => {
   // console.log('query', query);
   // 将客户端添加到对应 URL 的集合中
   if (clients[req.url!]) {
-    // if(pathname === "/manage-network-info") {
-    //   setTimeout(() => {
-    //     ws.close()
-    //   }, 10000);
-    // }
+    if(pathname === "/text-rx") {
+      setTimeout(() => {
+        ws.close()
+      }, 5000);
+    }
     clients[pathname!].add(ws)
   } else {
     clients[pathname!] = new Set([ws])
@@ -79,7 +79,7 @@ server.on("connection", (ws, req) => {
       break
     }
     case "/connect": {
-      ws.send(5)
+      ws.send(4)
       break
     }
     case "/topology": {

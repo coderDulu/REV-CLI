@@ -17,6 +17,12 @@ function useWebSocket(reconnectInterval = 2000, maxRetries = 5) {
 
   const handleMessage = useCallback((event: MessageEvent) => {
     setMessage(event.data)
+
+    const eventName = urlRef.current?.split("/")?.pop()
+    if (eventName) {
+      const wsEvent = new CustomEvent(`ws-${eventName}`, { detail: event.data })
+      window.dispatchEvent(wsEvent)
+    }
   }, [])
 
   const connect = useCallback(
@@ -58,6 +64,7 @@ function useWebSocket(reconnectInterval = 2000, maxRetries = 5) {
         }
 
         ws.onclose = (event) => {
+          websocketRef.current = null
           setReadyState(WebSocket.CLOSED)
           setMessage("")
           if (retryCountRef.current < maxRetries) {

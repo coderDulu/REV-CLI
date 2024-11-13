@@ -4,11 +4,11 @@
  */
 import useECharts from "@/hooks/useEcharts"
 import useWebsocketConnect from "@/hooks/useWebsocketConnect"
-import { useEffect } from "react"
+import { useCallback, useEffect, useRef } from "react"
 
 // 频谱管控状态
 export default function SpectrumStatus({ onFreqChange }: { onFreqChange?: (freq: number[]) => void}) {
-  const { connectToWebsocket } = useWebsocketConnect("spectrum-status")
+  const { connectToWebsocket, message } = useWebsocketConnect("spectrum-status")
   const { domRef, update } = useECharts({
     title: {
       text: `频谱管控状态`,
@@ -102,37 +102,41 @@ export default function SpectrumStatus({ onFreqChange }: { onFreqChange?: (freq:
   })
 
   useEffect(() => {
-    connectToWebsocket().then((socket) => {
-      let lastData = {}
-      socket?.addEventListener("message", (ev) => {
-        try {
-          const { startFreq, endFreq } = JSON.parse(ev.data)
-          onFreqChange && onFreqChange([startFreq, endFreq])
-          const option = {
-            series: [
-              {
-                id: "1",
-                data: [startFreq],
-              },
-              {
-                id: "2",
-                label: {
-                  show: true,
-                  formatter: startFreq + "MHz-" + endFreq + "MHz",
-                  fontSize: 15,
-                  fontWeight: "bolder",
-                },
-              },
-            ],
-          }
-          update(option, lastData)
-          lastData = option
-        } catch (error) {
-          console.log("SpectrumStatus", error)
-        }
-      })
-    })
-  }, [connectToWebsocket, onFreqChange, update])
+    connectToWebsocket()
+  }, [connectToWebsocket])
+
+  const lastData = useRef({})
+  const onMessage = useCallback((message: string) => {
+    try {
+      const { startFreq, endFreq } = JSON.parse(message)
+      onFreqChange && onFreqChange([startFreq, endFreq])
+      const option = {
+        series: [
+          {
+            id: "1",
+            data: [startFreq],
+          },
+          {
+            id: "2",
+            label: {
+              show: true,
+              formatter: startFreq + "MHz-" + endFreq + "MHz",
+              fontSize: 15,
+              fontWeight: "bolder",
+            },
+          },
+        ],
+      }
+      update(option, lastData.current)
+      lastData.current = option
+    } catch (error) {
+      console.warn("SpectrumStatus", error)
+    }
+  }, [onFreqChange, update])
+
+  useEffect(() => {
+    onMessage(message)
+  }, [message, onMessage])
 
   return <div className="w-full h-full" ref={(dom) => (domRef.current = dom)}></div>
 }

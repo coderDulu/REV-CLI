@@ -10,7 +10,8 @@
     "dev:main": "nodemon",
     "dev:renderer": "cd ./src/renderer && vite",
     "run:main": "electron .",
-    "build:renderer": "cd src/renderer && vite build",
+    "build:renderer": "cd src/renderer && vite build -m production",
+
     "build:main": "rollup -c rollup.config.js",
     "package": "run-s build:* && electron-builder -w",
     "test": "echo \"Error: no test specified\" && exit 1",

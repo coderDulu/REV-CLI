@@ -114,7 +114,6 @@ function Topology({ onNodeClick, tips, exclude }: Props) {
     }
   }, [connectToWebsocket])
 
-  let lastData = {}
   useEffect(() => {
     if (message) {
       const { data, links } = parseMessage(message)
@@ -132,9 +131,7 @@ function Topology({ onNodeClick, tips, exclude }: Props) {
         },
       }
 
-      update({ series }, { series: lastData })
-
-      lastData = series
+      update({ series })
     }
   }, [message])
 

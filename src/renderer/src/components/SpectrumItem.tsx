@@ -115,13 +115,12 @@ const option = {
 
 function SpectrumItem({ network, title }: { network: string | number; title?: string }) {
   const { domRef, update } = useEcharts(option)
-  const { connectToWebsocket, close } = useWebsocketConnect("manage-spectrum-status")
+  const { connectToWebsocket, message } = useWebsocketConnect("manage-spectrum-status")
   const [limit, setLimit] = useState(5000)
   const [barData, setBarData] = useState<any[]>([])
   const [heatmapData, setHeatmapData] = useState<any[]>([])
   const debouncedLimit = useDebounce(limit, 1000)
   const [xRange, setXRange] = useState([230, 670])
-  
 
   const seriesData = useRef<any[]>([])
 
@@ -148,44 +147,34 @@ function SpectrumItem({ network, title }: { network: string | number; title?: st
     }
   }, [])
 
-  const connectToWs = useCallback(() => {
-    connectToWebsocket().then((res) => {
-      res?.addEventListener("message", (ev) => {
-        const message = ev.data
-        try {
-          const parseData = JSON.parse(message) as Message
-          const findMsg = parseData.find((item) => item.network === +network)
-          if (findMsg) {
-            const { startFreq, endFreq } = findMsg
-            setXRange([startFreq, endFreq])
-            updateData(findMsg.data, debouncedLimit)
-          }
-        } catch (error) {
-          console.log("error", message)
+  const handleMessage = useCallback(
+    (message: string) => {
+      try {
+        const parseData = JSON.parse(message) as Message
+        const findMsg = parseData.find((item) => item.network === +network)
+        if (findMsg) {
+          const { startFreq, endFreq } = findMsg
+          setXRange([startFreq, endFreq])
+          updateData(findMsg.data, debouncedLimit)
         }
-      })
-    })
-  }, [connectToWebsocket, debouncedLimit, network, updateData])
+      } catch (error) {
+        console.log("error", message)
+      }
+    },
+    [debouncedLimit, network, updateData]
+  )
 
+  const connectToWs = useCallback(() => {
+    connectToWebsocket()
+  }, [connectToWebsocket])
+
+  useEffect(() => {
+    handleMessage(message)
+  }, [message, handleMessage])
 
   useEffect(() => {
     connectToWs()
   }, [connectToWs])
-
-
-  // useEffect(() => {
-  //   try {
-  //     const parseData = JSON.parse(message) as Message
-  //     const findMsg = parseData.find((item) => item.network === +network)
-  //     if (findMsg) {
-  //       const { startFreq, endFreq } = findMsg
-  //       setXRange([startFreq, endFreq])
-  //       updateData(findMsg.data, debouncedLimit)
-  //     }
-  //   } catch (error) {
-  //     console.log("error", message)
-  //   }
-  // }, [message, debouncedLimit, updateData, network])
 
   useEffect(() => {
     window.$message.info(`子网${network ?? ""}干扰定义设置为: ${debouncedLimit}`)

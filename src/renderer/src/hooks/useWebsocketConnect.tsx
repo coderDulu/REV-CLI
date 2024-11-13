@@ -6,12 +6,11 @@ export type Callback = (event: any) => void
 
 function useWebsocketConnect(path: string) {
   const { address, port, isConnect } = useConnect()
-  const { connect, close, ...args } = useWebSocket()
+  const { connect, close,...args } = useWebSocket()
   const wsUrl = `ws://${address}:${port}/${path}`
 
   const connectToWebsocket = useCallback(async () => {
     try {
-  
       if (isConnect) {
         const ws = await connect(wsUrl)
         return ws
@@ -24,6 +23,17 @@ function useWebsocketConnect(path: string) {
       return null
     }
   }, [isConnect, connect, wsUrl, close])
+
+  // const lastState = useRef(readyState)
+  // useEffect(() => {
+  //   console.log(lastState.current, readyState);
+  //   if(lastState.current === WebSocket.OPEN && readyState === WebSocket.CLOSED) {
+  //     window.$message.error("连接已断开，请刷新页面")
+  //   }
+  //   return () => {
+  //     lastState.current = readyState
+  //   }
+  // }, [readyState])
 
   return { ...args, close, connectToWebsocket }
 }

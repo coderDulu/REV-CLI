@@ -102,20 +102,15 @@ export function transVideoToStream(url: any, stream: any) {
         "-preset",
         "ultrafast"
       )
-      // .videoBitrate('200k')  // 设置码率
-      // .inputOptions(['-b:v 200k'])
-      // .outputOptions()
-      // .outputOptions([
-      //   "-f flv", // 格式化
-      //   "-c:v libx264", // 转码器
-      // ])
+      .videoBitrate('180k')  // 设置码率
+      .size('360x240')            // 降低分辨率，适合低带宽
+      .fps(15)                    // 降低帧率，减少数据量
       .outputFormat("mpegts")
       .videoCodec("libx264")
       .noAudio()
       // .toFormat("webm")
       // .videoCodec('libvpx-vp9') // ffmpeg无法直接将h265转换为flv的，故需要先将h265转换为h264，然后再转换为flv
       // .withSize('50%') // 转换之后的视频分辨率原来的50%, 如果转换出来的视频仍然延迟高，可按照文档上面的描述，自行降低分辨率
-      // .noAudio() // 去除声音
       .pipe(stream);
     return videoTxLocalProcess;
   } catch (error) {}

@@ -10,30 +10,31 @@ interface DataType {
 }
 
 function NetworkList() {
-  const { connectToWebsocket, websocketRef } = useWebsocketConnect("manage-network-info")
+  const { connectToWebsocket, message } = useWebsocketConnect("manage-network-info")
   const [list, setList] = useState<DataType[]>([])
 
   useEffect(() => {
-    const eventFn = (ev) => {
-      try {
-        const data = JSON.parse(ev.data) as DataType[]
-        // 使用 Map 去重，基于 id 属性
-        const uniqueArr = Array.from(new Map(data.map((item) => [item.network, item])).values())
-        setList(uniqueArr)
-      } catch (error) {
-        console.log(error)
-      }
-    }
-    const client = websocketRef.current
-    
-    connectToWebsocket().then((socket) => {
-      socket?.addEventListener("message", eventFn)
-    })
+    console.log("23333")
 
-    return () => {
-      client?.removeEventListener("message", eventFn)
+    connectToWebsocket()
+  }, [connectToWebsocket])
+
+  const eventFn = (message: string) => {
+    try {
+      const data = JSON.parse(message) as DataType[]
+      // 使用 Map 去重，基于 id 属性
+      const uniqueArr = Array.from(new Map(data.map((item) => [item.network, item])).values())
+      setList(uniqueArr)
+    } catch (error) {
+      console.log(error)
     }
-  }, [connectToWebsocket, websocketRef])
+  }
+
+  useEffect(() => {
+    if (message !== "") {
+      eventFn(message)
+    }
+  }, [message])
 
   return (
     <>
