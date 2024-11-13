@@ -139,7 +139,7 @@ const generateNetworkOption = function (name: string, start: number, end: number
 }
 
 function SpectrumBar() {
-  const { connectToWebsocket, message } = useWebsocketConnect("manage-network-info")
+  const { connectToWebsocket } = useWebsocketConnect("manage-network-info")
   const { domRef, update, isSame, myChart } = useECharts(option)
   const lastData = useRef<any[]>([])
   const parseData = useCallback((data) => {
@@ -231,12 +231,8 @@ function SpectrumBar() {
   }, [])
 
   useEffect(() => {
-    connectToWebsocket()
-  }, [connectToWebsocket])
-
-  useEffect(() => {
-    parseData(message)
-  }, [message, parseData])
+    connectToWebsocket(parseData)
+  }, [connectToWebsocket, parseData])
 
   return <div className="w-full h-full " ref={(dom) => (domRef.current = dom)}></div>
 }

@@ -19,7 +19,7 @@ type TopologyNodes = {
 }
 
 function Topology({ onNodeClick, tips, exclude }: Props) {
-  const { connectToWebsocket, message } = useWebsocketConnect("topology")
+  const { connectToWebsocket } = useWebsocketConnect("topology")
   const { domRef, update, myChart } = useECharts({
     title: {
       text: "网络拓扑",
@@ -99,22 +99,7 @@ function Topology({ onNodeClick, tips, exclude }: Props) {
     animation: false,
   })
 
-  useEffect(() => {
-    connectToWebsocket()
-
-    const onMessage = (params) => {
-      onNodeClick && onNodeClick(params.name)
-    }
-    const myCharts = myChart.current
-
-    myCharts?.on("click", onMessage)
-
-    return () => {
-      myCharts?.off("click", onMessage)
-    }
-  }, [connectToWebsocket])
-
-  useEffect(() => {
+  const onMessageOfWs = useCallback((message: string) => {
     if (message) {
       const { data, links } = parseMessage(message)
       let newData = data
@@ -133,7 +118,22 @@ function Topology({ onNodeClick, tips, exclude }: Props) {
 
       update({ series })
     }
-  }, [message])
+  }, [])
+  
+  useEffect(() => {
+    connectToWebsocket(onMessageOfWs)
+
+    const onMessage = (params) => {
+      onNodeClick && onNodeClick(params.name)
+    }
+    const myCharts = myChart.current
+
+    myCharts?.on("click", onMessage)
+
+    return () => {
+      myCharts?.off("click", onMessage)
+    }
+  }, [connectToWebsocket, onMessageOfWs])
 
   const parseMessage = useCallback((message: string) => {
     const parseMsg: TopologyData = JSON.parse(message)

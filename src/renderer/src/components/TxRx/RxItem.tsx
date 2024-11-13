@@ -1,6 +1,6 @@
 import { Form, Input, Space } from "antd"
 import TxRxContainer from "./TxRxContainer"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import CButton from "../common/CButton"
 import useWebsocketConnect from "@/hooks/useWebsocketConnect"
 
@@ -28,20 +28,13 @@ function FormSet() {
 
   const { connectToWebsocket } = useWebsocketConnect("text-rx")
 
-  useEffect(() => {
-    connectToWebsocket()
-  }, [connectToWebsocket])
-
-  const onMessage = (e) => {
-    setReceive((receive) => receive + e.detail)
-  }
-  useEffect(() => {
-    window.addEventListener("ws-text-rx", onMessage)
-
-    return () => {
-      window.removeEventListener("ws-text-rx", onMessage)
-    }
+  const onMessage = useCallback((data: string) => {
+    setReceive((receive) => receive + data)
   }, [])
+
+  useEffect(() => {
+    connectToWebsocket(onMessage)
+  }, [connectToWebsocket, onMessage])
 
   const onClear = () => {
     setReceive("")

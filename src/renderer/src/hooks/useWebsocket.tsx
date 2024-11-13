@@ -26,7 +26,7 @@ function useWebSocket(reconnectInterval = 2000, maxRetries = 5) {
   }, [])
 
   const connect = useCallback(
-    (url: string) => {
+    (url: string, onMessage?: (data: string) => void) => {
       if (!reconnect.current) {
         return
       }
@@ -50,7 +50,10 @@ function useWebSocket(reconnectInterval = 2000, maxRetries = 5) {
         urlRef.current = url
         setReadyState(WebSocket.CONNECTING)
 
-        ws.addEventListener("message", handleMessage)
+        ws.addEventListener("message", (event) => {
+          onMessage && onMessage(event.data)
+          handleMessage(event)
+        })
 
         ws.onopen = () => {
           setReadyState(WebSocket.OPEN)
@@ -69,7 +72,7 @@ function useWebSocket(reconnectInterval = 2000, maxRetries = 5) {
           setMessage("")
           if (retryCountRef.current < maxRetries) {
             retryCountRef.current += 1
-            setTimeout(() => connect(url), reconnectInterval)
+            setTimeout(() => connect(url, onMessage), reconnectInterval)
           } else {
             reject(event)
           }

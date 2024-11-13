@@ -115,7 +115,7 @@ const option = {
 
 function SpectrumItem({ network, title }: { network: string | number; title?: string }) {
   const { domRef, update } = useEcharts(option)
-  const { connectToWebsocket, message } = useWebsocketConnect("manage-spectrum-status")
+  const { connectToWebsocket } = useWebsocketConnect("manage-spectrum-status")
   const [limit, setLimit] = useState(5000)
   const [barData, setBarData] = useState<any[]>([])
   const [heatmapData, setHeatmapData] = useState<any[]>([])
@@ -164,17 +164,9 @@ function SpectrumItem({ network, title }: { network: string | number; title?: st
     [debouncedLimit, network, updateData]
   )
 
-  const connectToWs = useCallback(() => {
-    connectToWebsocket()
-  }, [connectToWebsocket])
-
   useEffect(() => {
-    handleMessage(message)
-  }, [message, handleMessage])
-
-  useEffect(() => {
-    connectToWs()
-  }, [connectToWs])
+    connectToWebsocket(handleMessage)
+  }, [connectToWebsocket, handleMessage])
 
   useEffect(() => {
     window.$message.info(`子网${network ?? ""}干扰定义设置为: ${debouncedLimit}`)

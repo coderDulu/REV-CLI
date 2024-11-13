@@ -6,7 +6,7 @@ import YaxisRangeSet from "../YaxisRangeSet"
 // 频谱管控状态
 
 export default function SpectrumStatus() {
-  const { connectToWebsocket, message } = useWebsocketConnect("net-rate")
+  const { connectToWebsocket } = useWebsocketConnect("net-rate")
   const { domRef, update } = useECharts({
     grid: {
       bottom: "8%",
@@ -73,54 +73,54 @@ export default function SpectrumStatus() {
 
   const startTime = useRef<number>(0)
   const xAxisData = useRef<string[]>([])
+  const onMessage = useCallback(
+    (message: string) => {
+      try {
+        const { rate } = JSON.parse(message)
+        const currentTime = Date.now() / 1000 // 当前时间秒数
+        // 如果这是第一次添加数据，则记录起始时间
+        if (!startTime.current) {
+          startTime.current = currentTime
+        }
+        // 计算相对时间，作为 x 轴的刻度
+        const relativeTime = currentTime - startTime.current
+        xAxisData.current.push(
+          Number.isInteger(relativeTime) ? relativeTime + "" : relativeTime.toFixed(1)
+        )
+
+        // add data
+        lastData.current.push(rate)
+        if (lastData.current.length > 60) {
+          lastData.current.shift()
+          xAxisData.current.shift()
+        }
+        const option = {
+          xAxis: {
+            data: xAxisData.current,
+          },
+          series: [
+            {
+              data: lastData.current,
+            },
+          ],
+        }
+        update(option)
+      } catch (error) {
+        console.log("SpectrumStatus", error)
+      }
+    },
+    [update]
+  )
 
   useEffect(() => {
-    connectToWebsocket()
+    connectToWebsocket(onMessage)
     return () => {
       startTime.current = 0
       xAxisData.current = []
     }
-  }, [connectToWebsocket])
+  }, [connectToWebsocket, onMessage])
 
   const lastData = useRef<number[][]>([])
-  const onMessage = useCallback((message: string) => {
-    try {
-      const { rate } = JSON.parse(message)
-      const currentTime = Date.now() / 1000 // 当前时间秒数
-      // 如果这是第一次添加数据，则记录起始时间
-      if (!startTime.current) {
-        startTime.current = currentTime
-      }
-      // 计算相对时间，作为 x 轴的刻度
-      const relativeTime = currentTime - startTime.current
-      xAxisData.current.push(
-        Number.isInteger(relativeTime) ? relativeTime + "" : relativeTime.toFixed(1)
-      )
-
-      // add data
-      lastData.current.push(rate)
-      if (lastData.current.length > 60) {
-        lastData.current.shift()
-        xAxisData.current.shift()
-      }
-      const option = {
-        xAxis: {
-          data: xAxisData.current,
-        },
-        series: [
-          {
-            data: lastData.current,
-          },
-        ],
-      }
-      update(option)
-    } catch (error) {
-      console.log("SpectrumStatus", error)
-    }
-  }, [update])
-  useEffect(() => {
-    onMessage(message)
-  }, [message, onMessage])
 
   // 控制y轴范围
   const [show, setShow] = useState(false)

@@ -67,20 +67,21 @@ const initOption = {
   animation: false,
 }
 function NodeBar({ node, option = {} }: { node?: string; xLength?: number; option?: object }) {
-  const { connectToWebsocket, message } = useWebsocketConnect("network-bar")
+  const { connectToWebsocket } = useWebsocketConnect("network-bar")
   const [data, setData] = useImmer([])
 
-  useEffect(() => {
+
+  const onMessage = useCallback((message: string) => {
     try {
       setData(JSON.parse(message))
     } catch (error) {
       console.warn('network-bar error', error);
     }
-  }, [message, setData])
+  }, [setData])
 
   useEffect(() => {
-    connectToWebsocket()
-  }, [connectToWebsocket])
+    connectToWebsocket(onMessage)
+  }, [connectToWebsocket, onMessage])
 
   const { domRef, update, myChart } = useEcharts({
     ...initOption,

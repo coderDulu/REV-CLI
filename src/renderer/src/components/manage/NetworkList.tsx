@@ -10,14 +10,8 @@ interface DataType {
 }
 
 function NetworkList() {
-  const { connectToWebsocket, message } = useWebsocketConnect("manage-network-info")
+  const { connectToWebsocket } = useWebsocketConnect("manage-network-info")
   const [list, setList] = useState<DataType[]>([])
-
-  useEffect(() => {
-    console.log("23333")
-
-    connectToWebsocket()
-  }, [connectToWebsocket])
 
   const eventFn = (message: string) => {
     try {
@@ -31,10 +25,8 @@ function NetworkList() {
   }
 
   useEffect(() => {
-    if (message !== "") {
-      eventFn(message)
-    }
-  }, [message])
+    connectToWebsocket(eventFn)
+  }, [connectToWebsocket])
 
   return (
     <>
