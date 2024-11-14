@@ -1,6 +1,7 @@
 import React from "react"
 import { Form, InputNumber, Button, Modal } from "antd"
 import { RuleObject } from "rc-field-form/lib/interface"
+import { YMAX, YMIN } from "@/utils/global";
 
 interface RangeFormProps {
   onRangeSubmit: (values: { min: number; max: number }) => void
@@ -45,8 +46,8 @@ const RangeForm: React.FC<RangeFormProps> = ({ onRangeSubmit, visible, onClose }
         onFinish={onFinish}
         layout="inline"
         initialValues={{
-          min: 0,
-          max: 65536,
+          min: YMIN,
+          max: YMAX,
         }}
       >
         <Form.Item
@@ -54,7 +55,7 @@ const RangeForm: React.FC<RangeFormProps> = ({ onRangeSubmit, visible, onClose }
           name="min"
           rules={[{ required: true, message: "请输入最小值" }, { validator: validateMin }]}
         >
-          <InputNumber min={0} max={65536} />
+          <InputNumber min={YMIN} max={YMAX} />
         </Form.Item>
 
         <Form.Item
@@ -62,7 +63,7 @@ const RangeForm: React.FC<RangeFormProps> = ({ onRangeSubmit, visible, onClose }
           name="max"
           rules={[{ required: true, message: "请输入最大值" }, { validator: validateMax }]}
         >
-          <InputNumber min={0} max={65536} />
+          <InputNumber min={YMIN} max={YMAX} />
         </Form.Item>
 
         <Form.Item>

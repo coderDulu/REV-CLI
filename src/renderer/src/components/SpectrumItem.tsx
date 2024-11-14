@@ -7,6 +7,7 @@ import { Form, InputNumber } from "antd"
 import { useCallback, useEffect, useRef, useState } from "react"
 import BarOfSpectrum from "./SpectrumItemBar"
 import useWebsocketConnect from "@/hooks/useWebsocketConnect"
+import { YMAX, YMIN } from "@/utils/global"
 
 type Message = {
   network: number
@@ -116,7 +117,7 @@ const option = {
 function SpectrumItem({ network, title }: { network: string | number; title?: string }) {
   const { domRef, update } = useEcharts(option)
   const { connectToWebsocket } = useWebsocketConnect("manage-spectrum-status")
-  const [limit, setLimit] = useState(5000)
+  const [limit, setLimit] = useState(10)
   const [barData, setBarData] = useState<any[]>([])
   const [heatmapData, setHeatmapData] = useState<any[]>([])
   const debouncedLimit = useDebounce(limit, 1000)
@@ -210,8 +211,8 @@ function SpectrumItem({ network, title }: { network: string | number; title?: st
           defaultValue={limit}
           onChange={(value) => value && setLimit(value)}
           className="w-40"
-          min={1}
-          max={65536}
+          min={YMIN}
+          max={YMAX}
         />
       </Form.Item>
 

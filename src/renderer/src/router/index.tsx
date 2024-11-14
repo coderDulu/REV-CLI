@@ -85,9 +85,7 @@ const config = createHashRouter([
           { index: true, element: <Navigate to="/manage/network" replace /> },
           {
             path: "/manage/network",
-            element: (
-              <Network />
-            ),
+            element: <Network />,
             errorElement: <Error />,
           },
           {
@@ -158,6 +156,7 @@ const config = createHashRouter([
           {
             index: true,
             element: <Navigate to="/user/node-status" replace />,
+            errorElement: <Error />,
           },
           {
             path: "/user/node-status",
@@ -171,9 +170,11 @@ const config = createHashRouter([
           {
             path: "/user/status",
             element: (
-              <KeepAlive id="user-status">
-                <UserStatus />
-              </KeepAlive>
+              <Suspense fallback={<Error />}>
+                <KeepAlive id="user-status">
+                  <UserStatus />
+                </KeepAlive>
+              </Suspense>
             ),
             errorElement: <Error />,
           },
@@ -189,6 +190,7 @@ const config = createHashRouter([
           {
             path: "*",
             element: <div>404</div>,
+            errorElement: <Error />,
           },
         ],
       },

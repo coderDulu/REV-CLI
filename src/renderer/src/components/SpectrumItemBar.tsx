@@ -4,6 +4,7 @@
 import { useEffect, useState } from "react"
 import YaxisRangeSet from "./YaxisRangeSet"
 import useEcharts from "@/hooks/useEcharts"
+import { YMAX, YMIN } from "@/utils/global"
 
 const barOption = {
   xAxis: {
@@ -28,6 +29,9 @@ const barOption = {
     axisTick: {
       show: false,
     },
+    axisLine: {
+      onZero: false
+    }
   },
   grid: {
     top: 10,
@@ -35,8 +39,9 @@ const barOption = {
   },
   yAxis: {
     type: "value",
-    min: 0,
-    max: 65536,
+    min: YMAX,
+    max: YMIN,
+    startValue: YMIN,
   },
   series: [
     {
