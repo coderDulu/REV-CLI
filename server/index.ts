@@ -79,14 +79,14 @@ server.on("connection", (ws, req) => {
       break
     }
     case "/connect": {
-      ws.send(0)
+      ws.send(5)
       break
     }
     case "/topology": {
       const data = {
-        manage: [0],
-        center: [4, 8],
-        user: [5, 6, 9, 10],
+        manage: [],
+        center: [4],
+        user: [5, 6],
         links: [
           [0, 4],
           [0, 8],
@@ -240,26 +240,26 @@ server.on("connection", (ws, req) => {
     }
     case "/manage-network-info": {
       // setInterval(() => {
-        const network1 = [240, 400]
-        const network2 = [370, 440]
-        const data = [
-          {
-            network: 1, // 子网
-            freqBand: network1, // 频点范围
-            mode: 0, // 0 -> 自适应跳频，1 -> 频点固定模式
-            bandSelect: 1, // 通道
-            freq: 277.5, // 频点
-          },
-          {
-            network: 2, // 子网
-            freqBand: network2, // 频点范围
-            mode: 1, // 0 -> 自适应跳频，1 -> 频点固定模式
-            bandSelect: 9, // 通道
-            freq: 299.5, // 频点
-          },
-        ]
+      const network1 = [240, 400]
+      const network2 = [370, 440]
+      const data = [
+        {
+          network: 1, // 子网
+          freqBand: network1, // 频点范围
+          mode: 0, // 0 -> 自适应跳频，1 -> 频点固定模式
+          bandSelect: 1, // 通道
+          freq: 277.5, // 频点
+        },
+        {
+          network: 2, // 子网
+          freqBand: network2, // 频点范围
+          mode: 1, // 0 -> 自适应跳频，1 -> 频点固定模式
+          bandSelect: 9, // 通道
+          freq: 299.5, // 频点
+        },
+      ]
 
-        sendMessageToAllClients(JSON.stringify(data), pathname, ws)
+      sendMessageToAllClients(JSON.stringify(data), pathname, ws)
       // }, 1000)
       break
     }
@@ -392,16 +392,16 @@ function generateData(number: number) {
   const data = []
 
   // 生成两个大于 10000 的随机数
-  for (let i = 0; i < number; i++) {
+  for (let i = 0; i < 10; i++) {
     const random = getRandomInt(-40, 20)
     data.push(random)
   }
 
   // 生成其余小于 5000 的随机数
-  // for (let i = 2; i < number; i++) {
-  //   const random = Math.floor(Math.random() * 5000)
-  //   data.push(random)
-  // }
+  for (let i = 10; i < number; i++) {
+    const random = Math.floor(Math.random() * 30) - 60 
+    data.push(random)
+  }
 
   // 打乱数组顺序
   return data.sort(() => Math.random() - 0.5)

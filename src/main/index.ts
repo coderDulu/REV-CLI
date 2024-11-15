@@ -81,7 +81,7 @@ app.whenReady().then(() => {
   // 添加右键菜单
   if (mainWindow) {
     setupMenus.setupContextMenu(mainWindow)
-    setupMenus.addRegisterKey(mainWindow)
+    // setupMenus.addRegisterKey(mainWindow)
   }
 
   app.on("activate", function () {

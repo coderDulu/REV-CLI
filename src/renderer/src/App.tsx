@@ -18,6 +18,8 @@ function App() {
       if (event.key === "F12") {
         // 向主进程发送消息，要求打开开发者工具
         window.electron.send("toggle-dev-tools")
+      } else if (event.key === "F5") {
+        window.location.reload()
       }
     })
   }, [])
