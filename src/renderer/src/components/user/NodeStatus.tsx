@@ -7,7 +7,7 @@ function NodeStatus() {
     <div className="w-full h-full">
       <div className="w-full h-1/2 flex items-center">
         <TopologyNode />
-        <div className="h-40 w-full">
+        <div className="h-60 w-full">
           <SpectrumStatus />
         </div>
       </div>

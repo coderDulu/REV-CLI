@@ -20,7 +20,6 @@ import { nanoid } from "nanoid"
 import useWebsocketConnect from "@/hooks/useWebsocketConnect"
 import duration from "dayjs/plugin/duration" // 引入 duration 插件
 
-
 dayjs.extend(duration) // 使用插件
 
 interface DataType {
@@ -45,7 +44,7 @@ const formatTime = (seconds) => {
 }
 
 function FreqPlan() {
-  const { connectToWebsocket, close, sendMessage } = useWebsocketConnect("freq-plan")
+  const { connectToWebsocket, sendMessage } = useWebsocketConnect("freq-plan")
 
   const [dataSource, dispatch] = useImmerReducer<DataType[], any>(
     reducer,
@@ -59,10 +58,7 @@ function FreqPlan() {
 
   useEffect(() => {
     connectToWebsocket()
-    return () => {
-      close()
-    }
-  }, [close, connectToWebsocket])
+  }, [connectToWebsocket])
 
   const selectData: DataType | undefined = dataSource.find((item) => item.key === selectRow?.at(-1))
   // 添加

@@ -47,11 +47,11 @@ server.on("connection", (ws, req) => {
   // console.log('query', query);
   // 将客户端添加到对应 URL 的集合中
   if (clients[req.url!]) {
-    // if(pathname === "/net-rate") {
-    //   setTimeout(() => {
-    //     ws.close()
-    //   }, 5000);
-    // }
+    if(pathname === "/manage-spectrum-status") {
+      setTimeout(() => {
+        ws.close()
+      }, 5000);
+    }
     clients[pathname!].add(ws)
   } else {
     clients[pathname!] = new Set([ws])

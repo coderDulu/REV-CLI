@@ -6,7 +6,6 @@ import YaxisRangeSet from "../YaxisRangeSet"
 // 频谱管控状态
 
 export default function SpectrumStatus() {
-  const { connectToWebsocket } = useWebsocketConnect("net-rate")
   const { domRef, update } = useECharts({
     grid: {
       bottom: "8%",
@@ -70,9 +69,6 @@ export default function SpectrumStatus() {
       },
     },
   })
-
-  const startTime = useRef<number>(0)
-  const xAxisData = useRef<string[]>([])
   const onMessage = useCallback(
     (message: string) => {
       try {
@@ -112,13 +108,17 @@ export default function SpectrumStatus() {
     [update]
   )
 
+  const { connectToWebsocket } = useWebsocketConnect("net-rate", onMessage)
+  const startTime = useRef<number>(0)
+  const xAxisData = useRef<string[]>([])
+
   useEffect(() => {
-    connectToWebsocket(onMessage)
+    connectToWebsocket()
     return () => {
       startTime.current = 0
       xAxisData.current = []
     }
-  }, [connectToWebsocket, onMessage])
+  }, [connectToWebsocket])
 
   const lastData = useRef<number[][]>([])
 

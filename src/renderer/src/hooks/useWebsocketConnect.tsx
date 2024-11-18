@@ -1,42 +1,42 @@
-import { useCallback } from "react"
+import { useCallback, useEffect } from "react"
 import useWebSocket from "./useWebsocket"
 import useConnect from "./useConnect"
 
 export type Callback = (event: any) => void
 
-function useWebsocketConnect(path: string) {
+function useWebsocketConnect(path: string, onMessage?: (data: string) => void) {
   const { address, port, isConnect } = useConnect()
-  const { connect, close, ...args } = useWebSocket()
+  const { connect, close, readyState, websocketRef, ...args } = useWebSocket()
   const wsUrl = `ws://${address}:${port}/${path}`
 
-  const connectToWebsocket = useCallback(
-    async (onMessage?: (data: string) => void) => {
-      try {
-        if (isConnect) {
-          const ws = await connect(wsUrl, onMessage)
-          return ws
-        } else {
-          close()
-        }
-        return null
-      } catch (error) {
-        console.error("Error connecting to websocket:", error)
-        return null
+  const connectToWebsocket = useCallback(async () => {
+    try {
+      if (isConnect) {
+        const ws = await connect(wsUrl)
+        return ws
+      } else {
+        close()
       }
-    },
-    [isConnect, connect, wsUrl, close]
-  )
+      return null
+    } catch (error) {
+      console.error("Error connecting to websocket:", error)
+      return null
+    }
+  }, [isConnect, connect, wsUrl, close])
 
-  // const lastState = useRef(readyState)
-  // useEffect(() => {
-  //   console.log(lastState.current, readyState);
-  //   if(lastState.current === WebSocket.OPEN && readyState === WebSocket.CLOSED) {
-  //     window.$message.error("连接已断开，请刷新页面")
-  //   }
-  //   return () => {
-  //     lastState.current = readyState
-  //   }
-  // }, [readyState])
+  useEffect(() => {
+    const handleMessage = (ev) => {
+      onMessage && onMessage(ev.data)
+    }
+    const ws = websocketRef.current
+    if (readyState === WebSocket.OPEN) {
+      ws?.addEventListener("message", handleMessage)
+    }
+
+    return () => {
+      ws?.removeEventListener("message", handleMessage)
+    }
+  }, [onMessage, readyState, websocketRef])
 
   return { ...args, close, connectToWebsocket }
 }

@@ -38,8 +38,8 @@ const initOption = {
       show: false,
     },
     axisLine: {
-      onZero: false
-    }
+      onZero: false,
+    },
   },
   tooltip: {
     trigger: "axis",
@@ -55,7 +55,7 @@ const initOption = {
     type: "value",
     min: -40,
     max: 20,
-    startValue: -40
+    startValue: -40,
   },
   series: [
     {
@@ -67,21 +67,22 @@ const initOption = {
   animation: false,
 }
 function NodeBar({ node, option = {} }: { node?: string; xLength?: number; option?: object }) {
-  const { connectToWebsocket } = useWebsocketConnect("network-bar")
   const [data, setData] = useImmer([])
-
-
-  const onMessage = useCallback((message: string) => {
-    try {
-      setData(JSON.parse(message))
-    } catch (error) {
-      console.warn('network-bar error', error);
-    }
-  }, [setData])
+  const onMessage = useCallback(
+    (message: string) => {
+      try {
+        setData(JSON.parse(message))
+      } catch (error) {
+        console.warn("network-bar error", error)
+      }
+    },
+    [setData]
+  )
+  const { connectToWebsocket } = useWebsocketConnect("network-bar", onMessage)
 
   useEffect(() => {
-    connectToWebsocket(onMessage)
-  }, [connectToWebsocket, onMessage])
+    connectToWebsocket()
+  }, [connectToWebsocket])
 
   const { domRef, update, myChart } = useEcharts({
     ...initOption,

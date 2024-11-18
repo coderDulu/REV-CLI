@@ -19,7 +19,27 @@ type TopologyNodes = {
 }
 
 function Topology({ onNodeClick, tips, exclude }: Props) {
-  const { connectToWebsocket } = useWebsocketConnect("topology")
+  const onMessageOfWs = useCallback((message: string) => {
+    if (message) {
+      const { data, links } = parseMessage(message)
+      let newData = data
+      if (exclude) {
+        newData = data.filter((item) => !exclude.includes(item.category))
+      }
+      const series = {
+        data: newData,
+        links,
+        force: {
+          repulsion: 500,
+          edgeLength: 100,
+          gravity: 0.05,
+        },
+      }
+
+      update({ series })
+    }
+  }, [])
+  const { connectToWebsocket } = useWebsocketConnect("topology", onMessageOfWs)
   const { domRef, update, myChart } = useECharts({
     title: {
       text: "网络拓扑",
@@ -99,29 +119,10 @@ function Topology({ onNodeClick, tips, exclude }: Props) {
     animation: false,
   })
 
-  const onMessageOfWs = useCallback((message: string) => {
-    if (message) {
-      const { data, links } = parseMessage(message)
-      let newData = data
-      if (exclude) {
-        newData = data.filter((item) => !exclude.includes(item.category))
-      }
-      const series = {
-        data: newData,
-        links,
-        force: {
-          repulsion: 500,
-          edgeLength: 100,
-          gravity: 0.05,
-        },
-      }
 
-      update({ series })
-    }
-  }, [])
   
   useEffect(() => {
-    connectToWebsocket(onMessageOfWs)
+    connectToWebsocket()
 
     const onMessage = (params) => {
       onNodeClick && onNodeClick(params.name)
@@ -133,7 +134,7 @@ function Topology({ onNodeClick, tips, exclude }: Props) {
     return () => {
       myCharts?.off("click", onMessage)
     }
-  }, [connectToWebsocket, onMessageOfWs])
+  }, [connectToWebsocket, myChart, onNodeClick])
 
   const parseMessage = useCallback((message: string) => {
     const parseMsg: TopologyData = JSON.parse(message)

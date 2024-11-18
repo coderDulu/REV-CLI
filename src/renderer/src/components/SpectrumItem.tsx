@@ -116,7 +116,7 @@ const option = {
 
 function SpectrumItem({ network, title }: { network: string | number; title?: string }) {
   const { domRef, update } = useEcharts(option)
-  const { connectToWebsocket } = useWebsocketConnect("manage-spectrum-status")
+
   const [limit, setLimit] = useState(10)
   const [barData, setBarData] = useState<any[]>([])
   const [heatmapData, setHeatmapData] = useState<any[]>([])
@@ -165,9 +165,11 @@ function SpectrumItem({ network, title }: { network: string | number; title?: st
     [debouncedLimit, network, updateData]
   )
 
+  const { connectToWebsocket } = useWebsocketConnect("manage-spectrum-status", handleMessage)
+
   useEffect(() => {
-    connectToWebsocket(handleMessage)
-  }, [connectToWebsocket, handleMessage])
+    connectToWebsocket()
+  }, [connectToWebsocket])
 
   useEffect(() => {
     window.$message.info(`子网${network ?? ""}干扰定义设置为: ${debouncedLimit}`)
@@ -205,18 +207,17 @@ function SpectrumItem({ network, title }: { network: string | number; title?: st
   return (
     <div className="w-full h-full relative">
       <h1 className="text-center text-xl mb-2">{title ?? "用频状态"}</h1>
-
       <Form.Item labelCol={{ offset: 7 }} className="m-0" label="干扰定义设置">
         <InputNumber
           defaultValue={limit}
-          onChange={(value) => value && setLimit(value)}
+          onChange={(value) => value !== null && setLimit(value)}
           className="w-40"
           min={YMIN}
           max={YMAX}
         />
       </Form.Item>
 
-      <div className="w-full absolute" style={{ top: "50px", height: "70%" }}>
+      <div className="w-full absolute" style={{ top: "90px", height: "70%" }}>
         <div className="w-full h-full" ref={(dom) => (domRef.current = dom)}></div>
       </div>
 

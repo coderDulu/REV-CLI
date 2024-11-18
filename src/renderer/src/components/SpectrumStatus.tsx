@@ -12,7 +12,6 @@ export default function SpectrumStatus({
 }: {
   onFreqChange?: (freq: number[]) => void
 }) {
-  const { connectToWebsocket } = useWebsocketConnect("spectrum-status")
   const { domRef, update } = useECharts({
     title: {
       text: `频谱管控状态`,
@@ -104,8 +103,6 @@ export default function SpectrumStatus({
       },
     ],
   })
-
-  const lastData = useRef({})
   const onMessage = useCallback(
     (message: string) => {
       try {
@@ -137,9 +134,13 @@ export default function SpectrumStatus({
     [onFreqChange, update]
   )
 
+  const { connectToWebsocket } = useWebsocketConnect("spectrum-status", onMessage)
+
+  const lastData = useRef({})
+
   useEffect(() => {
-    connectToWebsocket(onMessage)
-  }, [connectToWebsocket, onMessage])
+    connectToWebsocket()
+  }, [connectToWebsocket])
 
   return <div className="w-full h-full" ref={(dom) => (domRef.current = dom)}></div>
 }

@@ -26,14 +26,13 @@ const rules = [{ required: true, message: "请输入内容" }]
 function FormSet() {
   const [receiveData, setReceive] = useState("")
 
-  const { connectToWebsocket } = useWebsocketConnect("text-rx")
-
   const onMessage = useCallback((data: string) => {
     setReceive((receive) => receive + data)
   }, [])
+  const { connectToWebsocket } = useWebsocketConnect("text-rx", onMessage)
 
   useEffect(() => {
-    connectToWebsocket(onMessage)
+    connectToWebsocket()
   }, [connectToWebsocket, onMessage])
 
   const onClear = () => {
